@@ -1,0 +1,429 @@
+[
+  {
+    "datagetter_aggregates": {
+      "count": 783,
+      "currencies": {
+        "GBP": {
+          "count": 783,
+          "currency_symbol": "&pound;",
+          "max_amount": 250000,
+          "min_amount": 1000,
+          "total_amount": 12785625
+        }
+      },
+      "distinct_funding_org_identifier": [
+        "GB-CHC-1000147"
+      ],
+      "distinct_funding_org_identifier_count": 1,
+      "distinct_recipient_org_identifier_count": 322,
+      "duplicate_ids_count": 0,
+      "funding_org_identifier_prefixes": {
+        "GB-CHC": 1
+      },
+      "funding_org_identifiers_unrecognised_prefixes": {},
+      "id_count": 783,
+      "max_award_date": "2021-01-26",
+      "min_award_date": "2013-01-22",
+      "recipient_org_identifier_prefixes": {
+        "360G": 6,
+        "GB-CHC": 296,
+        "GB-COH": 2,
+        "GB-NIC": 2,
+        "GB-SC": 16
+      },
+      "recipient_org_identifiers_unrecognised_prefixes": {},
+      "unique_ids_count": 783
+    },
+    "datagetter_coverage": {
+      "/grants": {
+        "grants_with_field": null,
+        "standard": true,
+        "total_fields": 1
+      },
+      "/grants/Amount Awarded - website format": {
+        "grants_with_field": 783,
+        "standard": false,
+        "total_fields": 783
+      },
+      "/grants/Award Date - website format": {
+        "grants_with_field": 783,
+        "standard": false,
+        "total_fields": 783
+      },
+      "/grants/Website": {
+        "grants_with_field": 500,
+        "standard": false,
+        "total_fields": 500
+      },
+      "/grants/Website/Decision Notes": {
+        "grants_with_field": 500,
+        "standard": false,
+        "total_fields": 500
+      },
+      "/grants/Website/Project Detail": {
+        "grants_with_field": 499,
+        "standard": false,
+        "total_fields": 499
+      },
+      "/grants/amountAwarded": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/awardDate": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/beneficiaryLocation": {
+        "grants_with_field": 782,
+        "standard": true,
+        "total_fields": 782
+      },
+      "/grants/beneficiaryLocation/name": {
+        "grants_with_field": 782,
+        "standard": true,
+        "total_fields": 782
+      },
+      "/grants/currency": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/dataSource": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/description": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/fromOpenCall": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/fundingOrganization": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/fundingOrganization/id": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/fundingOrganization/name": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/grantProgramme": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/grantProgramme/code": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/grantProgramme/title": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/id": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/recipientOrganization": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/recipientOrganization/charityNumber": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/recipientOrganization/id": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/recipientOrganization/name": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      },
+      "/grants/recipientOrganization/postalCode": {
+        "grants_with_field": 777,
+        "standard": true,
+        "total_fields": 777
+      },
+      "/grants/recipientOrganization/url": {
+        "grants_with_field": 777,
+        "standard": true,
+        "total_fields": 777
+      },
+      "/grants/title": {
+        "grants_with_field": 783,
+        "standard": true,
+        "total_fields": 783
+      }
+    },
+    "datagetter_metadata": {
+      "acceptable_license": true,
+      "datetime_downloaded": "2021-04-07T12:39:29+01:00",
+      "downloads": true,
+      "file_size": 193786,
+      "file_type": "xlsx",
+      "json": "data/json_all/a001p00000zgyHZAAY.json",
+      "valid": true
+    },
+    "description": "",
+    "distribution": [
+      {
+        "accessURL": "https://abcharitabletrust.org.uk/grantees/grants-awarded",
+        "downloadURL": "https://abcharitabletrust.org.uk/uploads/ABCT-360-Giving-Data.xlsx",
+        "title": "Open Programme grants awarded since 2013"
+      }
+    ],
+    "identifier": "a001p00000zgyHZAAY",
+    "issued": "2018-06-21",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    "modified": "2020-11-27T14:39:38.000+0000",
+    "publisher": {
+      "logo": "https://www.threesixtygiving.org/wp-content/uploads/AB-Charitable-Trust-Logo_RGB.jpg",
+      "name": "A B Charitable Trust",
+      "prefix": "360G-ABCT",
+      "website": "http://abcharitabletrust.org.uk/"
+    },
+    "title": "Open Programme grants awarded since 2013"
+  },
+  {
+    "datagetter_aggregates": {
+      "count": 475,
+      "currencies": {
+        "GBP": {
+          "count": 475,
+          "currency_symbol": "&pound;",
+          "max_amount": 3544200,
+          "min_amount": 500,
+          "total_amount": 21757793.27
+        }
+      },
+      "distinct_funding_org_identifier": [
+        "GB-CHC-1015648"
+      ],
+      "distinct_funding_org_identifier_count": 1,
+      "distinct_recipient_org_identifier_count": 288,
+      "duplicate_ids_count": 0,
+      "funding_org_identifier_prefixes": {
+        "GB-CHC": 1
+      },
+      "funding_org_identifiers_unrecognised_prefixes": {},
+      "id_count": 475,
+      "max_award_date": "2020-12-31",
+      "min_award_date": "2011-01-18",
+      "recipient_org_identifier_prefixes": {
+        "360G": 68,
+        "GB-CHC": 178,
+        "GB-COH": 13,
+        "GB-EDU": 3,
+        "GB-NIC": 3,
+        "GB-REV": 2,
+        "GB-SC": 17,
+        "US-EIN": 4
+      },
+      "recipient_org_identifiers_unrecognised_prefixes": {},
+      "unique_ids_count": 475
+    },
+    "datagetter_coverage": {
+      "/grants": {
+        "grants_with_field": null,
+        "standard": true,
+        "total_fields": 1
+      },
+      "/grants/amountAppliedFor": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/amountAwarded": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/awardDate": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/beneficiaryLocation": {
+        "grants_with_field": 358,
+        "standard": true,
+        "total_fields": 358
+      },
+      "/grants/beneficiaryLocation/countryCode": {
+        "grants_with_field": 358,
+        "standard": true,
+        "total_fields": 358
+      },
+      "/grants/beneficiaryLocation/geoCode": {
+        "grants_with_field": 220,
+        "standard": true,
+        "total_fields": 220
+      },
+      "/grants/beneficiaryLocation/geoCodeType": {
+        "grants_with_field": 156,
+        "standard": true,
+        "total_fields": 156
+      },
+      "/grants/beneficiaryLocation/name": {
+        "grants_with_field": 357,
+        "standard": true,
+        "total_fields": 357
+      },
+      "/grants/currency": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/dataSource": {
+        "grants_with_field": 461,
+        "standard": true,
+        "total_fields": 461
+      },
+      "/grants/dateModified": {
+        "grants_with_field": 351,
+        "standard": true,
+        "total_fields": 351
+      },
+      "/grants/description": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/fundingOrganization": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/fundingOrganization/id": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/fundingOrganization/name": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/grantProgramme": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/grantProgramme/title": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/id": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/plannedDates": {
+        "grants_with_field": 468,
+        "standard": true,
+        "total_fields": 468
+      },
+      "/grants/plannedDates/duration": {
+        "grants_with_field": 468,
+        "standard": true,
+        "total_fields": 468
+      },
+      "/grants/recipientOrganization": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/recipientOrganization/addressLocality": {
+        "grants_with_field": 472,
+        "standard": true,
+        "total_fields": 472
+      },
+      "/grants/recipientOrganization/charityNumber": {
+        "grants_with_field": 324,
+        "standard": true,
+        "total_fields": 324
+      },
+      "/grants/recipientOrganization/companyNumber": {
+        "grants_with_field": 100,
+        "standard": true,
+        "total_fields": 100
+      },
+      "/grants/recipientOrganization/id": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/recipientOrganization/name": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/recipientOrganization/organisationType": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      },
+      "/grants/recipientOrganization/postalCode": {
+        "grants_with_field": 474,
+        "standard": true,
+        "total_fields": 474
+      },
+      "/grants/title": {
+        "grants_with_field": 475,
+        "standard": true,
+        "total_fields": 475
+      }
+    },
+    "datagetter_metadata": {
+      "acceptable_license": true,
+      "datetime_downloaded": "2021-04-07T12:39:29+01:00",
+      "downloads": true,
+      "file_size": 86545,
+      "file_type": "xlsx",
+      "json": "data/json_all/a003W000001B7PzQAK.json",
+      "valid": true
+    },
+    "description": "",
+    "distribution": [
+      {
+        "accessURL": "http://andrewlloydwebberfoundation.com/360-giving",
+        "downloadURL": "http://andrewlloydwebberfoundation.com/downloads/final-360-file-for-website-grants-and-scholarships-feb-2021-updated.xlsx",
+        "title": "Grants Awarded Since 2011"
+      }
+    ],
+    "identifier": "a003W000001B7PzQAK",
+    "issued": "2020-06-08",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "license_name": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    "modified": "2021-02-17T17:37:44.000+0000",
+    "publisher": {
+      "logo": "https://www.threesixtygiving.org/wp-content/uploads/White-Logo-Centre-002.png",
+      "name": "Andrew Lloyd Webber Foundation",
+      "prefix": "360G-ALWF",
+      "website": "http://www.andrewlloydwebberfoundation.com/"
+    },
+    "title": "Grants Awarded Since 2011"
+  }
+]
