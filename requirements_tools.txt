@@ -44,7 +44,7 @@ defusedxml==0.7.1
     # via
     #   datagetter
     #   odfpy
-et_xmlfile==1.0.1
+et-xmlfile==1.0.1
     # via
     #   datagetter
     #   openpyxl
@@ -117,7 +117,7 @@ pytz==2021.1
     # via
     #   datagetter
     #   flattentool
-requests[socks]==2.25.1
+requests==2.25.1
     # via
     #   datagetter
     #   libcove
