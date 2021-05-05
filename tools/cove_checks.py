@@ -4,7 +4,12 @@ import argparse
 import json
 import pprint
 
-from lib360dataquality.cove.threesixtygiving import common_checks_360
+from lib360dataquality.cove.threesixtygiving import (
+    common_checks_360,
+    TEST_CLASSES,
+    USEFULNESS_TEST_CLASS,
+    QUALITY_TEST_CLASS,
+)
 from lib360dataquality.cove.settings import COVE_CONFIG
 from lib360dataquality.cove.schema import Schema360
 
@@ -23,6 +28,20 @@ def main():
         action="store",
         help="File type override",
         default=None,
+    )
+    parser.add_argument(
+        "--usefulness",
+        dest="usefulness_only",
+        action="store_true",
+        help="Only run data usefulness checks",
+        default=False,
+    )
+    parser.add_argument(
+        "--quality",
+        dest="quality_only",
+        action="store_true",
+        help="Only run data quality checks",
+        default=False,
     )
 
     args = parser.parse_args()
@@ -58,7 +77,20 @@ def main():
         with open(file_path, "r") as fp_data:
             data = json.load(fp_data)
 
-    common_checks_360(context, working_dir, data, schema)
+    if args.usefulness_only and not args.quality_only:
+        common_checks_360(
+            context, working_dir, data, schema, test_classes=[USEFULNESS_TEST_CLASS]
+        )
+    elif args.quality_only and not args.usefulness_only:
+        common_checks_360(
+            context, working_dir, data, schema, test_classes=[QUALITY_TEST_CLASS]
+        )
+    else:
+        common_checks_360(context, working_dir, data, schema)
+
+    # We don't actually want to show the json data again
+    del context["json_data"]
+
     pprint.pprint(context)
 
 
