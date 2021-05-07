@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements_cove.in
 #
+-e file:./
+    # via -r requirements_cove.in
 attrs==20.3.0
     # via jsonschema
 backports-datetime-fromisoformat==1.0.0
@@ -87,6 +89,7 @@ lepl==5.1.3
 libcove==0.22.1
     # via
     #   -r requirements_cove.in
+    #   lib360dataquality
     #   libcoveweb
 libcoveweb==0.22.0
     # via -r requirements_cove.in
