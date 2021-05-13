@@ -1,25 +1,6 @@
 import json
-import collections
-from libcove.lib.common import get_fields_present, fields_present_generator
 from lib360dataquality.cove.schema import Schema360
-
-
-def unique_fields_present_generator(json_data):
-    if not isinstance(json_data, dict):
-        return
-    if 'grants' not in json_data:
-        return
-    for grant in json_data['grants']:
-        # Flatten the key,val pairs so we can make a unique list of fields
-        field_list = [field for field, value in fields_present_generator(grant)]
-        for field in set(field_list):
-            yield '/grants' + field
-
-
-def get_unique_fields_present(*args, **kwargs):
-    counter = collections.Counter()
-    counter.update(unique_fields_present_generator(*args, **kwargs))
-    return dict(counter)
+from lib360dataquality.coverage import get_unique_fields_present
 
 
 data_all = json.load(open('data/status.json'))
