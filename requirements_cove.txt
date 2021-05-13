@@ -61,8 +61,6 @@ idna==2.10
     # via requests
 ijson==3.1.4
     # via flattentool
-jdcal==1.4.1
-    # via openpyxl
 json-merge-patch==0.2
     # via -r requirements_cove.in
 jsonref==0.2
@@ -86,7 +84,7 @@ lxml==4.6.3
     # via flattentool
 odfpy==1.4.1
     # via flattentool
-openpyxl==2.6.4
+openpyxl==3.0.7
     # via
     #   -r requirements_cove.in
     #   flattentool
