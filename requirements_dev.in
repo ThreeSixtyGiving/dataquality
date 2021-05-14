@@ -13,3 +13,4 @@ Sphinx
 recommonmark
 sphinx_rtd_theme
 hypothesis
+chromedriver-autoinstaller

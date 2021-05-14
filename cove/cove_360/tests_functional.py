@@ -5,6 +5,7 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import os
 
+import chromedriver_autoinstaller
 import flattentool
 import warnings
 from flattentool.exceptions import DataErrorWarning
@@ -13,6 +14,9 @@ from selenium.webdriver.chrome.options import Options
 BROWSER = os.environ.get('BROWSER', 'ChromeHeadless')
 
 PREFIX_360 = os.environ.get('PREFIX_360', '/')
+
+# Ensure the correct version of chromedriver is installed
+chromedriver_autoinstaller.install()
 
 
 @pytest.fixture(scope="module")
