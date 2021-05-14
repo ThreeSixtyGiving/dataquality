@@ -29,14 +29,15 @@ jobs:
       run: pip install -r requirements_dev.txt
     - name: Install Ubuntu Translation Libraries
       run: sudo apt install gettext
-    - name: Install vnu
-      run: wget "https://github.com/validator/validator/releases/download/16.3.3/vnu.jar_16.3.3.zip"; unzip vnu.jar_16.3.3.zip
     - name: Test 360
       run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings py.test -n 2 --cov-append --cov --cov-report=
     - name: Migrate Database
       run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py migrate
     - name: Compile Messages
       run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py compilemessages
+
+    - name: Install vnu
+      run: cd cove; wget "https://github.com/validator/validator/releases/download/16.3.3/vnu.jar_16.3.3.zip"; unzip vnu.jar_16.3.3.zip
     - name: VNU tests
       run: "cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings DEBUG=false ALLOWED_HOSTS=localhost python manage.py runserver & (sleep 10s; java -jar dist/vnu.jar 'http://localhost:8000/' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/master/cove/cove_360/fixtures/fundingproviders_grants_2_grants.csv
         ' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/main/cove/cove_360/fixtures/badfile_all_validation_errors.xlsx
