@@ -1,6 +1,7 @@
 import json
 from lib360dataquality.cove.schema import Schema360
 from lib360dataquality.coverage import get_unique_fields_present
+from libcove.lib.common import get_fields_present
 
 
 data_all = json.load(open('data/status.json'))

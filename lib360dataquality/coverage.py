@@ -18,4 +18,3 @@ def get_unique_fields_present(*args, **kwargs):
     counter = collections.Counter()
     counter.update(_unique_fields_present_generator(*args, **kwargs))
     return dict(counter)
-
