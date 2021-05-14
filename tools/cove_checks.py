@@ -6,7 +6,6 @@ import pprint
 
 from lib360dataquality.cove.threesixtygiving import (
     common_checks_360,
-    TEST_CLASSES,
     USEFULNESS_TEST_CLASS,
     QUALITY_TEST_CLASS,
 )
