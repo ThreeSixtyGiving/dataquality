@@ -1,4 +1,4 @@
-from cove_360.lib.threesixtygiving import get_grants_aggregates
+from lib360dataquality.cove.threesixtygiving import get_grants_aggregates
 from hypothesis import HealthCheck, given, assume, settings, strategies as st
 import pytest
 

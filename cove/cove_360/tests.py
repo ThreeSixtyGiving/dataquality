@@ -7,8 +7,8 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 
-from .lib.schema import Schema360
-from .lib.threesixtygiving import run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
+from lib360dataquality.cove.schema import Schema360
+from lib360dataquality.cove.threesixtygiving import run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
 
 # Source is cove_360/fixtures/fundingproviders-grants_fixed_2_grants.json
 # see cove_360/fixtures/SOURCES for more info.
@@ -105,7 +105,7 @@ GRANTS = {
                     "name": "Gateshed",
                     "geoCodeType": "MD",
                     "geoCode": "E08000037",
-                    
+
                 }],
                 'dateModified': '13-03-2015',
                 'description': 'Excepteur sint occaecat cupidatat non proident, sunt in culpa '
