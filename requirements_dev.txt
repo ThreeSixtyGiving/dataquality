@@ -22,6 +22,8 @@ certifi==2020.12.5
     # via requests
 chardet==4.0.0
     # via requests
+chromedriver-autoinstaller==0.2.2
+    # via -r requirements_dev.in
 click==7.1.2
     # via black
 commonmark==0.9.1
