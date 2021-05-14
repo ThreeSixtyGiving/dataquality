@@ -325,8 +325,8 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
 
 @pytest.mark.parametrize(('link_text', 'expected_text', 'css_selector', 'url'), [
-    ('360Giving', 'Open data for grantmaking', 'h2.hero__title', 'http://www.threesixtygiving.org/'),
-    ('360Giving Data Standard', 'The 360Giving Data Standard', 'h2', 'http://www.threesixtygiving.org/standard/'),
+    ('360Giving', 'Open data for grantmaking', '.hero__title', 'https://www.threesixtygiving.org/'),
+    ('360Giving Data Standard', 'The 360Giving Data Standard', 'h1', 'https://www.threesixtygiving.org/standard/'),
     ])
 def test_footer_360(server_url, browser, link_text, expected_text, css_selector, url):
     browser.get(server_url)
@@ -349,10 +349,10 @@ def test_index_page_360(server_url, browser):
 
 
 @pytest.mark.parametrize(('link_text', 'url'), [
-    ('360Giving Data Standard guidance', 'http://www.threesixtygiving.org/standard/'),
+    ('360Giving Data Standard guidance', 'https://www.threesixtygiving.org/standard/'),
     ('Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/summary-table/360-giving-schema-titles.xlsx'),
     ('CSV', 'https://threesixtygiving-standard.readthedocs.io/en/latest/templates-csv'),
-    ('360Giving JSON schema', 'http://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas'),
+    ('360Giving JSON schema', 'https://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas'),
     ('Multi-table data package - Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/multi-table/360-giving-schema-fields.xlsx')
     ])
 def test_index_page_360_links(server_url, browser, link_text, url):
@@ -387,7 +387,7 @@ def test_terms_page(server_url, browser):
     assert 'Open Data Services Co-operative Limited' in browser.find_element_by_tag_name('body').text
     assert 'Open Data Services Limited' not in browser.find_element_by_tag_name('body').text
     assert '360 Giving' not in browser.find_element_by_tag_name('body').text
-    
+
 
 def test_accordion(server_url, browser):
     browser.get(server_url)
@@ -484,7 +484,7 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
-    
+
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
     for section in all_sections:
