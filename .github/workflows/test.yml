@@ -36,7 +36,7 @@ jobs:
     - name: Migrate Database
       run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py migrate
     - name: Compile Messages
-      run: DJANGO_SETTINGS_MODULE=cove_project.settings ./cove/python manage.py compilemessages
+      run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py compilemessages
     - name: VNU tests
       run: "cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings DEBUG=false ALLOWED_HOSTS=localhost python manage.py runserver & (sleep 10s; java -jar dist/vnu.jar 'http://localhost:8000/' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/master/cove/cove_360/fixtures/fundingproviders_grants_2_grants.csv
         ' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/main/cove/cove_360/fixtures/badfile_all_validation_errors.xlsx
