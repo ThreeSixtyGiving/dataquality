@@ -18,11 +18,11 @@ QUALITY_TEST_CLASS = "quality_accuracy"
 USEFULNESS_TEST_CLASS = "usefulness"
 
 DATES_JSON_LOCATION = {
-    'award_date': '/id',
-    'planned_start_date': '/plannedDates/0/startDate',
-    'planned_end_date': '/plannedDates/0/endDate',
-    'actual_start_date': '/actualDates/0/startDate',
-    'actual_end_date': '/actualDates/0/endDate'
+    "award_date": "/id",
+    "planned_start_date": "/plannedDates/0/startDate",
+    "planned_end_date": "/plannedDates/0/endDate",
+    "actual_start_date": "/actualDates/0/startDate",
+    "actual_end_date": "/actualDates/0/endDate",
 }
 
 orgids_prefixes = get_orgids_prefixes()
@@ -1144,9 +1144,9 @@ class ImpossibleDates(AdditionalTest):
 
     check_text = {
         "heading": mark_safe("dates that didn't, or won't, exist"),
-        "message": RangeDict()
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "Your data contains dates that didn't, or won't, exist - such as the 31st of September, "
         "or the 29th of February in a year that's not a leap year. This is commonly caused by typos during data entry."
     )
@@ -1156,25 +1156,40 @@ class ImpossibleDates(AdditionalTest):
 
         if grant_dates:
             for date_type, date_format_error in (
-                ["award_date", grant_dates.get('award_date', {}).get('date_format_error')],
-                ["planned_start_date", grant_dates.get('planned_start_date', {}).get('date_format_error')],
-                ["planned_end_date", grant_dates.get('planned_end_date', {}).get('date_format_error')],
-                ["actual_start_date", grant_dates.get('actual_start_date', {}).get('date_format_error')],
-                ["actual_end_date", grant_dates.get('actual_end_date', {}).get('date_format_error')]
+                [
+                    "award_date",
+                    grant_dates.get("award_date", {}).get("date_format_error"),
+                ],
+                [
+                    "planned_start_date",
+                    grant_dates.get("planned_start_date", {}).get("date_format_error"),
+                ],
+                [
+                    "planned_end_date",
+                    grant_dates.get("planned_end_date", {}).get("date_format_error"),
+                ],
+                [
+                    "actual_start_date",
+                    grant_dates.get("actual_start_date", {}).get("date_format_error"),
+                ],
+                [
+                    "actual_end_date",
+                    grant_dates.get("actual_end_date", {}).get("date_format_error"),
+                ],
             ):
                 if date_format_error:
                     if (
-                            "does not match format '%Y-%m-%d'" not in date_format_error
-                    ) and (
-                            "unconverted data remains" not in date_format_error
-                    ):
+                        "does not match format '%Y-%m-%d'" not in date_format_error
+                    ) and ("unconverted data remains" not in date_format_error):
                         self.failed = True
                         self.count += 1
-                        self.json_locations.append(path_prefix + DATES_JSON_LOCATION[date_type])
+                        self.json_locations.append(
+                            path_prefix + DATES_JSON_LOCATION[date_type]
+                        )
                         break
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class PlannedStartDateBeforeEndDate(AdditionalTest):
@@ -1182,11 +1197,12 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            "<span class=\"highlight-background-text\">Planned Dates: Start Date</span> entries that are after the "
-            "corresponding <span class=\"highlight-background-text\">Planned Dates: End Date</span>"),
-        "message": RangeDict()
+            '<span class="highlight-background-text">Planned Dates: Start Date</span> entries that are after the '
+            'corresponding <span class="highlight-background-text">Planned Dates: End Date</span>'
+        ),
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "This can happen when the fields are accidentally reversed, or if there is a typo in the data. "
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
@@ -1195,17 +1211,23 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
         if grant_dates:
-            planned_start_date = grant_dates.get('planned_start_date', {}).get('datetime_date')
-            planned_end_date = grant_dates.get('planned_end_date', {}).get('datetime_date')
+            planned_start_date = grant_dates.get("planned_start_date", {}).get(
+                "datetime_date"
+            )
+            planned_end_date = grant_dates.get("planned_end_date", {}).get(
+                "datetime_date"
+            )
 
             if planned_start_date and planned_end_date:
                 if planned_start_date > planned_end_date:
                     self.failed = True
                     self.count += 1
-                    self.json_locations.append(path_prefix + DATES_JSON_LOCATION['planned_start_date'])
+                    self.json_locations.append(
+                        path_prefix + DATES_JSON_LOCATION["planned_start_date"]
+                    )
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class ActualStartDateBeforeEndDate(AdditionalTest):
@@ -1213,11 +1235,12 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            "<span class=\"highlight-background-text\">Actual Dates: Start Date</span> entries that are after the "
-            "corresponding <span class=\"highlight-background-text\">Actual Dates: End Date</span>"),
-        "message": RangeDict()
+            '<span class="highlight-background-text">Actual Dates: Start Date</span> entries that are after the '
+            'corresponding <span class="highlight-background-text">Actual Dates: End Date</span>'
+        ),
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "This can happen when the fields are accidentally reversed, or if there is a typo in the data. "
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
@@ -1226,27 +1249,33 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
         if grant_dates:
-            actual_start_date = grant_dates.get('actual_start_date', {}).get('datetime_date')
-            actual_end_date = grant_dates.get('actual_end_date', {}).get('datetime_date')
+            actual_start_date = grant_dates.get("actual_start_date", {}).get(
+                "datetime_date"
+            )
+            actual_end_date = grant_dates.get("actual_end_date", {}).get(
+                "datetime_date"
+            )
 
             if actual_start_date and actual_end_date:
                 if actual_start_date > actual_end_date:
                     self.failed = True
                     self.count += 1
-                    self.json_locations.append(path_prefix + DATES_JSON_LOCATION['actual_start_date'])
+                    self.json_locations.append(
+                        path_prefix + DATES_JSON_LOCATION["actual_start_date"]
+                    )
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class FarFuturePlannedDates(AdditionalTest):
-    """Check if dates in plannedDates are > 12 years into the future, from the present day. """
+    """Check if dates in plannedDates are > 12 years into the future, from the present day."""
 
     check_text = {
         "heading": mark_safe("Planned Dates that are over 12 years in the future"),
-        "message": RangeDict()
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "Your data contains Planned Dates that are more than 12 years into the future. You can disregard this check if "
         "your data is about activities that run a long time into the future, but you should check for data entry "
         "errors if this isn't expected."
@@ -1257,18 +1286,26 @@ class FarFuturePlannedDates(AdditionalTest):
 
         if grant_dates:
             for date_type, input_date in (
-                ["planned_start_date", grant_dates.get('planned_start_date', {}).get('datetime_date')],
-                ["planned_end_date", grant_dates.get('planned_end_date', {}).get('datetime_date')],
+                [
+                    "planned_start_date",
+                    grant_dates.get("planned_start_date", {}).get("datetime_date"),
+                ],
+                [
+                    "planned_end_date",
+                    grant_dates.get("planned_end_date", {}).get("datetime_date"),
+                ],
             ):
                 if input_date:
                     if input_date > datetime.datetime.now() + relativedelta(years=12):
                         self.failed = True
                         self.count += 1
-                        self.json_locations.append(path_prefix + DATES_JSON_LOCATION[date_type])
+                        self.json_locations.append(
+                            path_prefix + DATES_JSON_LOCATION[date_type]
+                        )
                         break
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class FarFutureActualDates(AdditionalTest):
@@ -1276,9 +1313,9 @@ class FarFutureActualDates(AdditionalTest):
 
     check_text = {
         "heading": mark_safe("Actual Date entries that are over 5 years in the future"),
-        "message": RangeDict()
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "Your data contains Actual Date entries that are more than 5 years into the future. You can disregard this "
         "check if your data is about activities in the future, but you should check for data entry errors "
         "if this isn't expected."
@@ -1289,18 +1326,26 @@ class FarFutureActualDates(AdditionalTest):
 
         if grant_dates:
             for date_type, input_date in (
-                ["actual_start_date", grant_dates.get('actual_start_date', {}).get('datetime_date')],
-                ["actual_end_date", grant_dates.get('actual_end_date', {}).get('datetime_date')]
+                [
+                    "actual_start_date",
+                    grant_dates.get("actual_start_date", {}).get("datetime_date"),
+                ],
+                [
+                    "actual_end_date",
+                    grant_dates.get("actual_end_date", {}).get("datetime_date"),
+                ],
             ):
                 if input_date:
                     if input_date > datetime.datetime.now() + relativedelta(years=5):
                         self.failed = True
                         self.count += 1
-                        self.json_locations.append(path_prefix + DATES_JSON_LOCATION[date_type])
+                        self.json_locations.append(
+                            path_prefix + DATES_JSON_LOCATION[date_type]
+                        )
                         break
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class FarPastDates(AdditionalTest):
@@ -1308,9 +1353,9 @@ class FarPastDates(AdditionalTest):
 
     check_text = {
         "heading": mark_safe("dates that are over 25 years ago"),
-        "message": RangeDict()
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "Your data contains dates that are more than 25 years ago. You can disregard this check if your "
         "data is about activities in the past, but you should check for data entry errors if this isn't expected."
     )
@@ -1320,32 +1365,46 @@ class FarPastDates(AdditionalTest):
 
         if grant_dates:
             for date_type, input_date in (
-                ["award_date", grant_dates.get('award_date', {}).get('datetime_date')],
-                ["planned_start_date", grant_dates.get('planned_start_date', {}).get('datetime_date')],
-                ["planned_end_date", grant_dates.get('planned_end_date', {}).get('datetime_date')],
-                ["actual_start_date", grant_dates.get('actual_start_date', {}).get('datetime_date')],
-                ["actual_end_date", grant_dates.get('actual_end_date', {}).get('datetime_date')]
+                ["award_date", grant_dates.get("award_date", {}).get("datetime_date")],
+                [
+                    "planned_start_date",
+                    grant_dates.get("planned_start_date", {}).get("datetime_date"),
+                ],
+                [
+                    "planned_end_date",
+                    grant_dates.get("planned_end_date", {}).get("datetime_date"),
+                ],
+                [
+                    "actual_start_date",
+                    grant_dates.get("actual_start_date", {}).get("datetime_date"),
+                ],
+                [
+                    "actual_end_date",
+                    grant_dates.get("actual_end_date", {}).get("datetime_date"),
+                ],
             ):
 
                 if input_date:
                     if input_date < datetime.datetime.now() - relativedelta(years=25):
                         self.failed = True
                         self.count += 1
-                        self.json_locations.append(path_prefix + DATES_JSON_LOCATION[date_type])
+                        self.json_locations.append(
+                            path_prefix + DATES_JSON_LOCATION[date_type]
+                        )
                         break
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class PostDatedAwardDates(AdditionalTest):
-    """Check if dates in awardDate is in the future, from the present day. """
+    """Check if dates in awardDate is in the future, from the present day."""
 
     check_text = {
         "heading": mark_safe("Award Dates that are in the future"),
-        "message": RangeDict()
+        "message": RangeDict(),
     }
-    check_text['message'][(0, 100)] = mark_safe(
+    check_text["message"][(0, 100)] = mark_safe(
         "Your data contains grant Award Dates in the future. This field is for when was the decision to award "
         "this grant made so the date would normally be in the past. This can happen when there is a typo in the date, "
         "or the data includes grants that are not yet fully committed."
@@ -1355,15 +1414,17 @@ class PostDatedAwardDates(AdditionalTest):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
         if grant_dates:
-            award_date = grant_dates.get('award_date', {}).get('datetime_date')
+            award_date = grant_dates.get("award_date", {}).get("datetime_date")
             if award_date:
                 if award_date > datetime.datetime.now():
                     self.failed = True
                     self.count += 1
-                    self.json_locations.append(path_prefix + DATES_JSON_LOCATION['award_date'])
+                    self.json_locations.append(
+                        path_prefix + DATES_JSON_LOCATION["award_date"]
+                    )
 
-        self.heading = self.format_heading_count(self.check_text['heading'])
-        self.message = self.check_text['message'][self.grants_percentage]
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 TEST_CLASSES = {
@@ -1409,8 +1470,8 @@ def convert_string_date_to_datetime(input_date):
     error_msg = None
     datetime_date = None
 
-    if 'T' in input_date:
-        input_date = input_date.split('T')[0]
+    if "T" in input_date:
+        input_date = input_date.split("T")[0]
         convert_string_date_to_datetime(input_date)
 
     try:
@@ -1439,20 +1500,25 @@ def create_grant_dates_dict(grant):
     grant_dates = {}
 
     award_date = grant.grant.get("awardDate")
-    planned_start_date = grant.grant.get("plannedDates", [{}])[0].get('startDate')
-    planned_end_date = grant.grant.get("plannedDates", [{}])[0].get('endDate')
-    actual_start_date = grant.grant.get("actualDates", [{}])[0].get('startDate')
-    actual_end_date = grant.grant.get("actualDates", [{}])[0].get('endDate')
+    planned_start_date = grant.grant.get("plannedDates", [{}])[0].get("startDate")
+    planned_end_date = grant.grant.get("plannedDates", [{}])[0].get("endDate")
+    actual_start_date = grant.grant.get("actualDates", [{}])[0].get("startDate")
+    actual_end_date = grant.grant.get("actualDates", [{}])[0].get("endDate")
 
     for date_type, input_date in [
         ["award_date", award_date],
-        ["planned_start_date", planned_start_date], ["planned_end_date", planned_end_date],
-        ["actual_start_date", actual_start_date], ["actual_end_date", actual_end_date]
+        ["planned_start_date", planned_start_date],
+        ["planned_end_date", planned_end_date],
+        ["actual_start_date", actual_start_date],
+        ["actual_end_date", actual_end_date],
     ]:
         if input_date:
             datetime_date, error_msg = convert_string_date_to_datetime(input_date)
 
-            grant_dates[date_type] = {'datetime_date': datetime_date, 'date_format_error': error_msg}
+            grant_dates[date_type] = {
+                "datetime_date": datetime_date,
+                "date_format_error": error_msg,
+            }
 
     return grant_dates
 
