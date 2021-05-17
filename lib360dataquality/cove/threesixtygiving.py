@@ -459,7 +459,12 @@ class AdditionalTest:
         pass
 
     def produce_message(self):
-        return {"heading": self.heading, "message": self.message}
+        return {
+            "heading": self.heading,
+            "message": self.message,
+            "type": self.__class__.__name__,
+            "count": self.count,
+        }
 
     def get_heading_count(self, test_class_type):
         if test_class_type == QUALITY_TEST_CLASS:
