@@ -25,6 +25,13 @@ $ ./cove/manage.py runserver
 
 CoVE is based on Django and be deployed using the deployment mechanisms as defined in the [Django docs](https://docs.djangoproject.com/en/3.1/howto/deployment/)
 
+### Run tests
+
+```
+cd cove
+DJANGO_SETTINGS_MODULE=cove.settings py.test cove/cove_360
+```
+
 ## Tools
 
 The tools directory contains a number of command line tools that can be run on TheeSixtyGiving standard data to generate various reports.
