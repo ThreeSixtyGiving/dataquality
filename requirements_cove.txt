@@ -101,13 +101,17 @@ pyparsing==2.4.7
 pyrsistent==0.17.3
     # via jsonschema
 python-dateutil==2.8.1
-    # via -r requirements_cove.in
+    # via
+    #   -r requirements_cove.in
+    #   lib360dataquality
 pytz==2021.1
     # via
     #   django
     #   flattentool
 rangedict==0.1.6
-    # via -r requirements_cove.in
+    # via
+    #   -r requirements_cove.in
+    #   lib360dataquality
 requests==2.25.1
     # via
     #   -r requirements_cove.in

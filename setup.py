@@ -12,6 +12,8 @@ setup(
     long_description="A variety of library functions to asses the quality of data that is formatted in the ThreeSixtyGiving data standard",
     install_requires=[
         'libcove>=0.18.0',
+        'python-dateutil',
+        'rangedict',
     ],
     extras_require={
         'perf': [
