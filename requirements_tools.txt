@@ -113,10 +113,14 @@ pysocks==1.7.1
     # via
     #   datagetter
     #   requests
+python-dateutil==2.8.1
+    # via lib360dataquality
 pytz==2021.1
     # via
     #   datagetter
     #   flattentool
+rangedict==0.1.6
+    # via lib360dataquality
 requests[socks]==2.25.1
     # via
     #   datagetter
@@ -135,6 +139,7 @@ six==1.15.0
     # via
     #   datagetter
     #   jsonschema
+    #   python-dateutil
     #   zodb
 strict-rfc3339==0.7
     # via
