@@ -10,9 +10,16 @@ import libcove.lib.tools as tools
 import openpyxl
 import pytz
 from dateutil.relativedelta import relativedelta
-from django.utils.html import mark_safe
 from libcove.lib.common import common_checks_context, get_orgids_prefixes
 from rangedict import RangeDict as range_dict
+
+try:
+    from django.utils.html import mark_safe
+except ImportError:
+    # If we don't have django we're not using this lib in CoVE so we're not using the output
+    # in HTML and therefore do not need a SafeString object.
+    def mark_safe(string):
+        return string
 
 QUALITY_TEST_CLASS = "quality_accuracy"
 USEFULNESS_TEST_CLASS = "usefulness"
