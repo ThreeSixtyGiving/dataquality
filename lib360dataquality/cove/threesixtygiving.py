@@ -18,7 +18,7 @@ QUALITY_TEST_CLASS = "quality_accuracy"
 USEFULNESS_TEST_CLASS = "usefulness"
 
 DATES_JSON_LOCATION = {
-    "award_date": "/id",
+    "award_date": "/awardDate",
     "planned_start_date": "/plannedDates/0/startDate",
     "planned_end_date": "/plannedDates/0/endDate",
     "actual_start_date": "/actualDates/0/startDate",
@@ -1226,7 +1226,7 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
                         path_prefix + DATES_JSON_LOCATION["planned_start_date"]
                     )
 
-        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
         self.message = self.check_text["message"][self.grants_percentage]
 
 
@@ -1264,7 +1264,7 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
                         path_prefix + DATES_JSON_LOCATION["actual_start_date"]
                     )
 
-        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
         self.message = self.check_text["message"][self.grants_percentage]
 
 
@@ -1405,9 +1405,9 @@ class PostDatedAwardDates(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains grant Award Dates in the future. This field is for when was the decision to award "
-        "this grant made so the date would normally be in the past. This can happen when there is a typo in the date, "
-        "or the data includes grants that are not yet fully committed."
+        "Your data contains grant Award Dates in the future. This date is when the decision to award the grant "
+        "was made so it would normally be in the past. This can happen when there is a typo in the date, or the data "
+        "includes grants that are not yet fully committed"
     )
 
     def process(self, grant, path_prefix):

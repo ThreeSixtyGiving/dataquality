@@ -475,13 +475,13 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
      ['grants/2/actualDates/0/startDate'],
      [{'header': 'Actual Dates:Start Date', 'letter': '', 'row_number': 4, 'sheet': 'grants'}]),
     ({'heading': "67% of grants have Award Dates that are in the future",
-      'message': "Your data contains grant Award Dates in the future. This field is for when was the decision to award "
-                 "this grant made so the date would normally be in the past. This can happen when there is a typo "
-                 "in the date, or the data includes grants that are not yet fully committed."},
-     ['grants/0/id', 'grants/1/id'],
+      'message': "Your data contains grant Award Dates in the future. This date is when the decision to award the "
+                 "grant was made so it would normally be in the past. This can happen when there is a typo in the "
+                 "date, or the data includes grants that are not yet fully committed"},
+     ['grants/0/awardDate', 'grants/1/awardDate'],
      [
-         {'header': 'Identifier', 'letter': 'A', 'row_number': 2, 'sheet': 'grants'},
-         {'header': 'Identifier', 'letter': 'A', 'row_number': 3, 'sheet': 'grants'}
+         {'header': 'Award Date', 'letter': 'S', 'row_number': 2, 'sheet': 'grants'},
+         {'header': 'Award Date', 'letter': 'S', 'row_number': 3, 'sheet': 'grants'}
      ]),
 ]
 
