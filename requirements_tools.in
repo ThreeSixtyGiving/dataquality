@@ -1,3 +1,0 @@
--e git+https://github.com/threesixtygiving/datagetter.git@master#egg=datagetter
--e file:./
-ijson

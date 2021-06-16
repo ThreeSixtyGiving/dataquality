@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 from lib360dataquality.cove.schema import Schema360
 from lib360dataquality.coverage import get_unique_fields_present

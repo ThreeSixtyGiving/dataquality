@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 from lib360dataquality.cove.threesixtygiving import get_grants_aggregates
 
