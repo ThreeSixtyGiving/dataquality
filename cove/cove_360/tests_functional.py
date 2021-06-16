@@ -16,7 +16,10 @@ BROWSER = os.environ.get('BROWSER', 'ChromeHeadless')
 PREFIX_360 = os.environ.get('PREFIX_360', '/')
 
 # Ensure the correct version of chromedriver is installed
-chromedriver_autoinstaller.install()
+try:
+    chromedriver_autoinstaller.install()
+except Exception:
+    pass
 
 
 @pytest.fixture(scope="module")
