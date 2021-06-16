@@ -14,6 +14,7 @@ setup(
         'libcove>=0.18.0',
         'python-dateutil',
         'rangedict',
+        'ijson',
     ],
     extras_require={
         'perf': [
@@ -26,6 +27,15 @@ setup(
             'isort',
         ],
     },
+    scripts=[
+        "tools/aggregates.py",
+        "tools/check_grantnav_assumptions.py",
+        "tools/cove_checks.py",
+        "tools/coverage.py",
+        "tools/report.py",
+        "tools/generate-reports.sh",
+        "tools/deploy.sh",
+    ],
     classifiers=[
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
         'Programming Language :: Python :: 3.6',

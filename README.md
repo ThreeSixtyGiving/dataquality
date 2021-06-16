@@ -25,23 +25,6 @@ $ ./cove/manage.py runserver
 
 CoVE is based on Django and be deployed using the deployment mechanisms as defined in the [Django docs](https://docs.djangoproject.com/en/3.1/howto/deployment/)
 
-## Tools
-
-The tools directory contains a number of command line tools that can be run on TheeSixtyGiving standard data to generate various reports.
-
-### Installing and running tools
-
-Install the python dependences:
-```
-$ virtualenv .ve --python python3
-$ source .ve/bin/activate
-$ pip install -r requirements_tools.txt
-```
-
-Running various tools example:
-```
-python ./tools/cove_checks.py ../a001p00000tuoBKAAY.ods
-```
 
 ## lib360dataquality
 
@@ -57,6 +40,15 @@ Install just the python library
 $ virtualenv .ve --python python3
 $ source .ve/bin/activate
 $ pip install -e .
+```
+
+### Using the tools
+
+The tools directory contains a number of command line tools that can be run on TheeSixtyGiving standard data to generate various reports.
+
+Running various tools example:
+```
+cove_checks.py ../a001p00000tuoBKAAY.ods
 ```
 
 ### Using the python library
