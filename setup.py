@@ -31,7 +31,7 @@ setup(
         "tools/aggregates.py",
         "tools/check_grantnav_assumptions.py",
         "tools/cove_checks.py",
-        "tools/coverage.py",
+        "tools/coverage360.py",
         "tools/report.py",
         "tools/generate-reports.sh",
         "tools/deploy.sh",
