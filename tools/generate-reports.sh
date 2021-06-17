@@ -4,7 +4,7 @@ set -e
 echo 'Generating status.json'
 python aggregates.py
 echo 'Generating coverage.json'
-python coverage.py
+python coverage360.py
 echo 'Generating report.csv'
 python report.py
 echo 'Finished'
