@@ -2,9 +2,9 @@
 # Note these python scripts all assume './data/' dir
 set -e
 echo 'Generating status.json'
-python aggregates.py
+aggregates.py
 echo 'Generating coverage.json'
-python coverage360.py
+coverage360.py
 echo 'Generating report.csv'
-python report.py
+report.py
 echo 'Finished'
