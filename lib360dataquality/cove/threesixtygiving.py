@@ -106,6 +106,7 @@ def get_grants_aggregates(json_data):
     duplicate_ids = set()
     max_award_date = ""
     min_award_date = ""
+    award_years = {}
     distinct_funding_org_identifier = set()
     distinct_recipient_org_identifier = set()
     currencies = {}
@@ -139,6 +140,12 @@ def get_grants_aggregates(json_data):
 
             award_date = str(grant.get("awardDate", ""))
             if award_date:
+                try:
+                    year = award_date[:4]
+                    # count up the tally of grants in `year`
+                    award_years[year] = award_years[year] + 1
+                except KeyError:
+                    award_years[year] = 1
                 max_award_date = max(award_date, max_award_date)
                 if not min_award_date:
                     min_award_date = award_date
@@ -182,6 +189,7 @@ def get_grants_aggregates(json_data):
         "duplicate_ids": duplicate_ids,
         "max_award_date": max_award_date.split("T")[0],
         "min_award_date": min_award_date.split("T")[0],
+        "award_years": award_years,
         "distinct_funding_org_identifier": distinct_funding_org_identifier,
         "distinct_recipient_org_identifier": distinct_recipient_org_identifier,
         "currencies": currencies,
