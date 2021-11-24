@@ -71,8 +71,6 @@ jsonschema==3.2.0
     # via
     #   -r requirements_cove.in
     #   libcove
-lepl==5.1.3
-    # via rfc6266
 libcove==0.23.0
     # via
     #   -r requirements_cove.in
@@ -121,8 +119,6 @@ rfc3987==1.3.8
     # via
     #   -r requirements_cove.in
     #   libcove
-rfc6266==0.0.4
-    # via -r requirements_cove.in
 schema==0.7.4
     # via flattentool
 sentry-sdk==1.1.0
