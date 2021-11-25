@@ -161,8 +161,6 @@ zc.zlibstorage==1.2.0
     # via flattentool
 zconfig==3.5.0
     # via zodb
-zipp==1.2.0
-    # via -r requirements_cove.in
 zodb==5.6.0
     # via
     #   flattentool
