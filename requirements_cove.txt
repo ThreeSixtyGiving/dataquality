@@ -80,7 +80,7 @@ libcove==0.23.0
     #   libcoveweb
 libcoveweb==0.23.0
     # via -r requirements_cove.in
-lxml==4.6.3
+lxml==4.6.5
     # via flattentool
 odfpy==1.4.1
     # via flattentool
