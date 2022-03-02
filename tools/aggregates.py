@@ -13,7 +13,6 @@ def replace_none_keys(nested_data):
     if hasattr(nested_data, "items"):
         for key, value in nested_data.items():
             if key is None:
-                del nested_data[key]
                 nested_data[str(key)] = value
             replace_none_keys(value)
     elif isinstance(nested_data, str):
@@ -30,7 +29,7 @@ for dataset in data_all:
     json_filename = "data/json_all/%s.json" % dataset["identifier"]
 
     # Check that we had a location where json_filename file downloaded to
-    if dataset["datagetter_metadata"].get("json"):
+    if dataset["datagetter_metadata"].get("json") and dataset["datagetter_metadata"]["valid"]:
         with open(json_filename) as fp:
             aggregates = get_grants_aggregates(json.load(fp))
         # replace sets with counts
