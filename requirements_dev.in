@@ -1,16 +1,2 @@
 black
 flake8
-pytest
-pytest-django
-pytest-cov
-pytest-localserver
-pytest-xdist
-coveralls
-selenium
-transifex-client
-libsass
-Sphinx
-recommonmark
-sphinx_rtd_theme
-hypothesis
-chromedriver-autoinstaller
