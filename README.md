@@ -21,6 +21,15 @@ Start the development server:
 $ ./cove/manage.py runserver
 ```
 
+### Testing Cove
+
+Install the python dependencies:
+```
+$ pip install -r requirements_cove_dev.txt
+$ cd cove
+$ py.test
+```
+
 ### Deploying to production
 
 CoVE is based on Django and be deployed using the deployment mechanisms as defined in the [Django docs](https://docs.djangoproject.com/en/3.1/howto/deployment/)
@@ -68,3 +77,9 @@ common_checks_360(context, working_dir, data, Schema360())
 
 print(context)
 ```
+
+## Code Linting
+
+Code should pass `flake8`
+
+New code should aim to pass python `black`
