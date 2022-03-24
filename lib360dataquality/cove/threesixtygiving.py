@@ -3,7 +3,7 @@ import functools
 import itertools
 import json
 import re
-from collections import OrderedDict, Callable
+from collections import OrderedDict, defaultdict
 from decimal import Decimal
 
 import libcove.lib.tools as tools
@@ -50,51 +50,6 @@ class RangeDict(range_dict):
     def __setitem__(self, r, v):
         super(RangeDict, self).__setitem__(r, v)
         self.ordered_dict[r] = v
-
-
-class DefaultOrderedDict(OrderedDict):
-    # Source: http://stackoverflow.com/a/6190500/562769
-    def __init__(self, default_factory=None, *a, **kw):
-        if default_factory is not None and not isinstance(default_factory, Callable):
-            raise TypeError("first argument must be callable")
-        OrderedDict.__init__(self, *a, **kw)
-        self.default_factory = default_factory
-
-    def __getitem__(self, key):
-        try:
-            return OrderedDict.__getitem__(self, key)
-        except KeyError:
-            return self.__missing__(key)
-
-    def __missing__(self, key):
-        if self.default_factory is None:
-            raise KeyError(key)
-        self[key] = value = self.default_factory()
-        return value
-
-    def __reduce__(self):
-        if self.default_factory is None:
-            args = tuple()
-        else:
-            args = (self.default_factory,)
-        return type(self), args, None, None, self.items()
-
-    def copy(self):
-        return self.__copy__()
-
-    def __copy__(self):
-        return type(self)(self.default_factory, self)
-
-    def __deepcopy__(self, memo):
-        import copy
-
-        return type(self)(self.default_factory, copy.deepcopy(self.items()))
-
-    def __repr__(self):
-        return "OrderedDefaultDict(%s, %s)" % (
-            self.default_factory,
-            OrderedDict.__repr__(self),
-        )
 
 
 @tools.ignore_errors
@@ -201,7 +156,7 @@ def get_grants_aggregates(json_data):
 
 
 def group_validation_errors(validation_errors, file_type, openpyxl_workbook):
-    validation_errors_grouped = DefaultOrderedDict(list)
+    validation_errors_grouped = defaultdict(list)
     for error_json, values in validation_errors:
         error = json.loads(error_json)
         error_extra = {
@@ -254,7 +209,7 @@ def spreadsheet_style_errors_table(examples, openpyxl_workbook):
 
     out = {}
 
-    example_cell_lookup = DefaultOrderedDict(lambda: DefaultOrderedDict(dict))
+    example_cell_lookup = defaultdict(lambda: defaultdict(dict))
 
     def get_cell(sheet, col_alpha, row_number):
         example_value = (
@@ -399,8 +354,8 @@ def common_checks_360(
 
 def get_prefixes(distinct_identifiers):
 
-    org_identifier_prefixes = DefaultOrderedDict(int)
-    org_identifiers_unrecognised_prefixes = DefaultOrderedDict(int)
+    org_identifier_prefixes = defaultdict(int)
+    org_identifiers_unrecognised_prefixes = defaultdict(int)
 
     for org_identifier in distinct_identifiers:
         for prefix in orgids_prefixes:

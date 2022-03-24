@@ -96,3 +96,13 @@ COVE_CONFIG = COVE_CONFIG
 
 # https://github.com/OpenDataServices/cove/issues/1098
 FILE_UPLOAD_PERMISSIONS = 0o644
+
+
+if os.environ.get("CACHE"):
+    print("Filesystem based cache: Enabled")
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': '/var/tmp/django_cache',
+        }
+    }
