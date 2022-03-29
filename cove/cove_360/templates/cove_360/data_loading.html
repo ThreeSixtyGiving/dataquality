@@ -1,0 +1,57 @@
+{% extends 'explore.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block explore_content %}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2 class="heading-in-panel" ><small>Data processing is in progress</small></h2>
+        <p>Upload data complete, data is now processing &hellip;
+            <img class="spinner ml-2 mt-2" src="//i1.wp.com/cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" alt="spinner" width="30" height="30">
+        </p>
+        <ul>
+            <li>Converting data into machine readable format (JSON)</li>
+            <li>Running validation tests</li>
+            <li>Running Quality tests</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extrafooterscript %}
+<script>
+var pollUrl = "{% url "xhr_results_ready" pk %}";
+var resultsUrl = "{% url "results" pk %}";
+
+/* Start the results processing if it returns in time it will redirect
+   if it doesn't it will fail silently and we rely on the polling mechanism.
+ */
+
+jQuery.get(resultsUrl, function(){
+    window.location.href = resultsUrl;
+});
+
+
+function updateStatus(){
+    jQuery.getJSON(pollUrl, function(data){
+        if (data.done){
+            clearInterval(poller)
+            window.location.href = resultsUrl;
+        }
+        console.log(data);
+    });
+}
+
+var poller = setInterval(updateStatus, 5000);
+
+$(document).ajaxError(function(){
+    console.warn("Error ajax request");
+    /* Redirect to the results page which will show the error */
+    window.location.href = resultsUrl;
+});
+
+</script>
+
+{% endblock %}

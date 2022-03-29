@@ -6,11 +6,15 @@ import logging
 from decimal import Decimal
 
 from cove.views import explore_data_context, cove_web_input_error
+from cove.input.models import SuppliedData
+
 from django.conf import settings
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
+from django.core.cache import cache
+
 from libcove.config import LibCoveConfig
 from libcove.lib.converters import convert_spreadsheet, convert_json
 from libcove.lib.exceptions import CoveInputDataError
@@ -22,8 +26,39 @@ from lib360dataquality.cove.threesixtygiving import common_checks_360
 logger = logging.getLogger(__name__)
 
 
+def results_ready(request, pk):
+    try:
+        data = SuppliedData.objects.get(pk=pk)
+    except SuppliedData.DoesNotExist:
+        return JsonResponse({"done": False})
+
+    return JsonResponse({"done": data.rendered})
+
+
+def data_loading(request, pk, template='cove_360/data_loading.html'):
+    # Backward compatibility if we receive a post request to the loading page
+    if request.method == 'POST':
+        return explore_360(request, pk)
+
+    # Data already loaded so redirect to results page
+    try:
+        if SuppliedData.objects.get(pk=pk).rendered is True:
+            redirect('results', pk)
+    except SuppliedData.DoesNotExist:
+        pass
+
+    return render(request, template, {"pk": pk})
+
+
 @cove_web_input_error
 def explore_360(request, pk, template='cove_360/explore.html'):
+
+    cached_context = cache.get(pk)
+
+    if cached_context and not request.POST.get("flatten"):
+        print("Cache hit")
+        return render(request, template, cached_context)
+
     schema_360 = Schema360()
     context, db_data, error = explore_data_context(request, pk)
     if error:
@@ -59,7 +94,6 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                     'link_text': _('Try Again'),
                     'msg': _('360Giving JSON should have an object as the top level, the JSON you supplied does not.'),
                 })
-
             context.update(convert_json(upload_dir, upload_url, file_name, schema_url=schema_360.schema_url,
                                         request=request, flatten=request.POST.get('flatten'),
                                         lib_cove_config=lib_cove_config))
@@ -72,7 +106,8 @@ def explore_360(request, pk, template='cove_360/explore.html'):
 
     context = common_checks_360(context, upload_dir, json_data, schema_360)
 
-    if hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    do_grants_display = False
+    if do_grants_display and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}
@@ -89,6 +124,8 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     if not db_data.rendered:
         db_data.rendered = True
     db_data.save()
+
+    cache.set(pk, context)
 
     return render(request, template, context)
 

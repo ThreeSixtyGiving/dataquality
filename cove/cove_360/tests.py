@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
+from django.urls import reverse_lazy
 
 import pytest
+import time
 from cove.input.models import SuppliedData
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -787,7 +789,7 @@ def test_explore_page(client, json_data):
     data = SuppliedData.objects.create()
     data.original_file.save('test.json', ContentFile(json_data))
     data.current_app = 'cove_360'
-    resp = client.get(data.get_absolute_url())
+    resp = client.get(reverse_lazy('results', args=[data.pk]))
     assert resp.status_code == 200
 
 
@@ -796,7 +798,8 @@ def test_explore_page_convert(client):
     data = SuppliedData.objects.create()
     data.original_file.save('test.json', ContentFile('{}'))
     data.current_app = 'cove_360'
-    resp = client.get(data.get_absolute_url())
+    resp = client.get(reverse_lazy('results', args=[data.pk]))
+    time.sleep(1)
     assert resp.status_code == 200
     assert resp.context['conversion'] == 'flattenable'
 
@@ -804,7 +807,7 @@ def test_explore_page_convert(client):
     assert 'SuppliedData' in repr(data)
     assert 'test.json' in repr(data)
 
-    resp = client.post(data.get_absolute_url(), {'flatten': 'true'})
+    resp = client.post(data.get_absolute_url(), {'flatten': 'true'}, follow=True)
     assert resp.status_code == 200
     assert resp.context['conversion'] == 'flatten'
     assert 'converted_file_size' in resp.context
@@ -815,7 +818,7 @@ def test_explore_page_convert(client):
 def test_explore_page_csv(client):
     data = SuppliedData.objects.create()
     data.original_file.save('test.csv', ContentFile('a,b'))
-    resp = client.get(data.get_absolute_url())
+    resp = client.get(reverse_lazy('results', args=[data.pk]))
     assert resp.status_code == 200
     assert resp.context['conversion'] == 'unflatten'
     assert resp.context['converted_file_size'] == 20
@@ -826,7 +829,7 @@ def test_explore_not_json(client):
     data = SuppliedData.objects.create()
     with open(os.path.join('cove_360', 'fixtures', 'fundingproviders-grants_malformed.json')) as fp:
         data.original_file.save('test.json', UploadedFile(fp))
-    resp = client.get(data.get_absolute_url())
+    resp = client.get(reverse_lazy('results', args=[data.pk]))
     assert resp.status_code == 200
     assert b'not well formed JSON' in resp.content
 
@@ -836,7 +839,7 @@ def test_explore_unconvertable_spreadsheet(client):
     data = SuppliedData.objects.create()
     with open(os.path.join('cove_360', 'fixtures', 'bad.xlsx'), 'rb') as fp:
         data.original_file.save('basic.xlsx', UploadedFile(fp))
-    resp = client.get(data.get_absolute_url())
+    resp = client.get(reverse_lazy('results', args=[data.pk]))
     assert resp.status_code == 200
     assert b'We think you tried to supply a spreadsheet, but we failed to convert it.' in resp.content
 
@@ -895,7 +898,7 @@ def test_quality_check_email(client):
     data = SuppliedData.objects.create()
     with open(os.path.join('cove_360', 'fixtures', 'fundingproviders-grants-email.json')) as fp:
         data.original_file.save('fundingproviders-grants-email.json', UploadedFile(fp))
-    response = client.post(data.get_absolute_url(), {'flatten': 'true'})
+    response = client.post(data.get_absolute_url(), {'flatten': 'true'}, follow=True)
 
     assert b'1 grant contains text that looks like an email address' in response.content
 

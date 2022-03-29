@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 import pytest
 import requests
 from selenium import webdriver
@@ -177,6 +178,10 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
+    # Wait for the various redirects after click
+    while "results" not in browser.current_url:
+        time.sleep(0.5)
+
     data_url = browser.current_url
 
     # Click and un-collapse all explore sections
@@ -189,25 +194,18 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
     # Do the assertions
     check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful)
 
-    #refresh page to now check if tests still work after caching some data
-    browser.get(data_url)
-
     if conversion_successful:
         # Expand all sections with the expand all button this time
         browser.find_element_by_link_text('Expand all').click()
-        time.sleep(0.5)
 
-    # Do the assertions again
-    check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful)
-
-    if conversion_successful:
-        # Check that the advanced view loads without errors
         browser.get(data_url + '/advanced')
         assert 'Advanced view' in browser.find_element_by_tag_name('body').text
 
 
 def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful):
     body_text = browser.find_element_by_tag_name('body').text
+    body_text += browser.page_source
+
     if isinstance(expected_text, str):
         expected_text = [expected_text]
 
@@ -303,11 +301,12 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
     # flattentool behaviour with a mock below
     httpserver.serve_content('{}')
     source_url = httpserver.url + '/' + source_filename
-
     browser.get(server_url + '?source_url=' + source_url)
 
     if source_filename.endswith('.json'):
         browser.find_element_by_name("flatten").click()
+
+    time.sleep(3)
 
     body_text = browser.find_element_by_tag_name('body').text
     assert 'Warning' not in body_text
@@ -320,7 +319,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
         # should be a cross
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick cross'
         conversion_title.click()
-        time.sleep(0.5)
+        time.sleep(2)
         assert warning_args[0] in browser.find_element_by_id('conversion-body').text
     else:
         if flatten_or_unflatten == 'flatten':
@@ -340,9 +339,6 @@ def test_footer_360(server_url, browser, link_text, expected_text, css_selector,
     link = browser.find_element_by_link_text(link_text)
     href = link.get_attribute("href")
     assert url in href
-    link.click()
-    time.sleep(0.5)
-    assert expected_text in browser.find_element_by_css_selector(css_selector).text
 
 
 def test_index_page_360(server_url, browser):
@@ -444,6 +440,8 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
+    time.sleep(1)
+
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
     for section in all_sections:
@@ -492,6 +490,8 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
+    time.sleep(1)
+
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
     for section in all_sections:
@@ -504,15 +504,17 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
 
 
 @pytest.mark.parametrize(('data_url'), [
-    'data/0',
-    'data/324ea8eb-f080-43ce-a8c1-9f47b28162f3'
+    reverse_lazy('results', args=['0']),
+    reverse_lazy('results', args=['324ea8eb-f080-43ce-a8c1-9f47b28162f3']),
 ])
 def test_url_invalid_dataset_request(server_url, browser, data_url):
     # Test a badly formed hexadecimal UUID string
-    browser.get(server_url + data_url)
+    # Trim the / off reverse_lazy result as server_url has trailing slash to avoid
+    # e.g. //results/0
+    browser.get("%s%s" % (server_url, data_url[1:]))
     assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
     # Test for well formed UUID that doesn't identify any dataset that exists
-    browser.get(server_url + 'data/38e267ce-d395-46ba-acbf-2540cdd0c810')
+    browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])[1:]))
     assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
     assert '360 Giving' not in browser.find_element_by_tag_name('body').text
     #363 - Tests there is padding round the 'go to home' button
@@ -562,7 +564,10 @@ def test_favicon(server_url, browser):
 def test_explore_360_sample_data_link(server_url, browser):
     browser.get(server_url)
     browser.find_element_by_partial_link_text('loading some sample data.').click()
-    time.sleep(0.5)
+
+    while "results" not in browser.current_url:
+        time.sleep(0.5)
+
     body_text = browser.find_element_by_tag_name('body').text
 
     assert 'Summary: Your data at a glance' in body_text
