@@ -234,7 +234,7 @@
       <h3 class="panel-title panel-title-explore">
         {% if validation_errors %}
           <span class="font-tick cross" aria-hidden="true"></span>
-            {% trans "This data does not use the 360Giving Data Standard correctly" %}<small>{% blocktrans count n_errors=validation_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</small>
+            {% trans "This data does not use the 360Giving Data Standard correctly" %} <small>{% blocktrans count n_errors=validation_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</small>
         {% else %}
           <span class="font-tick tick" aria-hidden="true"></span>
           {% trans "This data uses the 360Giving Data Standard correctly" %}
@@ -332,7 +332,7 @@
       <h3 class="panel-title panel-title-explore">
         <span class="font-tick question" aria-hidden="true"></span>
           {% trans "Data Quality Check: Incorrect values" %}
-            <small>{% blocktrans count n_quality_accuracy_checks=quality_accuracy_checks_count %} Incorrect value checks{% plural %}{{n_quality_accuracy_checks}} Incorrect value checks{% endblocktrans %}</small>
+            <small>{% blocktrans count n_quality_accuracy_checks=quality_accuracy_checks_count %}{{n_quality_accuracy_checks}} Incorrect value check{% plural %}{{n_quality_accuracy_checks}} Incorrect value checks{% endblocktrans %}</small>
         <span class="glyphicon glyphicon-collapse-down pull-right"></span>
       </h3>
     </div>
