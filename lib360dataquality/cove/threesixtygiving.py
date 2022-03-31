@@ -473,12 +473,16 @@ class ZeroAmountTest(AdditionalTest):
 
     Checks explicitly for a number with a value of 0"""
 
-    check_text = {"heading": "a value of £0", "message": RangeDict()}
-    check_text["message"][(0, 100)] = (
-        "It’s worth taking a look at these grants and deciding if they should be published. "
-        "It’s unusual to have grants of £0, but there may be a reasonable explanation. "
-        "Additional information on why these grants are £0 might be useful to anyone using the data, "
-        "so consider adding an explanation to the description of the grant."
+    check_text = {
+        "heading": mark_safe("a value of £0"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "It’s worth taking a look at these grants and deciding if they should be "
+        "included in your data. It’s unusual to have grants of £0, but there may be a "
+        "reasonable explanation. If £0 value grants are to be published in your data "
+        "consider adding an explanation to the description of the grant to help anyone "
+        "using the data to understand how to interpret the information."
     )
 
     def process(self, grant, path_prefix):
@@ -510,12 +514,17 @@ class RecipientOrg360GPrefix(AdditionalTest):
         ),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "If the grant is to a recipient organisation that has an external identifier "
-        "(such as a charity or company number), then this should be used instead. Using external "
-        "identifiers helps people using your data to match it up against other data - for example to see "
-        "who else has given grants to the same recipient, even if they’re known by a different name. "
-        "If no external identifier can be used, then you can ignore this notice."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Use an external reference, such as a charity or company number, to identify an "
+        "organisation whenever possible. Doing so makes it possible to see when "
+        "recipients have received grants from multiple funders, and allows grants data "
+        "to be linked or combined with information from official registers. Some "
+        "organisations, such as small unregistered groups, do not have an official "
+        "registration number that can be used. In these cases the organisation "
+        "identifier should start ‘360G-‘ and use an identifier taken from the "
+        "publisher’s internal systems. See our "
+        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        "for further help."
     )
 
     def process(self, grant, path_prefix):
@@ -543,10 +552,13 @@ class FundingOrg360GPrefix(AdditionalTest):
         ),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "If the grant is from a funding organisation that has an external identifier "
-        "(such as a charity or company number), then this should be used instead. "
-        "If no other identifier can be used, then you can ignore this notice."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Use an external reference, such as a charity or company number, to identify a "
+        "funding organisation whenever possible. Some funders do not have an official "
+        "registration number that can be used. In these cases the funding organisation "
+        "identifier should reuse the publisher prefix and therefore start with “360G-”. See our "
+        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        "for further help."
     )
 
     def process(self, grant, path_prefix):
@@ -571,15 +583,16 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
     check_text = {
         "heading": mark_safe(
             'a <span class="highlight-background-text">Recipient Org:Identifier</span> '
-            "that does not draw from a recognised register."
+            "that does not draw from a recognised register"
         ),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "Using external identifiers (such as a charity or company number) helps people using your data "
-        "to match it up against other data - for example to see who else has given grants to the same "
-        "recipient, even if they’re known by a different name. If the data describes lots of grants to "
-        "organisations that don’t have such identifiers, or grants to individuals, then you can ignore this notice."
+    check_text["message"][(0, 100)] = mark_safe(
+        "In the 360Giving Data Standard, organisation identifiers have two parts: an "
+        "identifier and a prefix which describes the list the identifier is taken from. "
+        "This error notice is caused by the prefix in an organisation identifier not "
+        'being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our '
+        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
     def process(self, grant, path_prefix):
@@ -615,16 +628,16 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
     check_text = {
         "heading": mark_safe(
             'a <span class="highlight-background-text">Funding Org:Identifier</span> '
-            "that does not draw from a recognised register."
+            "that does not draw from a recognised register"
         ),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "Using external identifiers (such as a charity or company number) helps people using your data to "
-        "match it up against other data - for example to see who else has given grants to the same "
-        "recipient, even if they’re known by a different name. If the data describes lots of grants to "
-        "organisations that don’t have such identifiers, or grants to individuals, then you can ignore "
-        "this notice."
+    check_text["message"][(0, 100)] = mark_safe(
+        "In the 360Giving Data Standard, organisation identifiers have two parts: an "
+        "identifier and a prefix which describes the list the identifier is taken from. "
+        "This error notice is caused by the prefix in an organisation identifier not "
+        'being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our '
+        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
     def process(self, grant, path_prefix):
@@ -664,14 +677,18 @@ class RecipientOrgCharityNumber(AdditionalTest):
     check_text = {
         "heading": mark_safe(
             "a value provided in the "
-            '<span class="highlight-background-text">Recipient Org: Charity Number</span> '
-            "column that doesn’t look like a charity number"
+            '<span class="highlight-background-text">Recipient Org:Charity Number</span> '
+            "column that doesn’t look like a UK charity number"
         ),
         "message": RangeDict(),
     }
-    check_text["message"][
-        (0, 100)
-    ] = "Common causes of this are missing leading digits, typos or incorrect values being entered into this field."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Common causes of this error notice are missing or extra digits, typos or "
+        "incorrect values such as text appearing in this field. You can check UK charity "
+        'numbers online at <a href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by '
+        "correctly formatted non-UK charity numbers, in which case this message can be "
+        "ignored."
+    )
 
     def process(self, grant, path_prefix):
         try:
@@ -711,17 +728,19 @@ class RecipientOrgCompanyNumber(AdditionalTest):
     check_text = {
         "heading": mark_safe(
             "a value provided in the "
-            '<span class="highlight-background-text">Recipient Org: Company Number</span> '
+            '<span class="highlight-background-text">Recipient Org:Company Number</span> '
             "column that doesn’t look like a company number"
         ),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Common causes of this are missing leading digits, typos or incorrect values "
-        "being entered into this field. Company numbers are typically 8 digits, "
-        'for example <span class="highlight-background-text">09876543</span> or sometimes start with a '
-        '2 letter prefix, <span class="highlight-background-text">SC123459</span>. You can check '
-        'company numbers online at <a href="https://beta.companieshouse.gov.uk/">Companies House</a>.'
+        "Common causes of this error notice are missing or extra digits, typos or "
+        "incorrect values such as text appearing in this field. UK Company numbers are "
+        'typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter '
+        'prefix, <span class="highlight-background-text">SC123459</span>. '
+        'You can check company numbers online at <a href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. '
+        "This error may also be triggered by correctly formatted non-UK company numbers, "
+        "in which case this message can be ignored."
     )
 
     def process(self, grant, path_prefix):
@@ -761,10 +780,12 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
         ),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "Providing one or both of these, if possible, makes it easier for users to join up your data with "
-        "other data sources to provide better insight into grantmaking. If your grants are to "
-        "organisations that don’t have UK Company or UK Charity numbers, then you can ignore this notice."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Company and charity numbers are important for understanding grantmaking in the "
+        "UK and including these separately makes it easier for users to match grants "
+        "data with official sources of information about the recipients. If your grants "
+        "are to organisations that don’t have UK Company or UK Charity numbers, you can "
+        "ignore this notice."
     )
 
     def process(self, grant, path_prefix):
@@ -799,16 +820,19 @@ class IncompleteRecipientOrg(AdditionalTest):
     """
 
     check_text = {
-        "heading": "not have recipient organisation location information",
+        "heading": mark_safe("not have recipient organisation location information"),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data is missing information about the geographic location of recipient organisations; either "
-        '<span class="highlight-background-text">Recipient Org:Postal Code</span> or '
-        '<span class="highlight-background-text">Recipient Org:Location:Geographic Code</span> combined '
-        'with <span class="highlight-background-text">Recipient Org:Location:Geographic Code Type'
-        "</span>. Knowing the geographic location of recipient organisations helps users to understand "
-        "your data and allows it to be used in tools that visualise grants geographically."
+        "Recipient location data in the form of postcodes or geocodes provides a "
+        "consistent way to describe a location. This data can be used to produce maps, "
+        "such as the maps in "
+        '<a href="https://insights.threesixtygiving.org/">360Insights</a>, '
+        "showing the geographical distribution of "
+        "funding and allows grants data to be looked at alongside official statistics, "
+        "such as the Indices of multiple deprivation. See our "
+        '<a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        "for further help. "
     )
 
     def process(self, grant, path_prefix):
@@ -841,14 +865,15 @@ class MoreThanOneFundingOrg(AdditionalTest):
     """Checks if the file contains multiple FundingOrganisation:IDs"""
 
     check_text = {
-        "heading": "There are {} different funding organisation IDs listed",
+        "heading": mark_safe("{} different funding organisation identifiers listed"),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "If you are expecting to be publishing data for multiple funders then you can ignore this notice. "
         "If you are only publishing for a single funder then you should review your "
-        '<span class="highlight-background-text">Funding Organisation identifier</span> column to see '
-        "where multiple IDs have occurred."
+        '<span class="highlight-background-text">Funding Organisation identifier</span> field '
+        "to see where multiple IDs have occurred. "
+        "If you are expecting to be publishing data for multiple funders and the number "
+        "of funders is correct, then you can ignore this error notice."
     )
 
     def __init__(self, **kw):
@@ -888,14 +913,17 @@ class LooksLikeEmail(AdditionalTest):
     """
 
     check_text = {
-        "heading": "text that looks like an email address",
+        "heading": mark_safe("text that looks like an email address"),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "Your data may contain an email address (or something that looks like one), which can constitute "
-        "personal data. The use and distribution of personal data is restricted by the Data Protection "
-        "Act. You should ensure that any personal data is only included with the knowledge and consent of "
-        "the person to whom it refers."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data may contain an email address (or something that looks like "
+        "one), which can constitute personal data if it is the email of an "
+        "individual. The use and distribution of personal data is restricted by "
+        "the Data Protection Act. You should ensure that any personal data is "
+        "removed from your data prior to publishing it, or that it is only "
+        "included with the knowledge and consent of the person to whom it "
+        "refers."
     )
 
     def process(self, grant, path_prefix):
@@ -926,8 +954,11 @@ class NoGrantProgramme(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        'Providing <span class="highlight-background-text">Grant Programme</span> data, if available, '
-        "helps users to better understand your data."
+        "Grant programme names help users to understand a funder’s different types of "
+        "funding and priorities, and see how their grants vary across and within these. "
+        "This information is especially useful when it refers to the communities, "
+        "sectors, issues or places that are the focus of the programme. If your "
+        "organisation does not have grant programmes this notice can be ignored."
     )
 
     def process(self, grant, path_prefix):
@@ -947,12 +978,21 @@ class NoBeneficiaryLocation(AdditionalTest):
     """Checks if any grants have no Beneficiary Location fields"""
 
     check_text = {
-        "heading": "not contain any beneficiary location fields",
+        "heading": mark_safe("not contain any beneficiary location fields"),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "Providing beneficiary data, if available, helps users to understand which "
-        "areas ultimately benefitted from the grant."
+    check_text["message"][(0, 100)] = mark_safe(
+        "Beneficiary location data in the form of place names and geocodes allow users "
+        "to understand which places funding is reaching. This data can be more accurate "
+        "in showing where grants are going geographically, especially in cases where the "
+        "recipient location is in a different place from the activity being funded. "
+        "Beneficiary location codes can be used to produce maps, such as the ones in "
+        '<a href="https://insights.threesixtygiving.org/">360Insights</a>, '
+        "showing the geographical distribution of funding and allows grants "
+        "data to be looked at alongside official statistics, such as the Indices of "
+        "multiple deprivation. See our "
+        '<a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>'
+        "for further help."
     )
 
     def process(self, grant, path_prefix):
@@ -970,10 +1010,10 @@ class TitleDescriptionSame(AdditionalTest):
     """Checks if any grants have the same text for Title and Description"""
 
     check_text = {
-        "heading": "a title and a description that are the same",
+        "heading": mark_safe("a title and a description that are the same"),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
+    check_text["message"][(0, 100)] = mark_safe(
         "Users may find that the data is less useful as they are unable to discover more about the grants. "
         "Consider including a more detailed description if you have one."
     )
@@ -993,10 +1033,14 @@ class TitleDescriptionSame(AdditionalTest):
 class TitleLength(AdditionalTest):
     """Checks if any grants have Titles longer than 140 characters"""
 
-    check_text = {"heading": "a title longer than recommended", "message": RangeDict()}
-    check_text["message"][
-        (0, 100)
-    ] = "Titles for grant activities should be under 140 characters long."
+    check_text = {
+        "heading": mark_safe("a title that is longer than recommended"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Titles for grant activities should be under 140 characters long so that people "
+        "can quickly understand the purpose of the grant."
+    )
 
     def process(self, grant, path_prefix):
         title = grant.get("title", "")
@@ -1017,13 +1061,16 @@ class OrganizationIdLooksInvalid(AdditionalTest):
     """
 
     check_text = {
-        "heading": "funder or recipient organisation IDs that might not be valid",
+        "heading": mark_safe("a Funding or Recipient Organisation identifier that might not be valid"),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = (
-        "The IDs might not be valid for the registration agency that they refer to - for example, "
-        "a 'GB-CHC' ID that contains an invalid charity number. Common causes of this are missing leading "
-        "digits, typos or incorrect values being entered into this field."
+    check_text["message"][(0, 100)] = mark_safe(
+        "The identifiers might not be valid for the recognised register that they refer "
+        "to - for example, an identifier with the prefix 'GB-CHC' that contains an "
+        "invalid charity number. Common causes of this are missing or extra digits, "
+        "typos or incorrect values such as text appearing in this field. See our "
+        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        "for further help."
     )
 
     def process(self, grant, path_prefix):
@@ -1063,9 +1110,7 @@ class NoLastModified(AdditionalTest):
     check_text["message"][(0, 100)] = mark_safe(
         '<span class="highlight-background-text">Last Modified</span> shows the date and time when '
         "information about a grant was last updated in your file. Including this information allows data "
-        "users to see when changes have been made and reconcile differences between versions of your data. "
-        "Please note: this is the date when the data was modified in your 360Giving file, "
-        "rather than in any of your internal systems."
+        "users to see when changes have been made and reconcile differences between versions of your data."
     )
 
     def process(self, grant, path_prefix):
@@ -1091,9 +1136,10 @@ class NoDataSource(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        '<span class="highlight-background-text">Data Source</span> informs users about where '
+        '<span class="highlight-background-text">Data Source</span> is a web link pointing to the source of this data. '
+        "It informs users about where "
         "information came from and is an important part of establishing trust in your data. "
-        "This information should be a web link pointing to the source of this data, which may be an "
+        "This may be a link to an "
         "original 360Giving data file, a file from which the data was converted, or your organisation’s "
         "website."
     )
@@ -1118,12 +1164,12 @@ class ImpossibleDates(AdditionalTest):
     """
 
     check_text = {
-        "heading": mark_safe("dates that didn't, or won't, exist"),
+        "heading": mark_safe("dates that don’t exist"),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
         "Your data contains dates that didn't, or won't, exist - such as the 31st of September, "
-        "or the 29th of February in a year that's not a leap year. This is commonly caused by typos during data entry."
+        "or the 29th of February in a year that's not a leap year. This error is commonly caused by typos during data entry."
     )
 
     def process(self, grant, path_prefix):
@@ -1172,13 +1218,13 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            '<span class="highlight-background-text">Planned Dates: Start Date</span> entries that are after the '
-            'corresponding <span class="highlight-background-text">Planned Dates: End Date</span>'
+            '<span class="highlight-background-text">Planned Dates:Start Date</span> entries that are after the '
+            'corresponding <span class="highlight-background-text">Planned Dates:End Date</span>'
         ),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "This can happen when the fields are accidentally reversed, or if there is a typo in the data. "
+        "This can happen when the fields are accidentally reversed, or if there is a typo in the date. "
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
@@ -1210,13 +1256,13 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            '<span class="highlight-background-text">Actual Dates: Start Date</span> entries that are after the '
-            'corresponding <span class="highlight-background-text">Actual Dates: End Date</span>'
+            '<span class="highlight-background-text">Actual Dates:Start Date</span> entries that are after the '
+            'corresponding <span class="highlight-background-text">Actual Dates:End Date</span>'
         ),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "This can happen when the fields are accidentally reversed, or if there is a typo in the data. "
+        "This can happen when the fields are accidentally reversed, or if there is a typo in the date. "
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
@@ -1251,8 +1297,8 @@ class FarFuturePlannedDates(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains Planned Dates that are more than 12 years into the future. You can disregard this check if "
-        "your data is about activities that run a long time into the future, but you should check for data entry "
+        "Your data contains Planned Dates that are more than 12 years into the future. You can disregard this error notice if "
+        "your data describes activities that run a long time into the future, but you should check for data entry "
         "errors if this isn't expected."
     )
 
@@ -1292,7 +1338,7 @@ class FarFutureActualDates(AdditionalTest):
     }
     check_text["message"][(0, 100)] = mark_safe(
         "Your data contains Actual Date entries that are more than 5 years into the future. You can disregard this "
-        "check if your data is about activities in the future, but you should check for data entry errors "
+        "error notice if your data describes activities far in the future, but you should check for data entry errors "
         "if this isn't expected."
     )
 
@@ -1331,8 +1377,8 @@ class FarPastDates(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains dates that are more than 25 years ago. You can disregard this check if your "
-        "data is about activities in the past, but you should check for data entry errors if this isn't expected."
+        "Your data contains dates that are more than 25 years ago. You can disregard this error notice if your "
+        "data is about activities far in the past, but you should check for data entry errors if this isn't expected."
     )
 
     def process(self, grant, path_prefix):
@@ -1381,7 +1427,7 @@ class PostDatedAwardDates(AdditionalTest):
     }
     check_text["message"][(0, 100)] = mark_safe(
         "Your data contains grant Award Dates in the future. This date is when the decision to award the grant "
-        "was made so it would normally be in the past. This can happen when there is a typo in the date, or the data "
+        "was made so it would normally be in the past. This error can happen when there is a typo in the date, or the data "
         "includes grants that are not yet fully committed"
     )
 
