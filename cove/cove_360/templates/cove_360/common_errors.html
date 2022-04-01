@@ -10,7 +10,7 @@
   <h3>{% trans "Invalid 'uri' found" %}</h3>
   <p>{% blocktrans %}This message means you have a problem, usually with a website address in your data.<br />This error is often caused by the following problems:{% endblocktrans %}</p>
   <ul>
-    <li>{% blocktrans %}Not starting the address with 'http://' e.g. www.example.com is not a 'uri' but http://www.example.com is. All uri should start with either http:// or https://{% endblocktrans %}</li>
+    <li>{% blocktrans %}The uri does not start the address with 'http://' e.g. www.example.com is not a 'uri' but http://www.example.com is. All uri should start with either http:// or https://{% endblocktrans %}</li>
     <li>{% blocktrans %}There are spaces at the start or end of the address which need to be removed. Be aware that these spaces can often be invisible.{% endblocktrans %}</li>
     <li>{% blocktrans %}There is more than one address in the same field e.g. "http://www.example.com and http://www.example2.com"{% endblocktrans %}</li>
   </ul>
@@ -108,7 +108,7 @@
     
     <a id="enum" class="anchor"></a>
     <h3>{% trans "Invalid code found in (something)" %}</h3>
-    <p>{% blocktrans %}In 360Giving Data Standard, there are three fields that require publishers to use values from a predefined list. When we validate people's data, we check the values of those fields against those lists.{% endblocktrans %}</p>
+    <p>{% blocktrans %}In the 360Giving Data Standard, there are three fields that require publishers to use values from a predefined list. When we validate people's data, we check the values of those fields against those lists.{% endblocktrans %}</p>
     <p>{% blocktrans %}This error tells us that we have found something not on the list for one or more of these fields.{% endblocktrans %}</p>
     <table class="table">
     <thead>
@@ -133,7 +133,7 @@
     
     <a id="string" class="anchor"></a>
     <h3>{% trans "Field <code>x</code> is not a string" %}</h3>
-    <p>{% blocktrans %}Data in the 360 Giving Data Standard is expected to be provided in a certain format.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Data in the 360Giving Data Standard is expected to be provided in a certain format.{% endblocktrans %}</p>
     <p>{% blocktrans %}Strings are generally text, but can contain other characters such as numbers. Sometimes spreadsheet software can alter the format of data so that it is no longer a string.{% endblocktrans %}</p>
     <p>{% blocktrans %}To fix these kinds of errors, check the field to make sure you are supplying the data in the form of a string.{% endblocktrans %}</p>
     <p>{% blocktrans %}<strong>If using JSON format</strong>: check that the value is not null, and has quotes at the start and end. Escape any quotes in the value with &#92;{% endblocktrans %}</p>

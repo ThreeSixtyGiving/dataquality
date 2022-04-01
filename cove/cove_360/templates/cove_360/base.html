@@ -15,8 +15,11 @@
     <div class="col-md-5">
       <div class="title360"><a href="{% url 'index' %}">Data Quality Tool</a></div>
       <div>Convert, Validate, Explore <a class="underline" title="Go to 360Giving home page" href="https://www.threesixtygiving.org/">360Giving</a> Data</div>
-      <div>Provide the data you want to check or convert:</div>
+
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8"><strong>Provide the data you want to check or convert:</strong></div>
   </div>
 {% endblock %}
 
@@ -58,8 +61,9 @@
     <p class="icon-indent"><span class="font-tick cross"></span>{% blocktrans %} Check the data against your own open data policy.{% endblocktrans %}</p>
     <p class="icon-indent"><span class="font-tick cross"></span>{% blocktrans %} This means there may be further checks you need to carry out to make sure the information is accurate, and that the data does not include information that is unsuitable for publishing as open data. Read more about <a href="https://standard.threesixtygiving.org/en/latest/guidance/data-protection/">what to consider when publishing open grants data.</a>{% endblocktrans %}</p>
     {% if request.path == "/" %}
-    <br>
-    <p> {% blocktrans %}To preview how this tool works, try <a href="?source_url=https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true"> loading some sample data.</a>{% endblocktrans%}</p>
+      <h4>{% blocktrans %}Further guidance{% endblocktrans %}</h4>
+      <p>{% blocktrans %}Read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.{% endblocktrans %}</p>
+      <p>{% blocktrans %}To preview how this tool works, try <a href="?source_url=https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true"> loading some sample data.</a>{% endblocktrans%}</p>
     {% endif %}
     <h3><small>{% blocktrans %}Formats{% endblocktrans %}</small></h3>
     <p>{% blocktrans %}The application accepts data in the formats set out in the {% endblocktrans %}<a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#reference">360Giving Data Standard guidance</a>.</p>

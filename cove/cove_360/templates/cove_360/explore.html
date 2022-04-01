@@ -111,15 +111,6 @@
                 The file was modified on <strong> {{metadata.modified|slice:":10"}} </strong>
               </li>
             {% endif %}
-            <li>
-              {% trans "The file was " %}
-              {% if source_url %}
-                {% trans "downloaded from " %} <a href="{{source_url}}">{{source_url}}</a>
-              {% else %}
-                {% trans "uploaded " %}
-              {% endif %}
-              {% trans "on " %} {{created_date}}.
-            </li>
             {% for currency_code, currency_aggregates in grants_aggregates.currencies.items %}
               <li>
                 {% if currency_aggregates.count == 1 %}
@@ -145,29 +136,34 @@
               </li>
             {% endif %}
           </ul>
-          <div class="explore-help">
-            <p>{% blocktrans %}Do these results look correct?{% endblocktrans %}</p>
-            <ul class="left-space">
-              <li>{% blocktrans %}Do the numbers of funders, grants and recipients match what you expect?{% endblocktrans %}</li>
-              <li>{% blocktrans %}Are the dates for the right time period?{% endblocktrans %}</li>
-              <li>{% blocktrans %}Do the currency and total value figures show the correct amounts?{% endblocktrans %}</li>
-            </ul>
-            <p>{% blocktrans %}If any of this information appears incorrect, the feedback below will help you to investigate what happened. {% endblocktrans %}</p>
-            <p>{% blocktrans %}About the feedback{% endblocktrans %}</p>
-            <p>{% blocktrans %}The feedback is split into several sections. Use the small arrow icon on the far right side to display or hide the details for each section.{% endblocktrans %}</p>
-            <ul class="list-unstyled">
-              <li><span class="font-tick cross"></span> {% blocktrans %}<em>a red cross</em> indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
-              <li><span class="font-tick tick"></span> {% blocktrans %}<em>a green tick</em> indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
-              <li><span class="font-tick question"></span> {% blocktrans %}<em>a question mark</em> indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
-            </ul>
-            <p>A maximum of 10 additional checks can be displayed at once.</p>
-            <p>The <strong>check your data</strong> section allows you to review the data itself to help identify any issues.</p>
-            <p>If you make changes to the data prompted by this feedback, return here to upload the updated file for a new check.</p>
-            <p>It may take several iterations to get the data to a state you are happy with and are ready to publish as open data.</p>
-            <h4>Getting further help</h4>
-            <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
-            <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
-          </div>
+
+          <br>
+          <p>{% blocktrans %}Do these results look correct?{% endblocktrans %}</p>
+          <ul class="left-space">
+            <li>{% blocktrans %}Do the numbers of funders, grants and recipients match what you expect?{% endblocktrans %}</li>
+            <li>{% blocktrans %}Are the dates for the right time period?{% endblocktrans %}</li>
+            <li>{% blocktrans %}Do the currency and total value figures show the correct amounts?{% endblocktrans %}</li>
+          </ul>
+          <p>{% blocktrans %}If any of this information appears incorrect, the feedback below will help you to investigate what happened. {% endblocktrans %}</p>
+
+          <br>
+          <h4>{% blocktrans %}About the feedback{% endblocktrans %}</h4>
+          <p>{% blocktrans %}The feedback is split into several sections. Use the small arrow icon on the far right side to display or hide the details for each section.{% endblocktrans %}</p>
+          <ul class="list-unstyled">
+            <li><span class="font-tick cross"></span> {% blocktrans %}<em>a red cross</em> indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
+            <li><span class="font-tick tick"></span> {% blocktrans %}<em>a green tick</em> indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
+            <li><span class="font-tick question"></span> {% blocktrans %}<em>a question mark</em> indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
+          </ul>
+          <p>A maximum of 10 additional checks can be displayed at once.</p>
+          <p>The <strong>check your data</strong> section allows you to review the data itself to help identify any issues.</p>
+          <p>If you make changes to the data prompted by this feedback, return here to upload the updated file for a new check.</p>
+          <p>It may take several iterations to get the data to a state you are happy with and are ready to publish as open data.</p>
+
+          <br>
+          <h4>Getting further help</h4>
+          <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
+          <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
+
           {% if conversion == 'flattenable' %}
             <form method="post">
               <button name="flatten" value="true" type="submit" class="btn btn-success btn-sm pull-right">{% trans "Convert to Spreadsheet" %}</button>
@@ -506,14 +502,14 @@
       <h3 class="panel-title panel-title-explore"> 
         <span class="font-tick question" aria-hidden="true"></span>
         {% trans "Additional Fields" %}
-	<small>{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %}{{n_additional_fields}} Additional fields{% endblocktrans %}</small>
+        <small>{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %}{{n_additional_fields}} Additional fields{% endblocktrans %}</small>
         <span class="glyphicon glyphicon-collapse-down pull-right"></span>
       </h3>
     </div>
     <div id="additional-checks-body" class="collapse panel-body">
         {% if data_only %}
           <hr class="heading-in-panel">
-            <p class="left-space"> {% blocktrans %} "<strong>Additional fields</strong> which do not use 360Giving Data Standard titles were found in your data. You are welcome to include additional fields in your data. Please check the field title(s) shown below to confirm if they are intended additions and not the result of spelling or formatting mistakes in the title. Please refer to the <a href="https://dataquality.threesixtygiving.org/common_errors#required">Common Errors</a> section to see the correctly formatted field titles for the required fields." {% endblocktrans %}</p>
+          <p class="left-space"> {% blocktrans %} <strong>Additional fields</strong> which do not use 360Giving Data Standard titles were found in your data. You are welcome to include additional fields in your data. Please check the field title(s) shown below to confirm if they are intended additions and not the result of spelling or formatting mistakes in the title. Please refer to the <a href="https://dataquality.threesixtygiving.org/common_errors#required">Common Errors</a> section to see the correctly formatted field titles for the required fields. {% endblocktrans %}</p>
           {% include "additional_fields_table.html" %}
         {% endif %}
     </div>
@@ -633,7 +629,7 @@
         <p>{% trans "You can share these test results with others by using the following url:" %}</p>
         <div class="copy-div">
             <span class="copy-span"> {{ current_url }} <span id="copy-url-button" title="Click to copy." data-clipboard-text={{ current_url }} class="btn copy-button glyphicon glyphicon-copy" aria-hidden="true"></span> </span>
-            <p>{% trans "If your data is not suitable for sharing publicly then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
+            <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
         </div>
         <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
         <h4><span class="glyphicon glyphicon-download-alt"></span> Download</h4>
