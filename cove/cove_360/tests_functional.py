@@ -173,6 +173,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
         source_url = httpserver.url + PREFIX_360 + source_filename
 
     browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
@@ -186,6 +187,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
+    browser.find_element_by_class_name("cookie-consent-no").click()
     for section in all_sections:
         if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
             section.click()
@@ -318,6 +320,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
             assert 'This data could not be read as 360Giving JSON data 1 Error' in body_text
         # should be a cross
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick cross'
+        browser.find_element_by_class_name("cookie-consent-no").click()
         conversion_title.click()
         time.sleep(2)
         assert warning_args[0] in browser.find_element_by_id('conversion-body').text
@@ -401,6 +404,7 @@ def test_accordion(server_url, browser):
     time.sleep(0.5)
     assert buttons() == [True, False, False]
     assert 'Upload a file' in browser.find_elements_by_tag_name('label')[0].text
+    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     browser.implicitly_wait(1)
     time.sleep(0.5)
@@ -435,6 +439,7 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
@@ -444,6 +449,7 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
 
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
+    browser.find_element_by_class_name("cookie-consent-no").click()
     for section in all_sections:
         if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
             section.click()
@@ -485,6 +491,7 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
@@ -494,6 +501,7 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
 
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
+    browser.find_element_by_class_name("cookie-consent-no").click()
     for section in all_sections:
         if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
             section.click()
