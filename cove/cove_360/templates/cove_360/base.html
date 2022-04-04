@@ -25,6 +25,7 @@
 {% block strapline %}{% endblock %}
 
 {% block bootstrap_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/fonts/tick/tick.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/bootstrap-360.css' %}">
   <noscript>
@@ -71,6 +72,7 @@
 {% endblock %}
 
 {% block bottomcontent2 %}
+{% include "cove_360/cookie-consent.html" %}
 {% include "cove_360/more_info.html" %}
 {% endblock %}
 
