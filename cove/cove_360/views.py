@@ -106,7 +106,10 @@ def explore_360(request, pk, template='cove_360/explore.html'):
 
     context = common_checks_360(context, upload_dir, json_data, schema_360)
 
-    do_grants_display = False
+    # Experimental to test performance impacts
+    # Note False will currently leave the grants table in the UI empty
+    do_grants_display = True
+
     if do_grants_display and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
