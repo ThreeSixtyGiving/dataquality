@@ -66,24 +66,25 @@ def server_url(request, live_server):
                                             'There are 2 grants to 1 recipient',
                                             'The grants were awarded in GBP with a total value of £331,495',
                                             # check that there's no errors after the heading
-                                            'This data could be read as 360Giving JSON data\nBefore checking',
-                                            'data does not use the 360Giving Standard 7 Errors',
+                                            'Data conversion successful\nBefore checking',
+                                            'data does not use the 360Giving Data Standard correctly 7 Errors',
                                             'description is missing but required',
                                             'Sheet: grants Row: 2',
                                             'Check your data 2 Grants',
-                                            'Funder organisation identifiers:  1',
-                                            'Recipient organisation identifiers:  1',
+                                            'Unique funder organisation identifiers:  1',
+                                            'Unique recipient organisation identifiers:  1',
                                             '360G-fundingproviders-000002/X/00/X'], True),
     # Test conversion warnings are shown
-    ('tenders_releases_2_releases.xlsx', ['This data could not be read as 360Giving JSON data 5 Errors',
-                                          'data does not use the 360Giving Standard 76 Errors',
+    ('tenders_releases_2_releases.xlsx', ['Data conversion unsuccessful - 5 Errors have been found',
+                                          'data does not use the 360Giving Data Standard correctly 76 Errors',
                                           'You may have a duplicate Identifier: We couldn\'t merge these rows with the id "1": field "ocid" in sheet "items": one cell has the value: "PW-14-00627094", the other cell has the value: "PW-14-00629344"'
                                           ], True),
     # Test that titles that aren't in the rollup are converted correctly
     # (See @check_url_input_result_page).
     ('fundingproviders-grants_2_grants_titleswithoutrollup.xlsx', [], True),
     # Test a 360 csv in cp1252 encoding
-    ('fundingproviders-grants_2_grants_cp1252.csv', ['This file contains 2 grants from 1 funder to 1 recipient',
+    ('fundingproviders-grants_2_grants_cp1252.csv', ['Data about 1 funder',
+                                                  'There are 2 grants to 1 recipient',
                                                   'The grants were awarded in GBP with a total value of £331,495',
                                                   'This file is not \'utf-8\' encoded (it is cp1252 encoded)'], True),
     # Test a non-valid file.
@@ -91,7 +92,7 @@ def server_url(request, live_server):
     # Test a unconvertable spreadsheet (blank file)
     ('bad.xlsx', 'We think you tried to supply a spreadsheet, but we failed to convert it.', False),
     # Check that a file with a UTF-8 BOM converts correctly
-    ('bom.csv', 'Grant identifiers:  1', True),
+    ('bom.csv', 'Unique grant identifiers:  1', True),
     ('nulls.json', [
         'is not a JSON array',
         'Date is not in the correct format',
@@ -311,14 +312,18 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     time.sleep(3)
 
-    body_text = browser.find_element_by_tag_name('body').text
-    assert 'Warning' not in body_text
+    assert 'Warning' not in browser.find_element_by_tag_name("body").text
+
+    warning_heading = "Data conversion unsuccessful - 1 Error has been found"
+
     conversion_title = browser.find_element_by_id('conversion-title')
+    conversion_title_text = conversion_title.text
+
     if iserror:
         if flatten_or_unflatten == 'flatten':
-            assert 'This data could not be read as 360Giving JSON data 1 Error' in body_text
+            assert warning_heading in conversion_title_text
         else:
-            assert 'This data could not be read as 360Giving JSON data 1 Error' in body_text
+            assert warning_heading in conversion_title_text
         # should be a cross
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick cross'
         browser.find_element_by_class_name("cookie-consent-no").click()
@@ -327,9 +332,9 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
         assert warning_args[0] in browser.find_element_by_id('conversion-body').text
     else:
         if flatten_or_unflatten == 'flatten':
-            assert 'This data could not be read as 360Giving JSON data 1 Error' not in body_text
+            assert warning_heading not in conversion_title_text
         else:
-            assert 'This data could not be read as 360Giving JSON data 1 Error' not in body_text
+            assert warning_heading not in conversion_title_text
         # should be a tick
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick tick'
 
@@ -356,7 +361,7 @@ def test_index_page_360(server_url, browser):
 
 
 @pytest.mark.parametrize(('link_text', 'url'), [
-    ('360Giving Data Standard guidance', 'https://www.threesixtygiving.org/standard/'),
+    ('360Giving Data Standard guidance', 'https://standard.threesixtygiving.org/en/latest/technical/reference/#reference'),
     ('Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/summary-table/360-giving-schema-titles.xlsx'),
     ('CSV', 'https://threesixtygiving-standard.readthedocs.io/en/latest/templates-csv'),
     ('360Giving JSON schema', 'https://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas'),
@@ -546,7 +551,7 @@ def test_500_error(server_url, browser):
 def test_common_errors_page(server_url, browser):
     browser.get(server_url + 'common_errors/')
     assert "Common Errors" in browser.find_element_by_tag_name('h2').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('h1').text
 
 
 @pytest.mark.parametrize(('anchor_text'), [
