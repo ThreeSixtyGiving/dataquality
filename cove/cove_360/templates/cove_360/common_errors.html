@@ -4,30 +4,44 @@
 
 <div>
   <h2>{% trans "Common Errors" %}</h2>
+
+
   <a id="uri" class="anchor"></a>
   <h3>{% trans "Invalid 'uri' found" %}</h3>
-  <p>{% blocktrans %}This message means you have a problem, usually with a website address in your data.<br />Common mistakes include:{% endblocktrans %}</p>
+  <p>{% blocktrans %}This message means you have a problem, usually with a website address in your data.<br />This error is often caused by the following problems:{% endblocktrans %}</p>
   <ul>
-    <li>{% blocktrans %}Not starting the address with 'http://' e.g. example.com is not a 'uri' but http://example.com is.{% endblocktrans %}</li>
-    <li>{% blocktrans %}Having extra spaces at the start or end of the address - these should be removed{% endblocktrans %}</li>
-    <li>{% blocktrans %}Putting more than one address in the same field e.g. "http://example.com and http:example2.com" is not a 'uri'{% endblocktrans %}</li>
+    <li>{% blocktrans %}The uri does not start the address with 'http://' e.g. www.example.com is not a 'uri' but http://www.example.com is. All uri should start with either http:// or https://{% endblocktrans %}</li>
+    <li>{% blocktrans %}There are spaces at the start or end of the address which need to be removed. Be aware that these spaces can often be invisible.{% endblocktrans %}</li>
+    <li>{% blocktrans %}There is more than one address in the same field e.g. "http://www.example.com and http://www.example2.com"{% endblocktrans %}</li>
   </ul>
+  <p>{% blocktrans %}<strong>What is a URI?</strong> Short for “Uniform Resource Identifier” it is a sequence of characters that distinguishes one resource from another. A URL &mdash; short for “Uniform Resource Locator” &mdash; is a specific type of URI.{% endblocktrans %}</p>
+  <p>{% blocktrans %}When the 360Giving Data Standard requires data to be provided in the format of a URI, this will mean you will very likely be providing a URL &mdash; or website address.{% endblocktrans %}</p>
   
+
   <a id="date-time" class="anchor"></a>
   <h3>{% trans "Date is not in the correct format" %}</h3>
-  <p>{% blocktrans %}Dates should be in the formats defined by the <a href="https://www.threesixtygiving.org/standard/reference/">360Giving Standard</a>.{% endblocktrans %}</p>
-  <p>All Last Modified fields should be in datetime format (see below for further details)</p>
-  <p>{% blocktrans %}All other dates should be in the YYYY-MM-DD format, or in datetime format.{% endblocktrans %}</p>
-  <p>{% blocktrans %}Other common errors include{% endblocktrans %}<p>
+  <p>{% blocktrans %}Dates should be in the formats defined by the <a href="https://www.threesixtygiving.org/standard/reference/">360Giving Data Standard</a>.{% endblocktrans %}</p>
+  <p>{% blocktrans %}All Last Modified fields should be in datetime format and all other dates, such as Award Dates and Planned Dates, should be in the YYYY-MM-DD format. However, Award and Planned Dates can also be provided in datetime format.{% endblocktrans %}</p>
+
+  <h4>{% blocktrans %}YYYY-MM-DD format used for full dates{% endblocktrans %}</h4>
+  <p>{% blocktrans %}Dates should be in the form YYYY-MM-DD where:{% endblocktrans %}</p>
   <ul>
-    <li>{% blocktrans %}providing non-existent dates e.g. 2016-02-31 (31st February){% endblocktrans %}</li>
+    <li>{% blocktrans %}YYYY represents a year e.g. 2022{% endblocktrans %}</li>
+    <li>{% blocktrans %}MM represents a 2 digit month of the year e.g. 01 for January{% endblocktrans %}</li>
+    <li>{% blocktrans %}DD represents a 2 digit day of the month e.g. 01 for the 1st{% endblocktrans %}</li>
+  </ul>
+  <p>{% blocktrans %}Example: 2022-01-01{% endblocktrans %}</p>
+  <p>{% blocktrans %}Common date errors include{% endblocktrans %}<p>
+  <ul>
+    <li>{% blocktrans %}providing non-existent dates e.g. 2022-02-31 (31st February 2022){% endblocktrans %}</li>
     <li>{% blocktrans %}non-date content in a date field (by accident){% endblocktrans %}</li>
   </ul>
+
   <h4>{% blocktrans %}Datetimes format used for Last Modified fields{% endblocktrans %}</h4>
-  <p>{% blocktrans %}A datetime format is a very specific form of a date and time that is specified by the <a href="https://www.threesixtygiving.org/standard/reference/">360Giving Standard</a>.{% endblocktrans %}</p>
+  <p>{% blocktrans %}All Last Modified fields should be in datetime format, which is a very specific form of a date and time that is specified by the <a href="https://www.threesixtygiving.org/standard/reference/">360Giving Data Standard</a>.{% endblocktrans %}</p>
   <p>{% blocktrans %}A datetime should be in the form of YYYY-MM-DDThh:mm:ss±hh:mm where:{% endblocktrans %}</p>
   <ul>
-    <li>{% blocktrans %}YYYY represent a year e.g. 2016{% endblocktrans %}</li>
+    <li>{% blocktrans %}YYYY represent a year e.g. 2022{% endblocktrans %}</li>
     <li>{% blocktrans %}MM represents a 2 digit month of the year e.g. 01 for January{% endblocktrans %}</li>
     <li>{% blocktrans %}DD represents a 2 digit day of the month e.g. 01 for the 1st{% endblocktrans %}</li>
     <li>{% blocktrans %}T is simply the letter 'T'{% endblocktrans %}</li>
@@ -36,12 +50,15 @@
     <li>{% blocktrans %}ss is a 2 digit representation of seconds{% endblocktrans %}</li>
     <li>{% blocktrans %}+hh:mm or -hh:mm is a timezone offset from UTC. For most UK data producers this can simply be replaced with a 'Z'{% endblocktrans %}</li>
   </ul>
-  <p>{% blocktrans %}Example: 2016-05-15T12:00:00Z is 12 noon on the 15th May 2016 in UTC time{% endblocktrans %}</p>
-  <p>{% blocktrans %}Read <a href="https://standard.threesixtygiving.org/en/latest/reference/#dates-and-times">further guidance</a> about date and datetime fields and formatting tips when publishing using spreadsheets.{% endblocktrans %}</p>
+  <p>{% blocktrans %}Example: 2022-01-01T12:00:00Z is 12 noon on the 1st January 2022 in UTC time{% endblocktrans %}</p>
+  <p>{% blocktrans %}You can find further guidance <a href="https://standard.threesixtygiving.org/en/latest/reference/#dates-and-times">here</a> about date and datetime fields in the 360Giving data, as well as formatting tips when publishing using spreadsheets.{% endblocktrans %}</p>
+
+
   <a id="required" class="anchor"></a>
   <h3>{% trans "(something) is missing but is required" %}</h3>
-  <p>{% blocktrans %}Many fields are required in the 360Giving data standard in order for others to make sense of the data supplied{% endblocktrans %}</p>
-  <p>{% blocktrans %}If any of the following fields are missing the data is seen as invalid against the schema.{% endblocktrans %}</p>
+  <p>{% blocktrans %}There are 10 core fields that are required in the 360Giving Data Standard.{% endblocktrans %}</p>
+  <p>{% blocktrans %}If any of the following fields are missing, the data is invalid against the schema.{% endblocktrans %}</p>
+  <p>{% blocktrans %}This error message might be triggered because the data is missing or because of a spelling or formatting mistake in the field title. See the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#giving-data-standard-schema">full list of field titles</a> for the correct spelling and formatting for the rest of the 360Giving Data Standard.{% endblocktrans %}</p>
   <table class="table">
     <thead>
       <tr>
@@ -91,23 +108,51 @@
     
     <a id="enum" class="anchor"></a>
     <h3>{% trans "Invalid code found in (something)" %}</h3>
-    <p>{% blocktrans %}In 360Giving data when we talk about currencies, countries and organisation types we ask publishers to use values from a predefined list. When we ask whether or not this grant was from an open call we expect either 'yes' or no' and nothing else. When we validate people's data, we check the values of those fields against those lists.{% endblocktrans %}</p>
-    <p>{% blocktrans %}This error tells us that we have found something not on the list.{% endblocktrans %}</p>
-    <p>{% blocktrans %}The lists are referenced in the 360Giving Grants Schema. See <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas">360Giving JSON Schemas</a> for more information.{% endblocktrans %}</p>
+    <p>{% blocktrans %}In the 360Giving Data Standard, there are three fields that require publishers to use values from a predefined list. When we validate people's data, we check the values of those fields against those lists.{% endblocktrans %}</p>
+    <p>{% blocktrans %}This error tells us that we have found something not on the list for one or more of these fields.{% endblocktrans %}</p>
+    <table class="table">
+    <thead>
+      <tr>
+        <th>{% trans "Field" %}</th><th>{% trans "JSON value" %}</th><th>{% trans "Description" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Currency</td><td>currency</td><td>{% blocktrans %}The currency used in amounts. Use the three-letter currency code from <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> eg: Use GBP for Pounds Sterling.{% endblocktrans %}</td>
+      </tr>
+      <tr>
+        <td>Beneficiary, Recipient Org or Funding Org Location:Country Code</td><td>countryCode</td><td>{% blocktrans %}The 2-character ISO Country Code of the location of this activity. Taken from <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO-3166-1-alpha-2</a>{% endblocktrans %}</td>
+      </tr>
+      <tr>
+        <td>From An Open Call?</td><td>fromOpenCall</td><td>{% blocktrans %}Was this grant made as the result of an open call for applications? Values must be ‘Yes‘ or ‘No‘{% endblocktrans %}</td>
+      </tr>
+    </tbody>
+    </table>
+    <p>{% blocktrans %}The currency and country code lists are referenced in the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#giving-json-schemas">360Giving JSON Schemas</a> and the field descriptions link to the code lists on third-party websites.{% endblocktrans %}</p>
     
     
     <a id="string" class="anchor"></a>
     <h3>{% trans "Field <code>x</code> is not a string" %}</h3>
-    <p>{% blocktrans %}Data in the standard is expected to be provided in a certain format.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Data in the 360Giving Data Standard is expected to be provided in a certain format.{% endblocktrans %}</p>
     <p>{% blocktrans %}Strings are generally text, but can contain other characters such as numbers. Sometimes spreadsheet software can alter the format of data so that it is no longer a string.{% endblocktrans %}</p>
-    <p>{% blocktrans %}To fix these kinds of errors, check the field to make sure you are supplying a string.{% endblocktrans %}</p>
+    <p>{% blocktrans %}To fix these kinds of errors, check the field to make sure you are supplying the data in the form of a string.{% endblocktrans %}</p>
+    <p>{% blocktrans %}<strong>If using JSON format</strong>: check that the value is not null, and has quotes at the start and end. Escape any quotes in the value with &#92;{% endblocktrans %}</p>
 
 
     <a id="number" class="anchor"></a>
-    <h3>{% trans "Value is not a number" %}</h3>
     <h3>{% trans "Field <code>x</code> is not a number" %}</h3>
-    <p>{% blocktrans %}Data in the standard is expected to be provided in a certain format.{% endblocktrans %}</p>
-    <p>{% blocktrans %}To fix these kinds of errors, check the field to make sure you are supplying a number.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Data in the 360 Giving Data Standard is expected to be provided in a certain format.{% endblocktrans %}</p>
+    <p>{% blocktrans %}To fix these kinds of errors, check the field to make sure you are supplying the data in the form of a number. Check that the value is not null, and doesn’t contain any characters other than 0-9 and dot (.). Number values should not be in quotes.{% endblocktrans %}</p>
+
+
+    <a id="minusnumber" class="anchor"></a>
+    <h3>{% trans "<code>x</code> is less than the minimum of 0" %}</h3>
+    <p>{% blocktrans %}A duration value cannot be a minus number. This error can be caused because the duration has been automatically calculated from a Start Date and End Date but these have been accidentally reversed or there is a typo in a date.{% endblocktrans %}</p>
+    <p>{% blocktrans %}To fix these kinds of errors, make sure all Start Dates are before End Dates so the duration can be calculated correctly.{% endblocktrans %}</p>
+
+
+  <h2>{% trans "Getting further help" %}</h2>
+    <p>{% blocktrans %}For further information see our guide on using the <a href="https://standard.threesixtygiving.org/en/latest/guidance/data-quality/">data quality tool</a> and <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">technical reference</a> for the 360Giving Data Standard.{% endblocktrans %}</p>
 
 
     <p>&nbsp;</p>
