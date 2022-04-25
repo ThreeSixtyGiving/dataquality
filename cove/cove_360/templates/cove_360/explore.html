@@ -150,14 +150,13 @@
           <h4>{% blocktrans %}About the feedback{% endblocktrans %}</h4>
           <p>{% blocktrans %}The feedback is split into several sections. Use the small arrow icon on the far right side to display or hide the details for each section.{% endblocktrans %}</p>
           <ul class="list-unstyled">
-            <li><span class="font-tick cross"></span> {% blocktrans %}<em>a red cross</em> indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
-            <li><span class="font-tick tick"></span> {% blocktrans %}<em>a green tick</em> indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
-            <li><span class="font-tick question"></span> {% blocktrans %}<em>a question mark</em> indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
+            <li><span class="font-tick cross"></span> {% blocktrans %}a red cross indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
+            <li><span class="font-tick tick"></span> {% blocktrans %}a green tick indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
+            <li><span class="font-tick question"></span> {% blocktrans %}a question mark indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
           </ul>
           <p>A maximum of 10 additional checks can be displayed at once.</p>
           <p>The <strong>check your data</strong> section allows you to review the data itself to help identify any issues.</p>
-          <p>If you make changes to the data prompted by this feedback, return here to upload the updated file for a new check.</p>
-          <p>It may take several iterations to get the data to a state you are happy with and are ready to publish as open data.</p>
+          <p>If you make changes to the data prompted by this feedback, return here to upload the updated file for a new check. It may take several iterations to get the data to a state you are happy with and are ready to publish as open data.</p>
 
           <br>
           <h4>Getting further help</h4>
@@ -196,7 +195,7 @@
       <div id="conversion-body" class="collapse">
         <div class="panel-body">
           {% if conversion == 'unflatten' %}
-            <p class="explanation">{% trans "Before checking your data we needed to convert it to JSON." %}</p>
+            <p class="explanation">{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
             <div class="explore-help">{% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
             {% if conversion_error %}
               {% blocktrans %}If a file cannot be converted to JSON it indicates that it cannot be correctly mapped to the standard and needs to be reviewed. If this is the case you should check the file and re-upload it once you’ve fixed the problem. The conversion errors below will give an indication of where the issue is.{% endblocktrans %}
@@ -257,6 +256,7 @@
           {% endif %}
 
           {% blocktrans %}the requirements of the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a>.{% endblocktrans %}
+          {% blocktrans %} Making sure your data uses the standard correctly is important. Otherwise it cannot be used alongside other valid 360Giving data and cannot be included in 360Giving tools, such as GrantNav and 360Insights.{% endblocktrans %}
         </diV>
         {% if validation_errors %}
           <br>
@@ -269,7 +269,7 @@
                   <h4>Missing Fields</h4>
                 </div>
                 <div>
-                  <p class="panel-body">Some or all of your entries were missing fields which are required by the 360Giving Standard.</p>
+                  <p class="panel-body">Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
                   {% include "cove_360/validation_table.html" %}
                 </div>
               </div>
