@@ -29,6 +29,7 @@
 {% block strapline %}{% endblock %}
 
 {% block bootstrap_css %}
+  <link rel="shortcut icon" href="{% static 'dataexplore/images/favicon/favicon.ico' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/fonts/tick/tick.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/bootstrap-360.css' %}">
@@ -38,14 +39,12 @@
       .glyphicon-collapse-down {display: none !important;}
     </style>
   </noscript>
+  <style>
+    /* hack to remove footer from base.html from lib-cove-web */
+    #footer { display: none; }
+  </style>
 {% endblock %}
 
-{% block link %}
-<li><a href="{% url 'common_errors' %}">Common Errors</a></li>
-<li><a href="https://www.threesixtygiving.org/">{% trans "360Giving" %}</a></li>
-<li><a href="https://www.threesixtygiving.org/standard/">{% trans "360Giving Data Standard" %}</a></li>
-<li><a href="https://www.threesixtygiving.org/contact/">Support</a></li>
-{% endblock %}
 
 {% block bottomcontent1 %}
 <div class="panel panel-default">
@@ -81,14 +80,5 @@
 {% block bottomcontent2 %}
 {% include "cove_360/cookie-consent.html" %}
 {% include "cove_360/more_info.html" %}
-{% endblock %}
-
-{% block version_link %}
-<p class="text-muted">{% blocktrans %}Running version {% endblocktrans %}<a href="https://github.com/threesixtygiving/dataquality/tree/{{ request.tag }}">{{ request.tag }}</a></p>
-{% endblock %}
-
-{% block about %}
-<li>{% trans "Built by" %} <a href="http://opendataservices.coop/">{% trans "Open Data Services Co-operative" %}</a></li>
-<li>{% trans "The code for this site is available on" %}<br>{% trans "GitHub" %}: <a href="https://github.com/threesixtygiving/dataquality/">{%trans "Cove - COnvert Validate & Explore" %}</a><br>{% trans "Licence" %}: <a href="https://www.gnu.org/licenses/agpl-3.0.html">{% trans "AGPLv3" %}</a><br>{% trans "Report/View issues" %}: <a href="https://github.com/threesixtygiving/dataquality/issues">{% trans "Cove Issues" %}</a>
-</li>
+{% include "cove_360/footer.html" %}
 {% endblock %}
