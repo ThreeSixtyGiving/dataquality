@@ -322,6 +322,7 @@ def common_checks_360(
                 "enum",
                 "number",
                 "string",
+                "minimum",
             ],
             "validation_errors_grouped": group_validation_errors(
                 context["validation_errors"], context["file_type"], openpyxl_workbook
