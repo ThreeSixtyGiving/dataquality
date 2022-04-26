@@ -16,14 +16,14 @@
 
   {% block data_supplied %}
     <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" {% if conversion == 'flattenable' %}aria-expanded="true"{% endif %} role="button">
+      <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" aria-expanded="true" role="button">
         <h3 class="panel-title panel-title-explore">
           <span class="font-tick tick" aria-hidden="true"></span>
           Summary: Your data at a glance
-          <span class="pull-right glyphicon glyphicon-collapse-{% if conversion == 'flattenable' %}up{% else %}down{% endif %}"></span>
+          <span class="pull-right glyphicon glyphicon-collapse-up"></span>
         </h3>
       </div>
-      <div id="data-supplied-body" class="collapse {% if conversion == 'flattenable' %}in{% endif %}">
+      <div id="data-supplied-body" class="collapse in">
         <div class="panel-body">
           <p class="explanation">
 	          {% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}
