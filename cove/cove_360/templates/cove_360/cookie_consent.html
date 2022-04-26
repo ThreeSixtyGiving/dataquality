@@ -21,13 +21,13 @@
 <!-- End Matomo Code -->
 
 <script type="text/javascript">
-    function hideCookieConsentDialog(hide){
-      if (hide){
-        document.getElementsByClassName("cookie-consent")[0].style.display = 'none';
-      } else {
-        document.getElementsByClassName("cookie-consent")[0].style.display = 'block';
+      function hideCookieConsentDialog(hide) {
+        if (hide) {
+          document.getElementsByClassName("cookie-consent")[0].style.setProperty("display", "none", "important");
+        } else {
+          document.getElementsByClassName("cookie-consent")[0].style.setProperty("display", "block", "important");
+        }
       }
-    }
 
     function noCookieConsent() {
       document.cookie = "noEnhancedAnalytics=1; domain=threesixtygiving.org";
