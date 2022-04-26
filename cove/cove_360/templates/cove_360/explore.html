@@ -17,7 +17,7 @@
   {% block data_supplied %}
     <div class="panel panel-default">
       <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" {% if conversion == 'flattenable' %}aria-expanded="true"{% endif %} role="button">
-        <h3 class="panel-title panel-title-explore"> 
+        <h3 class="panel-title panel-title-explore">
           <span class="font-tick tick" aria-hidden="true"></span>
           Summary: Your data at a glance
           <span class="pull-right glyphicon glyphicon-collapse-{% if conversion == 'flattenable' %}up{% else %}down{% endif %}"></span>
@@ -82,7 +82,7 @@
               {{metadata.description}}
             </p>
           {% endif %}
- 
+
           <br>
           <p>This file contains</p>
           <ul class="left-space">
@@ -500,7 +500,7 @@
   {% if additional_fields_count %}
   <div class="panel panel-default">
     <div class="panel-heading" data-toggle="collapse" data-target="#additional-checks-body">
-      <h3 class="panel-title panel-title-explore"> 
+      <h3 class="panel-title panel-title-explore">
         <span class="font-tick question" aria-hidden="true"></span>
         {% trans "Additional Fields" %}
         <small>{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %}{{n_additional_fields}} Additional fields{% endblocktrans %}</small>
@@ -665,7 +665,7 @@
 {% endblock explore_content %}
 
 {% block extrafooterscript %}
-  {{ block.super }} 
+  {{ block.super }}
   <script type="text/javascript">
     $("[data-toggle='collapse']").click(function() {
       var $this = $(this);
