@@ -379,7 +379,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a <span class="highlight-background-text">Funding Org:Identifier</span> that does not draw from a recognised register',
-            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our <a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target=\"_blank\" href="https://org-id.guide/">org-id list locator</a>. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrgUnrecognisedPrefix",
             "count": 1,
         },
@@ -396,7 +396,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a <span class="highlight-background-text">Recipient Org:Identifier</span> that does not draw from a recognised register',
-            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our <a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target=\"_blank\" href="https://org-id.guide/">org-id list locator</a>. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrgUnrecognisedPrefix",
             "count": 1,
         },
@@ -413,7 +413,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a value provided in the <span class="highlight-background-text">Recipient Org:Charity Number</span> column that doesn’t look like a UK charity number',
-            "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. You can check UK charity numbers online at <a href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by correctly formatted non-UK charity numbers, in which case this message can be ignored.',
+            "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. You can check UK charity numbers online at <a target=\"_blank\" href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by correctly formatted non-UK charity numbers, in which case this message can be ignored.',
             "type": "RecipientOrgCharityNumber",
             "count": 1,
         },
@@ -430,7 +430,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a value provided in the <span class="highlight-background-text">Recipient Org:Company Number</span> column that doesn’t look like a company number',
-            "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. UK Company numbers are typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter prefix, <span class="highlight-background-text">SC123459</span>. You can check company numbers online at <a href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. This error may also be triggered by correctly formatted non-UK company numbers, in which case this message can be ignored.',
+            "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. UK Company numbers are typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter prefix, <span class="highlight-background-text">SC123459</span>. You can check company numbers online at <a target=\"_blank\" href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. This error may also be triggered by correctly formatted non-UK company numbers, in which case this message can be ignored.',
             "type": "RecipientOrgCompanyNumber",
             "count": 1,
         },
@@ -447,7 +447,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "2 grants have a Funding or Recipient Organisation identifier that might not be valid",
-            "message": "The identifiers might not be valid for the recognised register that they refer to - for example, an identifier with the prefix 'GB-CHC' that contains an invalid charity number. Common causes of this are missing or extra digits, typos or incorrect values such as text appearing in this field. See our <a href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> for further help.",
+            "message": "The identifiers might not be valid for the recognised register that they refer to - for example, an identifier with the prefix 'GB-CHC' that contains an invalid charity number. Common causes of this are missing or extra digits, typos or incorrect values such as text appearing in this field. See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> for further help.",
             "type": "OrganizationIdLooksInvalid",
             "count": 2,
         },
@@ -635,7 +635,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "33% of grants have a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
-            "message": 'Use an external reference, such as a charity or company number, to identify an organisation whenever possible. Doing so makes it possible to see when recipients have received grants from multiple funders, and allows grants data to be linked or combined with information from official registers. Some organisations, such as small unregistered groups, do not have an official registration number that can be used. In these cases the organisation identifier should start ‘360G-‘ and use an identifier taken from the publisher’s internal systems. See our <a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'Use an external reference, such as a charity or company number, to identify an organisation whenever possible. Doing so makes it possible to see when recipients have received grants from multiple funders, and allows grants data to be linked or combined with information from official registers. Some organisations, such as small unregistered groups, do not have an official registration number that can be used. In these cases the organisation identifier should start ‘360G-‘ and use an identifier taken from the publisher’s internal systems. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrg360GPrefix",
             "count": 1,
         },
@@ -652,7 +652,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "33% of grants have a <span class=\"highlight-background-text\">Funding Org:Identifier</span> that starts '360G-'",
-            "message": 'Use an external reference, such as a charity or company number, to identify a funding organisation whenever possible. Some funders do not have an official registration number that can be used. In these cases the funding organisation identifier should reuse the publisher prefix and therefore start with “360G-”. See our <a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'Use an external reference, such as a charity or company number, to identify a funding organisation whenever possible. Some funders do not have an official registration number that can be used. In these cases the funding organisation identifier should reuse the publisher prefix and therefore start with “360G-”. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrg360GPrefix",
             "count": 1,
         },
@@ -686,7 +686,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "33% of grants do not have recipient organisation location information",
-            "message": 'Recipient location data in the form of postcodes or geocodes provides a consistent way to describe a location. This data can be used to produce maps, such as the maps in <a href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help. ',
+            "message": 'Recipient location data in the form of postcodes or geocodes provides a consistent way to describe a location. This data can be used to produce maps, such as the maps in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help. ',
             "type": "IncompleteRecipientOrg",
             "count": 1,
         },
@@ -713,7 +713,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "33% of grants do not contain any beneficiary location fields",
-            "message": 'Beneficiary location data in the form of place names and geocodes allow users to understand which places funding is reaching. This data can be more accurate in showing where grants are going geographically, especially in cases where the recipient location is in a different place from the activity being funded. Beneficiary location codes can be used to produce maps, such as the ones in <a href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>for further help.',
+            "message": 'Beneficiary location data in the form of place names and geocodes allow users to understand which places funding is reaching. This data can be more accurate in showing where grants are going geographically, especially in cases where the recipient location is in a different place from the activity being funded. Beneficiary location codes can be used to produce maps, such as the ones in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>for further help.',
             "type": "NoBeneficiaryLocation",
             "count": 1,
         },
