@@ -82,7 +82,7 @@
 		    <p class="text-muted">{% blocktrans %}Running version {% endblocktrans %}<a href="https://github.com/threesixtygiving/dataquality/tree/{{ request.tag }}">{{ request.tag }}</a></p>
 		</div>
 		<div class="footer__column-2 footer__policy-links hide-print">
-		    <p><a href="https://www.threesixtygiving.org/privacy/">Privacy Notice</a> | <a href="https://www.threesixtygiving.org/terms-conditions/">Terms &amp; Conditions</a> | <a href="https://www.threesixtygiving.org/cookie-policy/">Cookie Policy</a> | <a href="https://www.threesixtygiving.org/take-down-policy/">Take Down Policy</a> | <a href="https://www.threesixtygiving.org/about/360giving-code-conduct/">Code of Conduct</a></p>
+		    <p><a href="https://www.threesixtygiving.org/privacy/">Privacy Notice</a> | <a href="{% url 'terms' %}">Terms &amp; Conditions</a> | <a href="https://www.threesixtygiving.org/cookie-policy/">Cookie Policy</a> | <a href="https://www.threesixtygiving.org/take-down-policy/">Take Down Policy</a> | <a href="https://www.threesixtygiving.org/about/360giving-code-conduct/">Code of Conduct</a></p>
 		</div>
 	    </div>
 	</footer>

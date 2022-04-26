@@ -524,7 +524,7 @@ class RecipientOrg360GPrefix(AdditionalTest):
         "registration number that can be used. In these cases the organisation "
         "identifier should start ‘360G-‘ and use an identifier taken from the "
         "publisher’s internal systems. See our "
-        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
 
@@ -558,7 +558,7 @@ class FundingOrg360GPrefix(AdditionalTest):
         "funding organisation whenever possible. Some funders do not have an official "
         "registration number that can be used. In these cases the funding organisation "
         "identifier should reuse the publisher prefix and therefore start with “360G-”. See our "
-        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
 
@@ -592,8 +592,8 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         "In the 360Giving Data Standard, organisation identifiers have two parts: an "
         "identifier and a prefix which describes the list the identifier is taken from. "
         "This error notice is caused by the prefix in an organisation identifier not "
-        'being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our '
-        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
+        'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
     def process(self, grant, path_prefix):
@@ -637,8 +637,8 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
         "In the 360Giving Data Standard, organisation identifiers have two parts: an "
         "identifier and a prefix which describes the list the identifier is taken from. "
         "This error notice is caused by the prefix in an organisation identifier not "
-        'being taken from a recognised register from the <a href="https://org-id.guide/">org-id list locator</a>. See our '
-        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
+        'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
     def process(self, grant, path_prefix):
@@ -686,7 +686,7 @@ class RecipientOrgCharityNumber(AdditionalTest):
     check_text["message"][(0, 100)] = mark_safe(
         "Common causes of this error notice are missing or extra digits, typos or "
         "incorrect values such as text appearing in this field. You can check UK charity "
-        'numbers online at <a href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by '
+        'numbers online at <a target="_blank" href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by '
         "correctly formatted non-UK charity numbers, in which case this message can be "
         "ignored."
     )
@@ -739,7 +739,7 @@ class RecipientOrgCompanyNumber(AdditionalTest):
         "incorrect values such as text appearing in this field. UK Company numbers are "
         'typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter '
         'prefix, <span class="highlight-background-text">SC123459</span>. '
-        'You can check company numbers online at <a href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. '
+        'You can check company numbers online at <a target="_blank" href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. '
         "This error may also be triggered by correctly formatted non-UK company numbers, "
         "in which case this message can be ignored."
     )
@@ -828,11 +828,11 @@ class IncompleteRecipientOrg(AdditionalTest):
         "Recipient location data in the form of postcodes or geocodes provides a "
         "consistent way to describe a location. This data can be used to produce maps, "
         "such as the maps in "
-        '<a href="https://insights.threesixtygiving.org/">360Insights</a>, '
+        '<a target="_blank" href="https://insights.threesixtygiving.org/">360Insights</a>, '
         "showing the geographical distribution of "
         "funding and allows grants data to be looked at alongside official statistics, "
         "such as the Indices of multiple deprivation. See our "
-        '<a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
         "for further help. "
     )
 
@@ -988,11 +988,11 @@ class NoBeneficiaryLocation(AdditionalTest):
         "in showing where grants are going geographically, especially in cases where the "
         "recipient location is in a different place from the activity being funded. "
         "Beneficiary location codes can be used to produce maps, such as the ones in "
-        '<a href="https://insights.threesixtygiving.org/">360Insights</a>, '
+        '<a target="_blank" href="https://insights.threesixtygiving.org/">360Insights</a>, '
         "showing the geographical distribution of funding and allows grants "
         "data to be looked at alongside official statistics, such as the Indices of "
         "multiple deprivation. See our "
-        '<a href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>'
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>'
         "for further help."
     )
 
@@ -1070,7 +1070,7 @@ class OrganizationIdLooksInvalid(AdditionalTest):
         "to - for example, an identifier with the prefix 'GB-CHC' that contains an "
         "invalid charity number. Common causes of this are missing or extra digits, "
         "typos or incorrect values such as text appearing in this field. See our "
-        '<a href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
 
