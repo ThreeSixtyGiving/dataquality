@@ -220,7 +220,7 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
         assert 'UNSAFE' not in body_text
 
     assert 'Data Quality Tool' in browser.find_element_by_class_name('title360').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
     if conversion_successful:
         if source_filename.endswith('.json'):
@@ -339,11 +339,12 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick tick'
 
 
-@pytest.mark.parametrize(('link_text', 'expected_text', 'css_selector', 'url'), [
-    ('360Giving', 'Open data for grantmaking', '.hero__title', 'https://www.threesixtygiving.org/'),
-    ('360Giving Data Standard', 'The 360Giving Data Standard', 'h1', 'https://www.threesixtygiving.org/standard/'),
+@pytest.mark.parametrize(('link_text', 'url'), [
+    ('360Giving', 'https://www.threesixtygiving.org/'),
+    ('Publisher Guidance', 'https://standard.threesixtygiving.org/en/latest/'),
+    ('Common Errors', 'common_errors'),
     ])
-def test_footer_360(server_url, browser, link_text, expected_text, css_selector, url):
+def test_footer_360(server_url, browser, link_text, url):
     browser.get(server_url)
     link = browser.find_element_by_link_text(link_text)
     href = link.get_attribute("href")
@@ -357,13 +358,13 @@ def test_index_page_360(server_url, browser):
     assert 'Summary Spreadsheet - ' in browser.find_element_by_tag_name('body').text
     assert 'JSON built to the 360Giving JSON schema' in browser.find_element_by_tag_name('body').text
     assert 'Multi-table data package - Excel' in browser.find_element_by_tag_name('body').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
 
 @pytest.mark.parametrize(('link_text', 'url'), [
     ('360Giving Data Standard guidance', 'https://standard.threesixtygiving.org/en/latest/technical/reference/#reference'),
     ('Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/summary-table/360-giving-schema-titles.xlsx'),
-    ('CSV', 'https://threesixtygiving-standard.readthedocs.io/en/latest/templates-csv'),
+    ('CSV', 'https://standard.threesixtygiving.org/en/latest/technical/templates-csv/'),
     ('360Giving JSON schema', 'https://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas'),
     ('Multi-table data package - Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/multi-table/360-giving-schema-fields.xlsx')
     ])
@@ -390,15 +391,14 @@ def test_common_index_elements(server_url, browser):
     assert 'Why do you delete data after seven days?' in browser.find_element_by_tag_name('body').text
     assert 'Why provide converted versions?' in browser.find_element_by_tag_name('body').text
     assert 'Terms & Conditions' in browser.find_element_by_tag_name('body').text
-    assert 'Open Data Services Co-operative' in browser.find_element_by_tag_name('body').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
 
 def test_terms_page(server_url, browser):
     browser.get(server_url + 'terms/')
     assert 'Open Data Services Co-operative Limited' in browser.find_element_by_tag_name('body').text
     assert 'Open Data Services Limited' not in browser.find_element_by_tag_name('body').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
 
 def test_accordion(server_url, browser):
@@ -530,7 +530,7 @@ def test_url_invalid_dataset_request(server_url, browser, data_url):
     # Test for well formed UUID that doesn't identify any dataset that exists
     browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])[1:]))
     assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
-    assert '360 Giving' not in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
     #363 - Tests there is padding round the 'go to home' button
     success_button = browser.find_element_by_class_name('success-button')
     assert success_button.value_of_css_property('padding-bottom') == '20px'
