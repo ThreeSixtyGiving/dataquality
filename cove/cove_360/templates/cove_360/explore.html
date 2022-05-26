@@ -15,11 +15,65 @@
 {% block explore_content %}
 
   {% block data_supplied %}
+
+  {% if "self_publishing" in data_status.supplied_data.parameters %}
+  <div class="panel panel-default">
+    <div class="panel-heading" >
+      <h3 class="panel-title panel-title-explore">
+        {% if data_status.can_publish %}
+          <span class="font-tick tick" aria-hidden="true"></span>
+        {% endif %}
+        {% trans "Submit your data" %}</h3>
+        </div>
+      <div class="panel-body">
+        {% if data_status.can_publish %}
+        <p>{% trans "Publishing for:" %} {{publisher.name}}</p>
+        <p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
+        <p>{% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form." %} <a href="#TODO">{% trans "Guidance about using the submission form." %}</a></p>
+        <a class="btn btn-success" href="https://360partial-uat.cs162.force.com/dda/s/?id={{data_status.supplied_data.id}}">Submit your file</a>
+        {% endif %}
+
+        {# Data passed, Domain not recognised/approved #}
+        {% if data_status.passed and not data_status.can_publish %}
+        <script>
+          /* Event Category: Contact
+Event Action: Email Link Click
+Event Name: name@example.com */
+          _paq.push(['trackEvent', 'self_publish', 'publishing_failed', 'can_publish_false', '{{source_url_domain}}' ]);
+
+        </script>
+        <p>
+          {% blocktrans %}
+          Sorry you aren't able to submit this file because the domain name of the website hosting your file ({{source_url_domain}}) is not authorised for publishing 360Giving data.
+          {% endblocktrans %}
+        </p>
+        <p>
+          {% blocktrans %}
+          Please email 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a> with the link to the file you want to submit to the Data Registry.
+          {% endblocktrans %}
+        </p>
+        {% endif %}
+
+        {# Validation failed #}
+        {% if not data_status.passed %}
+        <p>{% blocktrans %}Sorry you aren't able to submit this file because it is not valid 360Giving data.{% endblocktrans %}</p>
+        <p>
+          {% blocktrans %}
+          Follow the feedback below to make the amendments needed to your data. Once your data passes the Data Quality tool checks, upload the updated file to your website and then restart the 360Giving data file submission process.
+          The data did not pass the checks and cannot be published. See results below.
+          {% endblocktrans %}
+        </p>
+        {% endif %}
+
+    </div>
+  </div>
+  {% endif %}
+
     <div class="panel panel-default">
       <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" aria-expanded="true" role="button">
         <h3 class="panel-title panel-title-explore">
           <span class="font-tick tick" aria-hidden="true"></span>
-          Summary: Your data at a glance
+          {% trans "Summary: Your data at a glance" %}
           <span class="pull-right glyphicon glyphicon-collapse-up"></span>
         </h3>
       </div>

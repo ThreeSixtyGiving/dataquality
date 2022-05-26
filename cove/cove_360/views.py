@@ -23,6 +23,9 @@ from lib360dataquality.cove.schema import Schema360
 from lib360dataquality.cove.threesixtygiving import TEST_CLASSES
 from lib360dataquality.cove.threesixtygiving import common_checks_360
 
+from cove_360.models import SuppliedDataStatus
+from cove_360.publishing import lookup_publisher_by_domain, extract_domain
+
 logger = logging.getLogger(__name__)
 
 
@@ -63,6 +66,22 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     context, db_data, error = explore_data_context(request, pk)
     if error:
         return error
+
+    data_status, dsc = SuppliedDataStatus.objects.get_or_create(
+        supplied_data=db_data,
+    )
+    context["data_status"] = data_status
+    if db_data.source_url:
+        context["source_url_domain"] = extract_domain(db_data.source_url)
+
+    if db_data.parameters and "self_publishing" in db_data.parameters:
+        publisher = lookup_publisher_by_domain(db_data.source_url)
+        if not publisher:
+            # We're trying to self publish but we can't find any matching publisher
+            # bail out early so user doesn't have to wait for validation to complete
+            return render(request, "cove_360/publisher_not_found.html", context)
+        data_status._publisher = json.dumps(publisher)
+        context["publisher"] = publisher
 
     lib_cove_config = LibCoveConfig()
     lib_cove_config.config.update(settings.COVE_CONFIG)
@@ -126,7 +145,11 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     context['first_render'] = not db_data.rendered
     if not db_data.rendered:
         db_data.rendered = True
+
     db_data.save()
+
+    data_status.passed = context['validation_errors_count'] == 0
+    data_status.save()
 
     cache.set(pk, context)
 

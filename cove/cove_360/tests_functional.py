@@ -23,6 +23,12 @@ except Exception:
     pass
 
 
+def wait_for_results_page(browser):
+    # Wait for the various redirects after click
+    while "results" not in browser.current_url:
+        time.sleep(0.5)
+
+
 @pytest.fixture(scope="module")
 def browser(request):
     if BROWSER == 'ChromeHeadless':
@@ -182,8 +188,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
     # Wait for the various redirects after click
-    while "results" not in browser.current_url:
-        time.sleep(0.5)
+    wait_for_results_page(browser)
 
     data_url = browser.current_url
 
@@ -571,8 +576,7 @@ def test_explore_360_sample_data_link(server_url, browser):
     browser.get(server_url)
     browser.find_element_by_partial_link_text('loading some sample data.').click()
 
-    while "results" not in browser.current_url:
-        time.sleep(0.5)
+    wait_for_results_page(browser)
 
     body_text = browser.find_element_by_tag_name('body').text
 
@@ -581,3 +585,23 @@ def test_explore_360_sample_data_link(server_url, browser):
     # Show sample data link in the home page only
     with pytest.raises(NoSuchElementException):
         browser.find_element_by_partial_link_text('loading some sample data.')
+
+
+def test_publishing_invalid_domain(server_url, browser):
+    # TODO this will need to be changed to live branch
+    os.environ["REGISTRY_PUBLISHERS_URL"] = "https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/automated-registry/cove/cove_360/fixtures/publishers.json"
+
+    browser.get(server_url)
+
+    # Dismiss the cookie popup
+    browser.find_element_by_class_name("cookie-consent-no").click()
+
+    url_input = browser.find_element(By.CSS_SELECTOR, "#self-publishing-form input[type='url']")
+    url_input.send_keys("https://raw.githubusercontent.com/OpenDataServices/grantnav-sampledata/master/grantnav-20180903134856.json")
+
+    browser.find_element(By.ID, "submit-for-publishing-btn").click()
+
+    # Wait for the processing redirect
+    wait_for_results_page(browser)
+
+    assert "(raw.githubusercontent.com) is not authorised for publishing 360Giving data." in browser.find_element(By.ID, "publisher-not-found-message").text

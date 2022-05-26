@@ -1,0 +1,16 @@
+{
+  "360-testpublisher": {
+    "id": "sdv9v8w9ewe98",
+    "name": "A test publisher",
+    "website": "http://threesixtygiving.org/",
+    "logo": "https://www.threesixtygiving.org/wp-content/uploads/logo.jpg",
+    "prefix": "360G-testpublisher",
+    "org_id": "GB-CHC-99999",
+    "self_publish": {
+      "enabled": true,
+      "authorised_domains": [
+        "test-data.360dev1.vs.mythic-beasts.com"
+      ]
+    }
+  }
+}
