@@ -15,11 +15,7 @@
     <div class="col-md-5">
       <div class="title360"><a href="{% url 'index' %}">Data Quality Tool</a></div>
       <div>Convert, Validate, Explore <a class="underline" title="Go to 360Giving home page" href="https://www.threesixtygiving.org/">360Giving</a> Data</div>
-
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8"><strong>Provide the data you want to check or convert:</strong></div>
   </div>
 {% endblock %}
 
@@ -47,9 +43,10 @@
 
 
 {% block bottomcontent1 %}
+
 <div class="panel panel-default">
   <div class="panel-body">
-    <h2 class="heading-in-panel" ><small>{% blocktrans %}How to use the {% endblocktrans %}{{ app_verbose_name }}</small></h2>
+    <h2 class="heading-in-panel" ><small>{% blocktrans %}How to check your data{% endblocktrans %}</small></h2>
     {% comment %}Translators: Paragraph that describes the application{% endcomment %}
     <p>{% blocktrans %}Upload, paste or provide a link to data using the 360Giving Data Standard format, and this application will check whether it is valid 360Giving data, and provide feedback so that you can check for errors and see ways to improve its quality.{% endblocktrans %}</p>
     <p>{% blocktrans %}The tool will convert between JSON, Excel and CSV formats, allowing you to download the original file, and the converted versions.{% endblocktrans %}</p>
@@ -75,9 +72,40 @@
     </ul>
   </div>
 </div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h2 class="heading-in-panel"><small>{% blocktrans %}How to submit your data{% endblocktrans %}</small></h2>
+    <p>{% blocktrans %}
+      Once 360Giving data has been published by an organisation, the file must be added to the 360Giving Data Registry in order to get the data to appear in 360Giving’s tools such as GrantNav and 360Insights.
+      {% endblocktrans %}
+    </p>
+    <p>{% blocktrans %}
+      Publishers of 360Giving data can add their valid 360Giving data files to the Data Registry using the 360Giving data file submission form.
+      {% endblocktrans %}
+    </p>
+    <p>{% blocktrans %}The submission form allows users to:{% endblocktrans %}</p>
+    <ul>
+      <li>Update an existing Data Registry entry with an updated version of a file</li>
+      <li>Add an entry for a new file</li>
+    </ul>
+    <p>Only publishers with an authorised website domain can use this submission process.</p>
+
+    <h3>Authorised domains</h3>
+    <p>By default, the website domain used by existing publishers to host their 360Giving data files will be authorised, unless the publisher has opted out of using the 360Giving data file submission process.</p>
+    <p>Organisations that publish 360Giving data for the first time can also use the 360Giving data file submission process once they have registered their website domain with 360Giving.</p>
+    <p>To register to your website domain prior to publishing for the first time please contact 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>.</p>
+    <h4>Which domains are not authorised?</h4>
+    <p>Data files published on multi-user hosting platforms like open data repositories, or file sharing services like, Google Sheets or Dropbox, cannot be authorised for use with the 360Giving data file submission process. Files published in this way can be added to the 360Giving Data Registry by emailing 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>.</p>
+    <h4>Further guidance</h4>
+    <p>Read our full guidance on <a href="#TODO">how to use the 360Giving data submission process</a>.</p>
+
+  </div>
+</div>
 {% endblock %}
 
 {% block bottomcontent2 %}
+
 {% include "cove_360/cookie_consent.html" %}
 {% include "cove_360/more_info.html" %}
 {% include "cove_360/footer.html" %}
