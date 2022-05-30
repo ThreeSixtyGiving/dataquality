@@ -1,0 +1,31 @@
+{% extends "input.html" %}
+
+{% block postcontent %}
+<div class="row">
+    <div class="col-md-8">
+      <h2>Check and Publish 360Giving data</h2>
+      <p>Test</p>
+      <p>EXAMPLE TEXT for publisher who are already registered with 360Giving you can update or add new data ...etc:</p>
+    </div>
+  </div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form method="GET" action=".">
+      {% csrf_token %}
+      <input type="hidden" name="self_publishing" value="true">
+      <div class="form-group">
+        <label class="control-label">Supply a URL</label>
+        <input type="url" name="source_url" class="form-control">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary" title="Start the process">
+            Submit
+        </button>
+        <p>You will have a chance to review your data before publishing.</p>
+    </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

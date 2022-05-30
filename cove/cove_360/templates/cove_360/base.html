@@ -19,7 +19,10 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-8"><strong>Provide the data you want to check or convert:</strong></div>
+    <div class="col-md-8">
+      <h2>Check and Convert data</h2>
+      <p>Provide the data you want to check or convert:</p>
+    </div>
   </div>
 {% endblock %}
 
@@ -47,6 +50,7 @@
 
 
 {% block bottomcontent1 %}
+
 <div class="panel panel-default">
   <div class="panel-body">
     <h2 class="heading-in-panel" ><small>{% blocktrans %}How to use the {% endblocktrans %}{{ app_verbose_name }}</small></h2>
@@ -78,7 +82,8 @@
 {% endblock %}
 
 {% block bottomcontent2 %}
-{% include "cove_360/cookie_consent.html" %}
+
+{# {% include "cove_360/cookie_consent.html" %} #}
 {% include "cove_360/more_info.html" %}
 {% include "cove_360/footer.html" %}
 {% endblock %}

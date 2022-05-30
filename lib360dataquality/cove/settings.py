@@ -3,6 +3,7 @@
 COVE_CONFIG = {
     'app_name': 'cove_360',
     'app_base_template': 'cove_360/base.html',
+    'input_template': 'cove_360/input.html',
     'app_verbose_name': '360Giving Data Quality Tool',
     'app_strapline': 'Convert, Validate, Explore 360Giving Data',
     'schema_name': '360-giving-package-schema.json',
