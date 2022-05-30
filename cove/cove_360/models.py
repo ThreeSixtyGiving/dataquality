@@ -32,7 +32,7 @@ class SuppliedDataStatus(models.Model):
 
         data_domain = urlparse(self.supplied_data.source_url).netloc
 
-        for publisher in publishers.values():
+        for publisher in publishers.items():
             if data_domain in publisher["self_publish"]["authorised_domains"]:
                 self.publisher = json.dumps(publisher)
                 break
