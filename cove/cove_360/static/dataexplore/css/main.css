@@ -1486,6 +1486,12 @@ p {
     font-weight: 400;
     color: var(--color-teal-dark); }
 
+p > a {
+  text-decoration: underline; }
+
+ul > li > a {
+  text-decoration: underline; }
+
 .accordion__trigger {
   cursor: pointer; }
 
@@ -3323,11 +3329,18 @@ a.base-card:hover:before {
   .grid--four-columns {
     grid-template-columns: repeat(4, 1fr); } }
 
+@media (min-width: 36em) {
+  .grid--five-columns {
+    grid-template-columns: repeat(5, 1fr); } }
+
 .grid__2 {
   grid-column: auto / span 2; }
 
 .grid__3 {
   grid-column: auto / span 3; }
+
+.grid__5 {
+  grid-column: auto / span 5; }
 
 .grid__all {
   grid-column: 1 / -1; }
