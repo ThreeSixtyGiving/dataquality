@@ -15,30 +15,34 @@
 {% block explore_content %}
 
   {% block data_supplied %}
+
+  {% if "self_publishing" in data_status.supplied_data.parameters %}
   <div class="panel panel-default">
     <div class="panel-heading" >
       <h3 class="panel-title panel-title-explore">
         {% if data_status.can_publish %}
           <span class="font-tick tick" aria-hidden="true"></span>
         {% endif %}
-        Publish your data</h3>
+        {% trans "Publish your data" %}</h3>
         </div>
       <div class="panel-body">
-        {% if data_status.can_publish %}
-        <p>The data was checked and can now be published</p>
+        {% if not data_status.passed %}
+        <p>{% blocktrans %}The data did not pass the checks and cannot be published. See results below.{% endblocktrans %}</p>
+        {% elif data_status.can_publish %}
+        <p>{% trans "Publishing for:" %} {{publisher.name}}</p>
+        <p>{% trans "The data was checked and can now be published." %}</p>
         <pre>DEBUG {% url 'api-results' data_status.supplied_data.id %} </pre>
         <a class="btn btn-success" href="https://sales-force-app-form-thing.threesixtygiving.org/?id={{data_status.supplied_data.id}}">Proceed to Publish</a>
-        {% else %}
-        <p>Sorry we aren't able to publish this data. This may be due to ..</p>
         {% endif %}
     </div>
   </div>
+  {% endif %}
 
     <div class="panel panel-default">
       <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" aria-expanded="true" role="button">
         <h3 class="panel-title panel-title-explore">
           <span class="font-tick tick" aria-hidden="true"></span>
-          Summary: Your data at a glance
+          {% trans "Summary: Your data at a glance" %}
           <span class="pull-right glyphicon glyphicon-collapse-up"></span>
         </h3>
       </div>

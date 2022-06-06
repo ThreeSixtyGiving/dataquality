@@ -1,0 +1,17 @@
+{% extends "explore.html" %}
+{% load i18n %}
+{% block content %}
+ <div class="panel panel-default">
+    <div class="panel-heading" >
+      <h3 class="panel-title panel-title-explore">
+        {% if data_status.can_publish %}
+          <span class="font-tick tick" aria-hidden="true"></span>
+        {% endif %}
+        {% trans "Publish your data" %}</h3>
+        </div>
+      <div class="panel-body">
+        <p>{% blocktrans %}We aren't able to publish this data. This may be due to the domain in the URL for the data ({{source_url_domain}}) not matching one of our authorised domain names.{% endblocktrans %}</p>
+        <p>{% trans "If you believe this to be in error" %} <a href="https://www.threesixtygiving.org/contact/">{% trans "contact support" %}</a>.</p>
+    </div>
+  </div>
+{% endblock %}
