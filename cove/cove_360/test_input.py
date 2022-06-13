@@ -85,4 +85,4 @@ def test_directory_for_empty_filename(rf):
     })))
     supplied_datas = SuppliedData.objects.all()
     assert len(supplied_datas) == 1
-    assert os.path.isdir(supplied_datas[0].upload_dir())
+    assert os.path.isdir(supplied_datas[0].upload_dir()), "Directory not found %s" % supplied_datas[0].upload_dir()
