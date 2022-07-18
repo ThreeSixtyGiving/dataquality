@@ -18,11 +18,18 @@ def lookup_publisher_by_domain(source_url):
         "https://data.threesixtygiving.org/publishers.json",
     )
 
-    basic = HTTPBasicAuth(
-        os.environ.get("REGISTRY_PUBLISHERS_USER", ""),
-        os.environ.get("REGISTRY_PUBLiSHERS_PASS", ""),
-    )
-    r = requests.get(registry_url, auth=basic)
+    try:
+        r = requests.get(
+            registry_url,
+            auth=(
+                os.environ["REGISTRY_PUBLISHERS_USER"],
+                os.environ["REGISTRY_PUBLISHERS_PASS"],
+            ),
+        )
+    except KeyError as e:
+        print("Username and password for registry publishers file not set")
+        raise e
+
     r.raise_for_status()
 
     publishers = r.json()
