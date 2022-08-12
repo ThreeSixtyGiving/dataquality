@@ -8,11 +8,11 @@ pytest-cov
 pytest-localserver
 pytest-xdist
 coveralls
-selenium
+selenium<4.3.0
 transifex-client
 libsass
 Sphinx
 recommonmark
 sphinx_rtd_theme
-hypothesis
+hypothesis==6.13.0
 chromedriver-autoinstaller
