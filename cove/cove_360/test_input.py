@@ -37,7 +37,8 @@ def test_connection_error(rf):
     resp = v.data_input(fake_cove_middleware(rf.post('/', {
         'source_url': 'https://wrong.host.badssl.com/'
     })))
-    assert b'doesn&#39;t match either of' in resp.content
+    print(resp.content)
+    assert b'CertificateError' in resp.content
 
 
 @pytest.mark.django_db

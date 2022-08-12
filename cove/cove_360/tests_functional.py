@@ -359,7 +359,7 @@ def test_footer_360(server_url, browser, link_text, url):
 def test_index_page_360(server_url, browser):
     browser.get(server_url)
     assert 'Data Quality Tool' in browser.find_element_by_class_name('title360').text
-    assert 'How to use the 360Giving Data Quality Tool' in browser.find_element_by_tag_name('body').text
+    assert 'How to check your data' in browser.find_element_by_tag_name('body').text
     assert 'Summary Spreadsheet - ' in browser.find_element_by_tag_name('body').text
     assert 'JSON built to the 360Giving JSON schema' in browser.find_element_by_tag_name('body').text
     assert 'Multi-table data package - Excel' in browser.find_element_by_tag_name('body').text
