@@ -2,6 +2,7 @@ from django.urls import reverse_lazy
 import pytest
 import requests
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 import os
@@ -402,7 +403,7 @@ def test_accordion(server_url, browser):
     browser.get(server_url)
 
     def buttons():
-        return [b.is_displayed() for b in browser.find_elements_by_tag_name('button')]
+        return [b.is_displayed() for b in browser.find_elements(By.CSS_SELECTOR, "#accordion button")]
 
     time.sleep(0.5)
     assert buttons() == [True, False, False]
