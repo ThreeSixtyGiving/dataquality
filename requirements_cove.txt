@@ -154,28 +154,30 @@ webencodings==0.5.1
     # via bleach
 werkzeug==1.0.1
     # via uc-rfc6266-parser
+whitenoise==6.2.0
+    # via -r requirements_cove.in
 xmltodict==0.12.0
     # via
     #   -r requirements_cove.in
     #   flattentool
-zc-lockfile==2.0
+zc.lockfile==2.0
     # via zodb
-zc-zlibstorage==1.2.0
+zc.zlibstorage==1.2.0
     # via flattentool
 zconfig==3.6.0
     # via zodb
 zodb==5.7.0
     # via
     #   flattentool
-    #   zc-zlibstorage
+    #   zc.zlibstorage
 zodbpickle==2.2.0
     # via zodb
-zope-interface==5.4.0
+zope.interface==5.4.0
     # via
     #   btrees
     #   persistent
     #   transaction
-    #   zc-zlibstorage
+    #   zc.zlibstorage
     #   zodb
 
 # The following packages are considered to be unsafe in a requirements file:

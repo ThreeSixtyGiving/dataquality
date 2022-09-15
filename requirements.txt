@@ -208,18 +208,20 @@ werkzeug==1.0.1
     # via
     #   -r requirements_cove.txt
     #   uc-rfc6266-parser
+whitenoise==6.2.0
+    # via -r requirements_cove.txt
 xmltodict==0.12.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
-zc-lockfile==2.0
-    # via -r requirements_cove.txt
-zc-zlibstorage==1.2.0
-    # via -r requirements_cove.txt
 zc.lockfile==2.0
-    # via zodb
+    # via
+    #   -r requirements_cove.txt
+    #   zodb
 zc.zlibstorage==1.2.0
-    # via flattentool
+    # via
+    #   -r requirements_cove.txt
+    #   flattentool
 zconfig==3.6.0
     # via
     #   -r requirements_cove.txt
@@ -228,19 +230,18 @@ zodb==5.7.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
-    #   zc-zlibstorage
+    #   zc.zlibstorage
 zodbpickle==2.2.0
     # via
     #   -r requirements_cove.txt
     #   zodb
-zope-interface==5.4.0
-    # via -r requirements_cove.txt
 zope.interface==5.4.0
     # via
+    #   -r requirements_cove.txt
     #   btrees
     #   persistent
     #   transaction
-    #   zc-zlibstorage
+    #   zc.zlibstorage
     #   zodb
 
 # The following packages are considered to be unsafe in a requirements file:
