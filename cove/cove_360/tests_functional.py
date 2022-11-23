@@ -373,15 +373,7 @@ def test_index_page_360_links(server_url, browser, link_text, url):
     link = browser.find_element_by_link_text(link_text)
     href = link.get_attribute("href")
     assert url in href
-
-
-def test_index_page_360_logo_link(server_url, browser):
-    browser.get(server_url)
-    link = browser.find_element_by_id('360_giving_logo')
-    href = link.get_attribute('href')
-
-    assert href == 'https://www.threesixtygiving.org/'
-
+    
 
 def test_common_index_elements(server_url, browser):
     browser.get(server_url)
