@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.conf import settings
 import pytest
 import requests
 from selenium import webdriver
@@ -35,6 +36,8 @@ def browser(request):
     if BROWSER == 'ChromeHeadless':
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        # uncomment this if "DevToolsActivePort" error
+        # chrome_options.add_argument("--remote-debugging-port=9222")
         browser = webdriver.Chrome(chrome_options=chrome_options)
     else:
         browser = getattr(webdriver, BROWSER)()
@@ -379,7 +382,7 @@ def test_index_page_360_links(server_url, browser, link_text, url):
     link = browser.find_element_by_link_text(link_text)
     href = link.get_attribute("href")
     assert url in href
-    
+
 
 def test_common_index_elements(server_url, browser):
     browser.get(server_url)
@@ -589,7 +592,7 @@ def test_explore_360_sample_data_link(server_url, browser):
 
 
 def test_publishing_invalid_domain(server_url, browser):
-    # TODO this will need to be changed to live branch
+    settings.DATA_SUBMISSION_ENABLED = True
     os.environ["REGISTRY_PUBLISHERS_URL"] = "https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/automated-registry/cove/cove_360/fixtures/publishers.json"
 
     browser.get(server_url)

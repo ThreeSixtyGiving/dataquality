@@ -2,6 +2,8 @@ import requests
 import os
 from urllib.parse import urlparse
 
+from django.conf import settings
+
 
 def extract_domain(source_url):
     return urlparse(source_url).netloc
@@ -10,6 +12,10 @@ def extract_domain(source_url):
 def lookup_publisher_by_domain(source_url):
     """Looks up to see if we have a matching domain for source_url in the publisher
     data from REGISTRY_PUBLISHERS_URL. Returns None or Publisher dict"""
+
+    if not settings.DATA_SUBMISSION_ENABLED:
+        print("Data submission is not enabled")
+        return None
 
     registry_url = os.environ.get(
         "REGISTRY_PUBLISHERS_URL",
