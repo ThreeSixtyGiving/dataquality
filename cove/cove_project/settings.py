@@ -28,7 +28,6 @@ if SENTRY_DSN:
 DEALER_TYPE = 'git'
 
 PIWIK = settings.PIWIK
-GOOGLE_ANALYTICS_ID = settings.GOOGLE_ANALYTICS_ID
 
 # We can't take MEDIA_ROOT and MEDIA_URL from cove settings,
 # ... otherwise the files appear under the BASE_DIR that is the Cove library install.
