@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block postcontent %}
+{% if DATA_SUBMISSION_ENABLED %}
 <div class="row">
     <div class="col-md-8">
       <h2>Submit your data</h2>
@@ -36,5 +37,6 @@
     </form>
   </div>
 </div>
+{% endif %}
 
 {% endblock %}

@@ -42,6 +42,7 @@ MIDDLEWARE = settings.MIDDLEWARE + ("dealer.contrib.django.Middleware",)
 ROOT_URLCONF = settings.ROOT_URLCONF
 TEMPLATES = settings.TEMPLATES
 
+TEMPLATES[0]["OPTIONS"]["context_processors"].append('cove_360.context_processors.additional_context')
 
 WSGI_APPLICATION = settings.WSGI_APPLICATION
 
@@ -108,3 +109,9 @@ if os.environ.get("CACHE"):
 
 # https://docs.djangoproject.com/en/4.0/releases/3.2/#customizing-type-of-auto-created-primary-keys
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+
+DATA_SUBMISSION_ENABLED = False
+
+if "true" in os.environ.get("DATA_SUBMISSION_ENABLED", "").lower():
+    DATA_SUBMISSION_ENABLED = True
