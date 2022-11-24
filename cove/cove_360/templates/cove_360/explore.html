@@ -35,13 +35,6 @@
 
         {# Data passed, Domain not recognised/approved #}
         {% if data_status.passed and not data_status.can_publish %}
-        <script>
-          /* Event Category: Contact
-Event Action: Email Link Click
-Event Name: name@example.com */
-          _paq.push(['trackEvent', 'self_publish', 'publishing_failed', 'can_publish_false', '{{source_url_domain}}' ]);
-
-        </script>
         <p>
           {% blocktrans %}
           Sorry you aren't able to submit this file because the domain name of the website hosting your file ({{source_url_domain}}) is not authorised for publishing 360Giving data.
