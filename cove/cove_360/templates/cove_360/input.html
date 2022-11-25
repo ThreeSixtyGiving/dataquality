@@ -25,8 +25,8 @@
       {% csrf_token %}
       <input type="hidden" name="self_publishing" value="true">
       <div class="form-group">
-        <label class="control-label">Provide a link to your file:</label>
-        <input type="url" name="source_url" class="form-control">
+        <label for="source-url-input" class="control-label">Provide a link to your file:</label>
+        <input id="source-url-input" type="url" name="source_url" class="form-control">
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary" title="Submit your data" id="submit-for-publishing-btn">
