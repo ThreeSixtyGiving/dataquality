@@ -150,6 +150,8 @@ webencodings==0.5.1
     # via bleach
 werkzeug==1.0.1
     # via uc-rfc6266-parser
+whitenoise==6.2.0
+    # via -r requirements_cove.in
 xmltodict==0.13.0
     # via
     #   -r requirements_cove.in

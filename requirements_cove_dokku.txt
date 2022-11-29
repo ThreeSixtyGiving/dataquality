@@ -200,6 +200,8 @@ werkzeug==1.0.1
     # via
     #   -r requirements_cove.txt
     #   uc-rfc6266-parser
+whitenoise==6.2.0
+    # via -r requirements_cove.txt
 xmltodict==0.13.0
     # via
     #   -r requirements_cove.txt
