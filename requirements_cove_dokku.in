@@ -1,0 +1,3 @@
+# for dokku
+-r requirements_cove.txt
+gunicorn
