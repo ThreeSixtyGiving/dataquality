@@ -34,6 +34,29 @@ $ py.test
 
 CoVE is based on Django and be deployed using the deployment mechanisms as defined in the [Django docs](https://docs.djangoproject.com/en/3.1/howto/deployment/)
 
+### Deploying with dokku
+
+There is incomplete and experimental support for deploying with dokku. (No persistent data yet, for example).
+
+DO NOT use in production.
+
+On the server:
+
+```bash
+app_name=dqt
+dokku apps:create $app_name
+dokku config:set --no-restart $app_name DEBUG=False
+dokku config:set --no-restart $app_name ALLOWED_HOSTS=.example.org
+dokku git:set $app_name keep-git-dir true
+```
+
+On the local machine:
+
+```bash
+git remote add dokku dokku@threesixtydokku2.vs.mythic-beasts.com:$app-name
+git push dokku main
+```
+
 
 ## lib360dataquality
 
