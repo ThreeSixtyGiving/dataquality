@@ -6,6 +6,11 @@
 #
 -e file:./
     # via -r requirements_cove.in
+-e git+https://github.com/OpenDataServices/lib-cove.git@05ed94580885e7f01c752dc1d02b3b4f8ad1fe55#egg=libcove
+    # via
+    #   -r requirements_cove.in
+    #   lib360dataquality
+    #   libcoveweb
 aiosmtpd==1.4.2
     # via pytest-localserver
 alabaster==0.7.12
@@ -144,11 +149,6 @@ jsonschema==3.2.0
     # via
     #   -r requirements_cove.in
     #   libcove
-libcove==0.27.0
-    # via
-    #   -r requirements_cove.in
-    #   lib360dataquality
-    #   libcoveweb
 libcoveweb==0.25.0
     # via -r requirements_cove.in
 libsass==0.21.0

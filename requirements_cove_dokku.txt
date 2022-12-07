@@ -6,6 +6,11 @@
 #
 -e file:./
     # via -r requirements_cove.txt
+-e git+https://github.com/OpenDataServices/lib-cove.git@05ed94580885e7f01c752dc1d02b3b4f8ad1fe55#egg=libcove
+    # via
+    #   -r requirements_cove.txt
+    #   lib360dataquality
+    #   libcoveweb
 asgiref==3.5.2
     # via
     #   -r requirements_cove.txt
@@ -100,11 +105,6 @@ jsonschema==3.2.0
     # via
     #   -r requirements_cove.txt
     #   libcove
-libcove==0.27.0
-    # via
-    #   -r requirements_cove.txt
-    #   lib360dataquality
-    #   libcoveweb
 libcoveweb==0.25.0
     # via -r requirements_cove.txt
 lxml==4.9.1

@@ -275,9 +275,9 @@
   <div class="panel panel-default">
     <div class="panel-heading" data-toggle="collapse" data-target="#validation-body">
       <h3 class="panel-title panel-title-explore">
-        {% if validation_errors %}
+        {% if validation_errors or additional_closed_codelist_values %}
           <span class="font-tick cross" aria-hidden="true"></span>
-            {% trans "This data does not use the 360Giving Data Standard correctly" %} <small>{% blocktrans count n_errors=validation_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</small>
+            {% trans "This data does not use the 360Giving Data Standard correctly" %} <small>{% blocktrans count n_errors=validation_and_closed_codelist_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</small>
         {% else %}
           <span class="font-tick tick" aria-hidden="true"></span>
           {% trans "This data uses the 360Giving Data Standard correctly" %}
@@ -288,7 +288,7 @@
     <div id="validation-body" class="collapse">
       <div class="panel-body">
         <p class="explanation">
-          {% if validation_errors %}
+          {% if validation_errors or additional_closed_codelist_values %}
             {% trans "Sorry your data is not yet using the 360Giving Data Standard. We used the " %}
           {% else %}
             {% trans "Congratulations! Your data is using the 360Giving Data Standard. We used the " %}
@@ -296,7 +296,7 @@
           <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a> {% trans "to check this." %}
         </p>
         <div class="explore-help">{% trans "This means that the data" %}
-          {% if validation_errors %}
+          {% if validation_errors or additional_closed_codelist_values %}
             {% trans " does not meet " %}
           {% else %}
             {% trans " meets " %}
@@ -305,7 +305,7 @@
           {% blocktrans %}the requirements of the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a>.{% endblocktrans %}
           {% blocktrans %} Making sure your data uses the standard correctly is important. Otherwise it cannot be used alongside other valid 360Giving data and cannot be included in 360Giving tools, such as GrantNav and 360Insights.{% endblocktrans %}
         </diV>
-        {% if validation_errors %}
+        {% if validation_errors or additional_closed_codelist_values %}
           <br>
           <p class="explanation">&nbsp;{% trans "The following <strong>errors</strong> are preventing your data from being valid 360Giving data. Please use the feedback below to find and resolve the issues in your file" %}</p>
           <br>
@@ -345,6 +345,24 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
+          {% if additional_closed_codelist_values %}
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4>{% trans 'Codelist Errors' %}</h4>
+                </div>
+                <div>
+                  <div class="panel-body">
+                    <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
+                    <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
+                  </div>
+                  </p>
+                  {% with additional_codelist_values=additional_closed_codelist_values %}
+                  <div>{% include "additional_codelist_values.html" %}</div>
+                  {% endwith %}
+                </div>
+              </div>
+          {% endif %}
+        {% endif %}
           {% with validation_errors=validation_errors_grouped.other error_prefix='other-' %}
             {% if validation_errors %}
               <div class="panel panel-default">
@@ -363,11 +381,11 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
-        {% endif %}
       </div>
     </div>
   </div>
   {% endblock validation %}
+
 
   {% block quality_accuracy %}
   {% if quality_accuracy_checks_count %}
