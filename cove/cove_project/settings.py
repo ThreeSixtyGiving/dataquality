@@ -38,7 +38,19 @@ MEDIA_URL = '/media/'
 SECRET_KEY = settings.SECRET_KEY
 DEBUG = settings.DEBUG
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
-MIDDLEWARE = settings.MIDDLEWARE + ("dealer.contrib.django.Middleware",)
+MIDDLEWARE = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'cove.middleware.CoveConfigCurrentApp',
+    "dealer.contrib.django.Middleware",
+)
 ROOT_URLCONF = settings.ROOT_URLCONF
 TEMPLATES = settings.TEMPLATES
 

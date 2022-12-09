@@ -21,3 +21,4 @@ bleach
 xmltodict
 rangedict
 openpyxl
+whitenoise

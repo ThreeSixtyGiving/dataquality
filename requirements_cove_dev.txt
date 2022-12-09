@@ -334,6 +334,8 @@ werkzeug==1.0.1
     # via
     #   pytest-localserver
     #   uc-rfc6266-parser
+whitenoise==6.2.0
+    # via -r requirements_cove.in
 wsproto==1.1.0
     # via trio-websocket
 xmltodict==0.13.0
