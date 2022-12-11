@@ -68,6 +68,7 @@ def main():
                 file_type,
                 lib_cove_config,
                 schema.schema_url,
+                schema.pkg_schema_url
             )
         )
         with open(context["converted_path"], "r") as fp_data:
