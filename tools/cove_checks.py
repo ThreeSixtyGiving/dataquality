@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import argparse
 import json
 import pprint
@@ -68,6 +69,7 @@ def main():
                 file_type,
                 lib_cove_config,
                 schema.schema_url,
+                schema.pkg_schema_url
             )
         )
         with open(context["converted_path"], "r") as fp_data:
@@ -90,7 +92,12 @@ def main():
     # We don't actually want to show the json data again
     del context["json_data"]
 
-    pprint.pprint(context)
+    def serialize_sets(obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return obj
+
+    json.dump(context, sys.stdout, default=serialize_sets)
 
 
 if __name__ == "__main__":
