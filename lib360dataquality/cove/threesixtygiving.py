@@ -10,7 +10,7 @@ import libcove.lib.tools as tools
 import openpyxl
 import pytz
 from dateutil.relativedelta import relativedelta
-from libcove.lib.common import common_checks_context, get_orgids_prefixes
+from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes
 from rangedict import RangeDict as range_dict
 
 try:
@@ -349,6 +349,22 @@ def common_checks_360(
                 + (1 if context["data_only"] else 0),
             }
         )
+
+    additional_codelist_values = get_additional_codelist_values(schema_obj, json_data)
+    closed_codelist_values = {
+        key: value for key, value in additional_codelist_values.items() if not value["isopen"]
+    }
+    open_codelist_values = {key: value for key, value in additional_codelist_values.items() if value["isopen"]}
+
+    closed_codelist_errors_count = sum(len(value['values']) for value in closed_codelist_values.values())
+
+    context.update(
+        {
+            "additional_closed_codelist_values": closed_codelist_values,
+            "additional_open_codelist_values": open_codelist_values,
+            "validation_and_closed_codelist_errors_count": context["validation_errors_count"] + closed_codelist_errors_count
+        }
+    )
 
     return context
 
