@@ -10,7 +10,9 @@ import libcove.lib.tools as tools
 import openpyxl
 import pytz
 from dateutil.relativedelta import relativedelta
-from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes
+from jsonschema.exceptions import ValidationError
+from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
+from libcove.lib.tools import decimal_default
 from rangedict import RangeDict as range_dict
 
 try:
@@ -50,6 +52,71 @@ class RangeDict(range_dict):
     def __setitem__(self, r, v):
         super(RangeDict, self).__setitem__(r, v)
         self.ordered_dict[r] = v
+
+
+def oneOf_draft4(validator, oneOf, instance, schema):
+    """
+    oneOf_draft4 validator based on
+    https://github.com/open-contracting/lib-cove-ocds/blob/2fbaffe95c7c9e7b78aaebcac492e402be08c0b5/libcoveocds/common_checks.py#L40-L115
+    originally from
+    https://github.com/Julian/jsonschema/blob/d16713a4296663f3d62c50b9f9a2893cb380b7af/jsonschema/_validators.py#L337
+    Modified to:
+    - Yield individual errors, by picking the appropriate subschema. This is
+      hard wired, so only works for recipientIndividual/recipientOrganization.
+      If more oneOf's are added, this code must be changed.
+    - sort the instance JSON, so we get a reproducible output that we
+      can can test more easily
+    - Return more information on the ValidationError object, to allow us to
+      replace the translation with a message in cove-ocds
+    """
+    subschemas = enumerate(oneOf)
+    all_errors = []
+    for index, subschema in subschemas:
+        errs = list(validator.descend(instance, subschema, schema_path=index))
+        if not errs:
+            first_valid = subschema
+            break
+        # We check the title, because we don't have access to the field name,
+        # as it lives in the parent.
+        if (
+            schema.get("title") == "360Giving Data Standard Schema"
+        ):
+            # If the instance has a `recipientIndividual` key, use the
+            # subschema that requires that, otherwise use the subschema that
+            # requires `recipientOrganization`
+            if type(instance) is dict and "recipientIndividual" in instance:
+                if "recipientIndividual" in subschema.get("required", []):
+                    for err in errs:
+                        err.assumption = "recipientIndividual"
+                        yield err
+                    return
+            else:
+                if "recipientOrganization" in subschema.get("required", []):
+                    for err in errs:
+                        err.assumption = "recipientOrganization"
+                        yield err
+                    return
+        all_errors.extend(errs)
+    else:
+        err = ValidationError(
+            f"{json.dumps(instance, sort_keys=True, default=decimal_default)} "
+            "is not valid under any of the given schemas",
+            context=all_errors,
+        )
+        err.error_id = "oneOf_any"
+        yield err
+
+    more_valid = [s for i, s in subschemas if validator.is_valid(instance, s)]
+    if more_valid:
+        more_valid.append(first_valid)
+        reprs = ", ".join(repr(schema) for schema in more_valid)
+        err = ValidationError(f"{instance!r} is valid under each of {reprs}")
+        err.error_id = "oneOf_each"
+        err.reprs = reprs
+        yield err
+
+
+validator.VALIDATORS["oneOf"] = oneOf_draft4
 
 
 @tools.ignore_errors
