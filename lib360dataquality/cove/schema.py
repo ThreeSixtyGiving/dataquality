@@ -10,3 +10,4 @@ class Schema360(SchemaJsonMixin):
     pkg_schema_name = config['schema_name']
     schema_url = urljoin(schema_host, schema_name)
     pkg_schema_url = urljoin(schema_host, pkg_schema_name)
+    codelists = config['codelists_host']
