@@ -609,3 +609,36 @@ def test_publishing_invalid_domain(server_url, browser):
     wait_for_results_page(browser)
 
     assert "(raw.githubusercontent.com) is not authorised for publishing 360Giving data." in browser.find_element(By.ID, "publisher-not-found-message").text
+
+
+def test_codelist_validation(server_url, browser, httpserver):
+    source_filename = 'codelist.csv'
+
+    with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
+        httpserver.serve_content(fp.read())
+    if 'CUSTOM_SERVER_URL' in os.environ:
+        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
+        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
+    else:
+        source_url = httpserver.url + '/' + source_filename
+
+    browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
+    browser.find_element_by_partial_link_text('Link').click()
+    time.sleep(0.5)
+    browser.find_element_by_id('id_source_url').send_keys(source_url)
+    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
+
+    time.sleep(1)
+
+    browser.find_element_by_class_name("cookie-consent-no").click()
+    time.sleep(0.5)
+
+    # Click and un-collapse validation section
+    browser.find_element_by_id('validation-panel-heading').click()
+    time.sleep(0.5)
+
+    validation_body_text = browser.find_element_by_id('validation-body').text
+    assert "Codelist Errors" in validation_body_text
+    assert "BAD" in validation_body_text
+    assert "FRG010" not in validation_body_text
