@@ -69,6 +69,29 @@ def oneOf_draft4(validator, oneOf, instance, schema):
     - Return more information on the ValidationError object, to allow us to
       replace the translation with a message in cove-ocds
     """
+    # We check the title, because we don't have access to the field name,
+    # as it lives in the parent.
+    #
+    # This section produces a message for the specific case where a oneOf is
+    # just a difference between 2 required fields. This happens at the top of
+    # this function, so that we get a message when neither subschema validates
+    # (ordinarily we would not)
+    if (
+        schema.get("title") == "360Giving Data Standard Schema" and
+        len(oneOf) == 2
+        and set(oneOf[0].keys()) == set(oneOf[1].keys()) == {"required"}
+    ):
+        required_fields_1 = set(oneOf[0]["required"]) - set(oneOf[1]["required"])
+        required_fields_2 = set(oneOf[1]["required"]) - set(oneOf[0]["required"])
+        if len(required_fields_1) == 1 and len(required_fields_2) == 1:
+            required_field_1 = list(required_fields_1)[0]
+            required_field_2 = list(required_fields_2)[0]
+            if type(instance) is dict and required_field_1 in instance and required_field_2 in instance:
+                err = ValidationError(f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
+                err.error_id = "oneOf_each_required"
+                err.extras = [required_field_1, required_field_2]
+                yield err
+
     subschemas = enumerate(oneOf)
     all_errors = []
     for index, subschema in subschemas:
@@ -236,9 +259,7 @@ def group_validation_errors(validation_errors, file_type, openpyxl_workbook):
         }
         if error["validator"] == "required":
             validation_errors_grouped["required"].append((error_json, error_extra))
-        elif error["validator"] in ["format", "oneOf"]:
-            # NOTE: this assumes oneOf is only used for specifying multiple
-            # format types, which is true of the 1.0 schema.
+        elif error["validator"] == "format" or (error["validator"] == "oneOf" and "format" in error["validator_value"][0]):
             validation_errors_grouped["format"].append((error_json, error_extra))
         else:
             validation_errors_grouped["other"].append((error_json, error_extra))

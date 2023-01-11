@@ -17,5 +17,9 @@ def html_error_msg_360(error):
             "If different grants have the same Id these should be updated to make them unique. "
             "<a href=\"https://standard.threesixtygiving.org/en/latest/identifiers/#grant-identifier\" target=\"_blank\">(more info)</a>"
         ))
+    elif error["error_id"] == "oneOf_each_required":
+        return mark_safe(_(
+            f"Only 1 of <code>{error['extras'][0]}</code> or <code>{error['extras'][1]}</code> is permitted, but both are present"
+        ))
 
     return html_error_msg(error)
