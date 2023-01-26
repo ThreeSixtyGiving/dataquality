@@ -56,7 +56,7 @@ def server_url(request, live_server):
 
 @pytest.mark.parametrize(('source_filename', 'expected_text', 'conversion_successful'), [
     ('fundingproviders-grants_fixed_2_grants.json', ['A file was downloaded from',
-                                                  'There are 4 grants to 2 recipients',
+                                                  'There are 4 grants to 2 recipient organisations and 0 to recipient individuals',
                                                   'The grants were awarded in GBP with a total value of £662,990 and individual awards ranging from £152,505 (lowest) to £178,990 (highest)',
                                                   'Convert to Spreadsheet',
                                                   'data does not use the 360Giving Data Standard correctly 15 Errors',
@@ -73,7 +73,7 @@ def server_url(request, live_server):
                                                  'Unique recipient organisation identifiers:  2',
                                                  '360G-fundingproviders-000002/X/00/X'], True),
     ('fundingproviders-grants_2_grants.xlsx', ['Data about 1 funder',
-                                            'There are 2 grants to 1 recipient',
+                                            'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
                                             'The grants were awarded in GBP with a total value of £331,495',
                                             # check that there's no errors after the heading
                                             'Data conversion successful\nBefore checking',
@@ -94,7 +94,7 @@ def server_url(request, live_server):
     ('fundingproviders-grants_2_grants_titleswithoutrollup.xlsx', [], True),
     # Test a 360 csv in cp1252 encoding
     ('fundingproviders-grants_2_grants_cp1252.csv', ['Data about 1 funder',
-                                                  'There are 2 grants to 1 recipient',
+                                                  'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
                                                   'The grants were awarded in GBP with a total value of £331,495',
                                                   'This file is not \'utf-8\' encoded (it is cp1252 encoded)'], True),
     # Test a non-valid file.
