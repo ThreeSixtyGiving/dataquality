@@ -19,9 +19,13 @@
     <td>{{grants_aggregates.distinct_funding_org_identifier|length}}</td>
   </tr>
   <tr>
-    <th>Recipients</th>
+    <th>Recipient Organisations</th>
     <td>{{grants_aggregates.distinct_recipient_org_identifier|length}}</td>
-  </td>
+  </tr>
+  <tr>
+    <th>Recipient Individuals</th>
+    <td>{{grants_aggregates.recipient_individuals_count}}</td>
+  </tr>
   <tr>
     <th>Start Date</th>
     <td>{{grants_aggregates.min_award_date}}</td>
@@ -96,7 +100,7 @@ Currencies:
 
 
 <div class="container">
-<h3>Recipients</h3>
+<h3>Recipient Organisations</h3>
 
 <div class="col-md-4">
 <h4>Identifiers ({{grants_aggregates.distinct_recipient_org_identifier|length}})</h3>
