@@ -155,6 +155,7 @@ def get_grants_aggregates(json_data):
     distinct_funding_org_identifier = set()
     distinct_recipient_org_identifier = set()
     currencies = {}
+    recipient_individuals_count = 0
 
     if "grants" in json_data:
         for grant in json_data["grants"]:
@@ -215,6 +216,9 @@ def get_grants_aggregates(json_data):
                 if recipient_org_id:
                     distinct_recipient_org_identifier.add(recipient_org_id)
 
+            if grant.get("recipientIndividual", None):
+                recipient_individuals_count += 1
+
     recipient_org_prefixes = get_prefixes(distinct_recipient_org_identifier)
     recipient_org_identifier_prefixes = recipient_org_prefixes["prefixes"]
     recipient_org_identifiers_unrecognised_prefixes = recipient_org_prefixes[
@@ -237,6 +241,7 @@ def get_grants_aggregates(json_data):
         "award_years": award_years,
         "distinct_funding_org_identifier": distinct_funding_org_identifier,
         "distinct_recipient_org_identifier": distinct_recipient_org_identifier,
+        "recipient_individuals_count": recipient_individuals_count,
         "currencies": currencies,
         "recipient_org_identifier_prefixes": recipient_org_identifier_prefixes,
         "recipient_org_identifiers_unrecognised_prefixes": recipient_org_identifiers_unrecognised_prefixes,
