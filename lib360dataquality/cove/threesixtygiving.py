@@ -436,10 +436,7 @@ def common_checks_360(
             {
                 "{}_errored".format(test_class_type): extra_checks is None,
                 "{}_checks".format(test_class_type): extra_checks,
-                "{}_checks_count".format(test_class_type): (
-                    len(extra_checks) if extra_checks else 0
-                )
-                + (1 if context["data_only"] else 0),
+                "{}_checks_count".format(test_class_type): len(extra_checks) if extra_checks else 0
             }
         )
 
