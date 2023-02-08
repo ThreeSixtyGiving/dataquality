@@ -675,3 +675,63 @@ def test_oneof_validation(server_url, browser, httpserver):
     assert "Only 1 of recipientOrganization or recipientIndividual is permitted, but both are present" in validation_body_text
     validation_body_html = browser.find_element_by_id("validation-body").get_attribute("innerHTML")
     assert "Only 1 of <code>recipientOrganization</code> or <code>recipientIndividual</code> is permitted, but both are present" in validation_body_html
+
+
+@pytest.mark.parametrize(('source_filename', 'expected_texts', 'unexpected_texts'), [
+    ("RecipientIndWithoutToIndividualsDetails.xlsx", [
+        "33% of grants have Recipient Ind but no To Individuals Details:Grant Purpose or To Individuals Details:Primary Grant Reason",
+        "Your data contains grants to individuals, but without the grant purpose or grant reason codes. This can make it difficult to use data on grants to individuals, as much of the information is anonymised, so it is recommended that you share these codes for all grants to individuals.",
+        "Sheet: grants Row: 2 Header: Recipient Ind:Identifier",
+    ], []),
+    ("RecipientIndDEI.json", [
+        "1 grant has Recipient Ind and DEI information",
+        "Your data contains grants to individuals which also have DEI (Diversity, Equity and Inclusion) information. You must not share any DEI data about individuals as this can make them personally identifiable when combined with other information in the grant.",
+        "grants/0/recipientIndividual/id",
+    ], []),
+    # If there's a Postcode, but no Recipient Ind, there should be no message
+    ("GeoCodePostcode.xlsx", [], [
+        "looks like a postcode",
+        "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
+        "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
+    ]),
+    ("GeoCodePostcodeRecipientInd.xlsx", [
+        "67% of grants have Geographic Code that looks like a postcode",
+        "Your data contains a Beneficiary Location:Geographic Code that looks like a postcode on grants to individuals. You must not share any postcodes for grants to individuals as this can make them personally identifiable when combined with other information in the grant.",
+        "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
+        "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
+    ], []),
+])
+def test_quality_checks(server_url, browser, httpserver, source_filename, expected_texts, unexpected_texts):
+    with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
+        httpserver.serve_content(fp.read())
+    if 'CUSTOM_SERVER_URL' in os.environ:
+        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
+        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
+    else:
+        source_url = httpserver.url + '/' + source_filename
+
+    browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
+    browser.find_element_by_partial_link_text('Link').click()
+    time.sleep(0.5)
+    browser.find_element_by_id('id_source_url').send_keys(source_url)
+    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
+
+    time.sleep(1)
+
+    browser.find_element_by_class_name("cookie-consent-no").click()
+    time.sleep(0.5)
+
+    try:
+        # Click and un-collapse quality accuracy section
+        browser.find_element_by_id('quality-accuracy-panel-heading').click()
+        time.sleep(0.5)
+
+        quality_accuracy_body_text = browser.find_element_by_id('quality-accuracy-body').text
+    except NoSuchElementException:
+        quality_accuracy_body_text = ""
+
+    for expected_text in expected_texts:
+        assert expected_text in quality_accuracy_body_text
+    for unexpected_text in unexpected_texts:
+        assert unexpected_text not in quality_accuracy_body_text
