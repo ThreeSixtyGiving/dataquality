@@ -1555,6 +1555,104 @@ class PostDatedAwardDates(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
+    """Check for grants with recipientIndividual, but no toIndividualsDetails."""
+
+    check_text = {
+        "heading": mark_safe(
+            '<span class="highlight-background-text">Recipient Ind</span> but no '
+            '<span class="highlight-background-text">To Individuals Details:Grant Purpose</span> or '
+            '<span class="highlight-background-text">To Individuals Details:Primary Grant Reason</span>'
+        ),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains grants to individuals, but without the grant "
+        "purpose or grant reason codes. This can make it difficult to use data "
+        "on grants to individuals, as much of the information is anonymised, so "
+        "it is recommended that you share these codes for all grants to "
+        "individuals."
+    )
+
+    def process(self, grant, path_prefix):
+        if "recipientIndividual" in grant and "toIndividualsDetails" not in grant:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/recipientIndividual/id"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+class RecipientIndDEI(AdditionalTest):
+    """Check for grants with recipientIndividual, and DEI info (under "project")."""
+
+    check_text = {
+        "heading": mark_safe('<span class="highlight-background-text">Recipient Ind</span> and DEI information'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains grants to individuals which also have DEI "
+        "(Diversity, Equity and Inclusion) information. You must not share any "
+        "DEI data about individuals as this can make them personally "
+        "identifiable when combined with other information in the grant."
+    )
+
+    def process(self, grant, path_prefix):
+        if "recipientIndividual" in grant and "project" in grant:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/recipientIndividual/id"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+# Postcode regex from https://ideal-postcodes.co.uk/guides/postcode-validation
+# "Simple Regular Expression"
+# This is a simple regex, for something that "looks roughly like a postcode",
+# which is all we need here.
+# Modified to match when there are accidental leading and trailing spaces.
+postcode_re = re.compile("^\s*[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}\s*$", re.IGNORECASE)
+
+
+# Note that we ignore Geographic Code Type here because people putting in
+# postcodes don't tend to use that properly.
+class GeoCodePostcode(AdditionalTest):
+    """Check for grants with a beneficiaryLocation geoCode that looks like a postcode."""
+
+    check_text = {
+        "heading": mark_safe("Geographic Code that looks like a postcode"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains a "
+        '<span class="highlight-background-text">Beneficiary Location:Geographic Code</span> '
+        "that looks like a postcode on grants to individuals. You must not "
+        "share any postcodes for grants to individuals as this can make them "
+        "personally identifiable when combined with other information in the "
+        "grant."
+    )
+
+    def process(self, grant, path_prefix):
+        if "recipientIndividual" in grant:
+            for num, beneficiary_location in enumerate(grant.get("beneficiaryLocation", [])):
+                geo_code = beneficiary_location.get("geoCode", "")
+                if postcode_re.match(geo_code):
+                    self.failed = True
+                    self.count += 1
+                    self.json_locations.append(
+                        "{}/beneficiaryLocation/{}/geoCode".format(path_prefix, num)
+                    )
+
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
 TEST_CLASSES = {
     QUALITY_TEST_CLASS: [
         ZeroAmountTest,
@@ -1572,6 +1670,9 @@ TEST_CLASSES = {
         FarFutureActualDates,
         FarPastDates,
         PostDatedAwardDates,
+        RecipientIndWithoutToIndividualsDetails,
+        RecipientIndDEI,
+        GeoCodePostcode,
     ],
     USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
