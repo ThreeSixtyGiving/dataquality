@@ -701,14 +701,11 @@
         </div>
         <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
         <h4><span class="glyphicon glyphicon-download-alt"></span> Download</h4>
-        <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you to download a copy of the original file, and the converted version." %}</p>
+        <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
         <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
-        <p>{% trans "We provide the following formats to download:" %}</p>
-        <ul class="left-space">
-          <li>
-            <a href="{{original_file.url}}">{% trans "Original file" %} ({{file_type}})</a> {{original_file.size|filesizeformat}}
-          </li>
-          {% if not conversion_error %}
+        {% if not conversion_error and conversion != 'flattenable' %}
+          <p>{% trans "We provide the following formats to download:" %}</p>
+          <ul class="left-space">
             {% if conversion == 'unflatten' %}
             <li>
               <a href="{{converted_url}}">{{JSON}} ({% trans converted %})</a> {{converted_file_size|filesizeformat}}
@@ -721,8 +718,21 @@
               <sub>{% trans "You can also download an" %}<a href="{{converted_url}}.xlsx"> {% trans "Excel Spreadsheet (.xlsx) with JSON field names" %}</a> {% trans "instead of titles as column headers" %} ({{converted_file_size|filesizeformat}})</sub>
             </li>
             {% endif %}
-          {% endif %}
-        </ul>
+          </ul>
+        {% else %}
+          <p>(No downloads available as the conversion hasn't happened, or has errored).</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <div class="box box--orange" role="alert">
+            <h3 class="box__heading">Original file download for admin users</h2>
+            <p>Warning, this is the original file uploaded. Do not download if you don't trust whoever sent you a link to this page, it could contain a virus. Note that this box and this download link are only visible to admin users, not others you share this page with.</p>
+            <ul class="left-space">
+              <li>
+                <a href="{{original_file.url}}">{% trans "Original file" %} ({{file_type}})</a> {{original_file.size|filesizeformat}}
+              </li>
+            </ul>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

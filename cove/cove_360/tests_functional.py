@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.conf import settings
 import pytest
@@ -5,6 +6,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from seleniumlogin import force_login
 import time
 import os
 
@@ -166,7 +168,8 @@ def server_url(request, live_server):
         'bad currency 4',
     ], True),
 ])
-def test_explore_360_url_input(server_url, browser, httpserver, source_filename, expected_text, conversion_successful):
+@pytest.mark.parametrize('authed', [True, False])
+def test_explore_360_url_input(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
     """
     TODO Test sequence: uploading JSON, files to Download only original, click convert,
     new http request, 'Data Summary' collapse. 'Download and Share' uncollapsed,
@@ -176,13 +179,21 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     TODO Test file with grants awarded on different dates, check right text in 'Data Summary'
     """
+
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
         httpserver.serve_content(fp.read())
     if 'CUSTOM_SERVER_URL' in os.environ:
         # Use urls pointing to GitHub if we have a custom (probably non local) server URL
         source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
+        if authed:
+            pytest.skip()
     else:
         source_url = httpserver.url + PREFIX_360 + source_filename
+
+    if authed:
+        User = get_user_model()
+        user = User.objects.create_user(username='myuser', password='password')
+        force_login(user, browser, server_url)
 
     browser.get(server_url)
     browser.find_element_by_class_name("cookie-consent-no").click()
@@ -205,7 +216,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
         time.sleep(0.5)
 
     # Do the assertions
-    check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful)
+    check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed)
 
     if conversion_successful:
         # Expand all sections with the expand all button this time
@@ -215,7 +226,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
         assert 'Advanced view' in browser.find_element_by_tag_name('body').text
 
 
-def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful):
+def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
     body_text = browser.find_element_by_tag_name('body').text
     body_text += browser.page_source
 
@@ -233,28 +244,41 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
 
     if conversion_successful:
         if source_filename.endswith('.json'):
-            assert 'Original file (json)' in body_text
-            original_file = browser.find_element_by_link_text('Original file (json)').get_attribute("href")
+            if authed:
+                assert 'Original file (json)' in body_text
+                original_file = browser.find_element_by_link_text('Original file (json)').get_attribute("href")
+            else:
+                assert 'Original file (json)' not in body_text
         elif source_filename.endswith('.xlsx'):
-            assert 'Original file (xlsx)' in body_text
+            if authed:
+                assert 'Original file (xlsx)' in body_text
+                original_file = browser.find_element_by_link_text('Original file (xlsx)').get_attribute("href")
+            else:
+                assert 'Original file (xlsx)' not in body_text
             assert 'JSON (Converted from Original) ' in body_text
-            original_file = browser.find_element_by_link_text('Original file (xlsx)').get_attribute("href")
             converted_file = browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
             assert "unflattened.json" in converted_file
         elif source_filename.endswith('.csv'):
-            assert 'Original file (csv)' in body_text
-            original_file = browser.find_element_by_link_text('Original file (csv)').get_attribute("href")
+            if authed:
+                assert 'Original file (csv)' in body_text
+                original_file = browser.find_element_by_link_text('Original file (csv)').get_attribute("href")
+            else:
+                assert 'Original file (csv)' not in body_text
             converted_file = browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
             assert "unflattened.json" in browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
 
-        assert source_filename in original_file
-        assert ' 0 bytes' not in body_text
         # Test for Load New File button
         assert 'Load New File' in body_text
 
-        original_file_response = requests.get(original_file)
-        assert original_file_response.status_code == 200
-        assert int(original_file_response.headers['content-length']) != 0
+        if authed:
+            assert 'Note that this box and this download link are only visible to admin users' in body_text
+
+            assert source_filename in original_file
+            assert ' 0 bytes' not in body_text
+
+            original_file_response = requests.get(original_file)
+            assert original_file_response.status_code == 200
+            assert int(original_file_response.headers['content-length']) != 0
 
         if source_filename.endswith('.xlsx') or source_filename.endswith('.csv'):
             converted_file_response = requests.get(converted_file)

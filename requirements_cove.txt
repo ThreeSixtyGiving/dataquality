@@ -80,7 +80,7 @@ libcove==0.29.0
     #   -r requirements_cove.in
     #   lib360dataquality
     #   libcoveweb
-libcoveweb==0.25.0
+libcoveweb==0.27.0
     # via -r requirements_cove.in
 lxml==4.9.1
     # via flattentool
@@ -140,8 +140,6 @@ strict-rfc3339==0.7
     # via -r requirements_cove.in
 transaction==3.0.1
     # via zodb
-uc-rfc6266-parser==0.1.0
-    # via libcoveweb
 urllib3==1.26.11
     # via
     #   requests
@@ -149,7 +147,7 @@ urllib3==1.26.11
 webencodings==0.5.1
     # via bleach
 werkzeug==1.0.1
-    # via uc-rfc6266-parser
+    # via libcoveweb
 whitenoise==6.2.0
     # via -r requirements_cove.in
 xmltodict==0.13.0
