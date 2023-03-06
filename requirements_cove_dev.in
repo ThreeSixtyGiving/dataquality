@@ -9,6 +9,7 @@ pytest-localserver
 pytest-xdist
 coveralls
 selenium<4.3.0
+django-selenium-login
 transifex-client
 libsass
 Sphinx
