@@ -88,6 +88,10 @@ if getattr(settings, 'RAVEN_CONFIG', None):
     RAVEN_CONFIG = settings.RAVEN_CONFIG
 
 INSTALLED_APPS = (
+    'cove_360',
+    'cove',
+    'cove.input',
+    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -95,10 +99,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap3',
-    'cove',
-    'cove.input',
-    'cove_360',
 )
 
 WSGI_APPLICATION = 'cove_project.wsgi.application'
