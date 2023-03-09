@@ -3,6 +3,7 @@ import csv
 import itertools
 import json
 import logging
+import re
 from decimal import Decimal
 
 from cove.views import explore_data_context, cove_web_input_error
@@ -124,6 +125,14 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             json_data = json.load(fp, parse_float=Decimal)
 
     context = common_checks_360(context, upload_dir, json_data, schema_360)
+
+    # Construct the 360Giving specific urls for codelists in the docs
+    for key in ['additional_closed_codelist_values', 'additional_open_codelist_values']:
+        for path_string, codelist_info in context[key].items():
+            codelist_info['codelist_url'] = (
+                'https://standard.threesixtygiving.org/en/latest/technical/codelists/#' +
+                re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
+            )
 
     # Experimental to test performance impacts
     # Note False will currently leave the grants table in the UI empty
