@@ -1,8 +1,7 @@
 -e file:./
 Django>3.2,<3.3
-#^^ rq.filter: <1.12
 flattentool>=0.17.0
-libcove>=0.29.0
+libcove>=0.30.0
 libcoveweb
 django-bootstrap3
 django-debug-toolbar
