@@ -15,6 +15,7 @@ setup(
         'python-dateutil',
         'rangedict',
         'ijson',
+        'jsonschema<4',
     ],
     extras_require={
         'perf': [

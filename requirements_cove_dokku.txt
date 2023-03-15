@@ -6,29 +6,27 @@
 #
 -e file:./
     # via -r requirements_cove.txt
-asgiref==3.5.2
+asgiref==3.6.0
     # via
     #   -r requirements_cove.txt
     #   django
-attrs==22.1.0
+attrs==22.2.0
     # via
     #   -r requirements_cove.txt
     #   jsonschema
-backports-datetime-fromisoformat==1.0.0
+backports-datetime-fromisoformat==2.0.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
-bleach==5.0.1
+bleach==6.0.0
     # via -r requirements_cove.txt
-btrees==4.10.0
+btrees==5.0
     # via
     #   -r requirements_cove.txt
     #   zodb
 cached-property==1.5.2
-    # via
-    #   -r requirements_cove.txt
-    #   libcove
-certifi==2022.6.15
+    # via -r requirements_cove.txt
+certifi==2022.12.7
     # via
     #   -r requirements_cove.txt
     #   requests
@@ -37,7 +35,7 @@ cffi==1.15.1
     # via
     #   -r requirements_cove.txt
     #   persistent
-charset-normalizer==2.1.0
+charset-normalizer==3.1.0
     # via
     #   -r requirements_cove.txt
     #   requests
@@ -53,19 +51,19 @@ defusedxml==0.7.1
     # via
     #   -r requirements_cove.txt
     #   odfpy
-django==3.2.15
+django==3.2.18
     # via
     #   -r requirements_cove.txt
     #   django-bootstrap3
     #   django-debug-toolbar
     #   libcoveweb
-django-bootstrap3==22.1
+django-bootstrap3==22.2
     # via
     #   -r requirements_cove.txt
     #   libcoveweb
-django-debug-toolbar==3.5.0
+django-debug-toolbar==3.8.1
     # via -r requirements_cove.txt
-django-environ==0.9.0
+django-environ==0.10.0
     # via
     #   -r requirements_cove.txt
     #   libcoveweb
@@ -73,25 +71,25 @@ et-xmlfile==1.1.0
     # via
     #   -r requirements_cove.txt
     #   openpyxl
-flattentool==0.17.2
+flattentool==0.20.1
     # via
     #   -r requirements_cove.txt
     #   libcove
     #   libcoveweb
 gunicorn==20.1.0
     # via -r requirements_cove_dokku.in
-idna==3.3
+idna==3.4
     # via
     #   -r requirements_cove.txt
     #   requests
-ijson==3.1.4
+ijson==3.2.0.post0
     # via
     #   -r requirements_cove.txt
     #   flattentool
     #   lib360dataquality
 json-merge-patch==0.2
     # via -r requirements_cove.txt
-jsonref==0.2
+jsonref==1.1.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
@@ -99,27 +97,32 @@ jsonref==0.2
 jsonschema==3.2.0
     # via
     #   -r requirements_cove.txt
+    #   lib360dataquality
     #   libcove
-libcove==0.29.0
+libcove==0.30.0
     # via
     #   -r requirements_cove.txt
     #   lib360dataquality
     #   libcoveweb
 libcoveweb==0.27.0
     # via -r requirements_cove.txt
-lxml==4.9.1
+lxml==4.9.2
     # via
     #   -r requirements_cove.txt
     #   flattentool
+markupsafe==2.1.2
+    # via
+    #   -r requirements_cove.txt
+    #   werkzeug
 odfpy==1.4.1
     # via
     #   -r requirements_cove.txt
     #   flattentool
-openpyxl==3.0.10
+openpyxl==3.1.2
     # via
     #   -r requirements_cove.txt
     #   flattentool
-persistent==4.9.0
+persistent==5.0
     # via
     #   -r requirements_cove.txt
     #   btrees
@@ -128,7 +131,7 @@ pycparser==2.21
     # via
     #   -r requirements_cove.txt
     #   cffi
-pyrsistent==0.18.1
+pyrsistent==0.19.3
     # via
     #   -r requirements_cove.txt
     #   jsonschema
@@ -136,7 +139,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements_cove.txt
     #   lib360dataquality
-pytz==2022.2
+pytz==2022.7.1
     # via
     #   -r requirements_cove.txt
     #   django
@@ -145,7 +148,7 @@ rangedict==0.1.7
     # via
     #   -r requirements_cove.txt
     #   lib360dataquality
-requests==2.28.1
+requests==2.28.2
     # via
     #   -r requirements_cove.txt
     #   libcove
@@ -162,7 +165,7 @@ schema==0.7.5
     # via
     #   -r requirements_cove.txt
     #   flattentool
-sentry-sdk==1.9.4
+sentry-sdk==1.16.0
     # via -r requirements_cove.txt
 six==1.16.0
     # via
@@ -172,7 +175,7 @@ six==1.16.0
     #   python-dateutil
     #   rfc3339-validator
     #   zodb
-sqlparse==0.4.2
+sqlparse==0.4.3
     # via
     #   -r requirements_cove.txt
     #   django
@@ -183,7 +186,7 @@ transaction==3.0.1
     # via
     #   -r requirements_cove.txt
     #   zodb
-urllib3==1.26.11
+urllib3==1.26.15
     # via
     #   -r requirements_cove.txt
     #   requests
@@ -192,17 +195,17 @@ webencodings==0.5.1
     # via
     #   -r requirements_cove.txt
     #   bleach
-werkzeug==1.0.1
+werkzeug==2.2.3
     # via
     #   -r requirements_cove.txt
     #   libcoveweb
-whitenoise==6.2.0
+whitenoise==6.4.0
     # via -r requirements_cove.txt
 xmltodict==0.13.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
-zc-lockfile==2.0
+zc-lockfile==3.0.post1
     # via
     #   -r requirements_cove.txt
     #   zodb
@@ -210,20 +213,20 @@ zc-zlibstorage==1.2.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
-zconfig==3.6.0
+zconfig==3.6.1
     # via
     #   -r requirements_cove.txt
     #   zodb
-zodb==5.7.0
+zodb==5.8.0
     # via
     #   -r requirements_cove.txt
     #   flattentool
     #   zc-zlibstorage
-zodbpickle==2.3
+zodbpickle==2.6
     # via
     #   -r requirements_cove.txt
     #   zodb
-zope-interface==5.4.0
+zope-interface==5.5.2
     # via
     #   -r requirements_cove.txt
     #   btrees
