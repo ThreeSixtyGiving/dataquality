@@ -58,6 +58,31 @@
         </p>
         {% endif %}
 
+        <script>
+          window.addEventListener('load', function() {
+      
+            let domainValidation, dataValidation, validation;
+      
+            if ('{{ data_status.can_publish }}' === 'True') {
+              domainValidation = "domain-valid"
+            } else {
+              domainValidation = 'domain-invalid'
+            }
+      
+            if ('{{ data_status.passed }}' === 'True') {
+              dataValidation = "data-valid"
+            } else {
+              dataValidation = 'data-invalid'
+            }
+      
+            validation = `${domainValidation}-${dataValidation}`;
+            source = '{{ source_url }}'
+      
+            _paq.push(['trackEvent', 'Status', validation, source]);
+            _paq.push(['trackPageView']);
+          })
+        </script>
+
     </div>
   </div>
   {% endif %}
