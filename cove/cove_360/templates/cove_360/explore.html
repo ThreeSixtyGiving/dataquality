@@ -61,12 +61,12 @@
         <script>
           window.addEventListener('load', function() {
       
-            let domainValidation, dataValidation, validation;
+            let publisherValidation, dataValidation, validation;
       
-            if ('{{ data_status.can_publish }}' === 'True') {
-              domainValidation = "domain-valid"
+            if ('{{ data_status.publisher.self_publish.enabled }}' === 'True') {
+              publisherValidation = "publishing-enabled"
             } else {
-              domainValidation = 'domain-invalid'
+              publisherValidation = "publishing-disabled"
             }
       
             if ('{{ data_status.passed }}' === 'True') {
@@ -75,7 +75,7 @@
               dataValidation = 'data-invalid'
             }
       
-            validation = `${domainValidation}-${dataValidation}`;
+            validation = `${publisherValidation}-${dataValidation}`;
             source = '{{ source_url }}'
       
             _paq.push(['trackEvent', 'Status', validation, source]);
