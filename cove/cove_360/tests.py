@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 
 from lib360dataquality.cove.schema import Schema360
-from lib360dataquality.cove.threesixtygiving import run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
+from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
 
 # Source is cove_360/fixtures/fundingproviders-grants_fixed_2_grants.json
 # see cove_360/fixtures/SOURCES for more info.
@@ -133,6 +133,12 @@ GRANTS = {
                 'relatedActivity': ["", "360G-xxx"],
                 'title': 'Excepteur sint occaecat cupidatat non proident, sunt in culpa '
                          'qui officia deserunt mollit anim id est laborum.'}]}
+
+
+# To output the GRANTS data for testing:
+#import json
+#with open("test_data.json", "w+") as f:
+#   json.dump(GRANTS, f, indent=2)
 
 
 SOURCE_MAP = {
@@ -634,7 +640,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
 USEFULNESS_CHECKS_RESULTS = [
     (
         {
-            "heading": "33% of grants have a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
+            "heading": "33% of recipient organisation grants have a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
             "message": 'Use an external reference, such as a charity or company number, to identify an organisation whenever possible. Doing so makes it possible to see when recipients have received grants from multiple funders, and allows grants data to be linked or combined with information from official registers. Some organisations, such as small unregistered groups, do not have an official registration number that can be used. In these cases the organisation identifier should start ‘360G-‘ and use an identifier taken from the publisher’s internal systems. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrg360GPrefix",
             "count": 1,
@@ -668,7 +674,7 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": '33% of grants do not have either a <span class="highlight-background-text">Recipient Org:Company Number</span> or a <span class="highlight-background-text">Recipient Org:Charity Number</span>',
+            "heading": '33% of recipient organisation grants do not have either a <span class="highlight-background-text">Recipient Org:Company Number</span> or a <span class="highlight-background-text">Recipient Org:Charity Number</span>',
             "message": "Company and charity numbers are important for understanding grantmaking in the UK and including these separately makes it easier for users to match grants data with official sources of information about the recipients. If your grants are to organisations that don’t have UK Company or UK Charity numbers, you can ignore this notice.",
             "type": "NoRecipientOrgCompanyCharityNumber",
             "count": 1,
@@ -685,7 +691,7 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants do not have recipient organisation location information",
+            "heading": "33% of recipient organisation grants do not have recipient organisation location information",
             "message": 'Recipient location data in the form of postcodes or geocodes provides a consistent way to describe a location. This data can be used to produce maps, such as the maps in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help. ',
             "type": "IncompleteRecipientOrg",
             "count": 1,
@@ -861,13 +867,15 @@ def test_schema_360():
 # and USEFULNESS_CHECKS_RESULTS respectively.
 
 def test_quality_accuracy_checks():
-    test_result = run_extra_checks(GRANTS, SOURCE_MAP, TEST_CLASSES['quality_accuracy'])
+    aggregates = get_grants_aggregates(GRANTS, ignore_errors=True)
+    test_result = run_extra_checks(GRANTS, SOURCE_MAP, TEST_CLASSES['quality_accuracy'], aggregates)
 
     assert test_result == QUALITY_ACCURACY_CHECKS_RESULTS
 
 
 def test_usefulness_checks():
-    test_result = run_extra_checks(GRANTS, SOURCE_MAP, TEST_CLASSES['usefulness'])
+    aggregates = get_grants_aggregates(GRANTS, ignore_errors=True)
+    test_result = run_extra_checks(GRANTS, SOURCE_MAP, TEST_CLASSES['usefulness'], aggregates)
 
     assert test_result == USEFULNESS_CHECKS_RESULTS
 
