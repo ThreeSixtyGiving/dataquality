@@ -430,6 +430,7 @@ def common_checks_360(
             TEST_CLASSES[test_class_type],
             ignore_errors=True,
             return_on_error=None,
+            aggregates=context["grants_aggregates"],
         )
 
         context.update(
@@ -514,16 +515,23 @@ def flatten_dict(grant, path=""):
             yield ("{}/{}".format(path, key), value)
 
 
+RECIPIENT_ANY = ""
+RECIPIENT_ORGANISATION = "recipient organisation"
+RECIPIENT_INDIVIDUAL = "recipient individual"
+
+
 class AdditionalTest:
     def __init__(self, **kw):
         self.grants = kw["grants"]
-        self.grants_count = len(self.grants)
+        self.aggregates = kw["aggregates"]
         self.grants_percentage = 0
         self.json_locations = []
         self.failed = False
         self.count = 0
         self.heading = None
         self.message = None
+        # Default to the most common type
+        self.relevant_grant_type = RECIPIENT_ANY
 
     def process(self, grant, path_prefix):
         pass
@@ -540,17 +548,33 @@ class AdditionalTest:
         if test_class_type == QUALITY_TEST_CLASS:
             return self.count
 
-        if self.grants_count == 1 and self.count == 1:
+        if self.aggregates["count"] == 1 and self.count == 1:
             self.grants_percentage = 100
             return "1"
 
-        heading_percentage = "{:.0%}".format(self.count / self.grants_count)
+        # The total grants is contextual e.g. a test may fail for a recipient org-id
+        # this is only relevant to grants to organisations and not individuals
+        if self.relevant_grant_type == RECIPIENT_ANY:
+            total = self.aggregates["count"]
+        elif self.relevant_grant_type == RECIPIENT_ORGANISATION:
+            total = self.aggregates["count"] - self.aggregates["recipient_individuals_count"]
+        elif self.relevant_grant_type == RECIPIENT_INDIVIDUAL:
+            total = self.aggregates["recipient_individuals_count"]
+
+        # Guard against a division by 0
+        if total < 1:
+            total = 1
+
+        heading_percentage = "{:.0%}".format(self.count / total)
         self.grants_percentage = int(heading_percentage[:-1])
 
         if self.grants_percentage < 5:
             return self.count
 
-        return "{} of".format(heading_percentage)
+        if self.relevant_grant_type == RECIPIENT_ANY:
+            return f"{heading_percentage} of"
+        else:
+            return f"{heading_percentage} of {self.relevant_grant_type}"
 
     def format_heading_count(self, message, test_class_type=None, verb="have"):
         """Build a string with count of grants plus message
@@ -560,7 +584,7 @@ class AdditionalTest:
         2 grants have + message or 3 grants contain + message.
         """
         count = (
-            self.count if test_class_type == QUALITY_TEST_CLASS else self.grants_count
+            self.count if test_class_type == QUALITY_TEST_CLASS else self.aggregates["count"]
         )
         noun = "grant" if count == 1 else "grants"
         if verb == "have":
@@ -634,6 +658,10 @@ class RecipientOrg360GPrefix(AdditionalTest):
         "for further help."
     )
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
+
     def process(self, grant, path_prefix):
         try:
             for num, organization in enumerate(grant["recipientOrganization"]):
@@ -701,6 +729,10 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -797,6 +829,10 @@ class RecipientOrgCharityNumber(AdditionalTest):
         "ignored."
     )
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
+
     def process(self, grant, path_prefix):
         try:
             count_failure = False
@@ -850,6 +886,10 @@ class RecipientOrgCompanyNumber(AdditionalTest):
         "in which case this message can be ignored."
     )
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
+
     def process(self, grant, path_prefix):
         try:
             count_failure = False
@@ -894,6 +934,10 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
         "are to organisations that don’t have UK Company or UK Charity numbers, you can "
         "ignore this notice."
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -941,6 +985,10 @@ class IncompleteRecipientOrg(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
         "for further help. "
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -1179,6 +1227,10 @@ class OrganizationIdLooksInvalid(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         for org_type in ("fundingOrganization", "recipientOrganization"):
@@ -1574,6 +1626,10 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
         "individuals."
     )
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "toIndividualsDetails" not in grant:
             self.failed = True
@@ -1599,6 +1655,10 @@ class RecipientIndDEI(AdditionalTest):
         "DEI data about individuals as this can make them personally "
         "identifiable when combined with other information in the grant."
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "project" in grant:
@@ -1637,6 +1697,10 @@ class GeoCodePostcode(AdditionalTest):
         "personally identifiable when combined with other information in the "
         "grant."
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant:
@@ -1753,10 +1817,11 @@ def create_grant_dates_dict(grant):
 
 
 @tools.ignore_errors
-def run_extra_checks(json_data, cell_source_map, test_classes):
+def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
     if "grants" not in json_data:
         return []
-    test_instances = [test_cls(grants=json_data["grants"]) for test_cls in test_classes]
+
+    test_instances = [test_cls(grants=json_data["grants"], aggregates=aggregates) for test_cls in test_classes]
 
     for num, grant in enumerate(json_data["grants"]):
         for test_instance in test_instances:
