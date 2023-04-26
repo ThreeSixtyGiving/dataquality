@@ -23,7 +23,8 @@ PREFIX_360 = os.environ.get('PREFIX_360', '/')
 # Ensure the correct version of chromedriver is installed
 try:
     chromedriver_autoinstaller.install()
-except Exception:
+except Exception as e:
+    print(f"Chromedriver not auto installed: {e}")
     pass
 
 
