@@ -107,7 +107,9 @@
 
 {% block bottomcontent2 %}
 
+{% if not DEBUG %}
 {% include "cove_360/cookie_consent.html" %}
+{% endif %}
 {% include "cove_360/more_info.html" %}
 {% include "cove_360/footer.html" %}
 {% endblock %}
