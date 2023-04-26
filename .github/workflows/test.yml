@@ -27,7 +27,7 @@ jobs:
     - name: Install Ubuntu Translation Libraries
       run: sudo apt install gettext
     - name: Test 360
-      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings py.test -n 2 --cov-append --cov --cov-report=
+      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings py.test -vv -n 2 --cov-append --cov --cov-report=
     - name: Migrate Database
       run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py migrate
     - name: Compile Messages
