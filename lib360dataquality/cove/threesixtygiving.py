@@ -542,16 +542,10 @@ class AdditionalTest:
             "message": self.message,
             "type": self.__class__.__name__,
             "count": self.count,
+            "percentage": self.grants_percentage,
         }
 
     def get_heading_count(self, test_class_type):
-        if test_class_type == QUALITY_TEST_CLASS:
-            return self.count
-
-        if self.aggregates["count"] == 1 and self.count == 1:
-            self.grants_percentage = 100
-            return "1"
-
         # The total grants is contextual e.g. a test may fail for a recipient org-id
         # this is only relevant to grants to organisations and not individuals
         if self.relevant_grant_type == RECIPIENT_ANY:
@@ -565,16 +559,22 @@ class AdditionalTest:
         if total < 1:
             total = 1
 
-        heading_percentage = "{:.0%}".format(self.count / total)
-        self.grants_percentage = int(heading_percentage[:-1])
+        self.grants_percentage = round(self.count / total, 1)
+        heading_percentage = "{:.0%}".format(self.grants_percentage)
 
-        if self.grants_percentage < 5:
+        # Return conditions
+
+        if test_class_type == QUALITY_TEST_CLASS:
             return self.count
 
-        if self.relevant_grant_type == RECIPIENT_ANY:
-            return f"{heading_percentage} of"
-        else:
-            return f"{heading_percentage} of {self.relevant_grant_type}"
+        if self.aggregates["count"] == 1 and self.count == 1:
+            self.grants_percentage = 100
+            return f"1 {self.relevant_grant_type}".strip()
+
+        if self.grants_percentage < 5:
+            return f"{self.count} {self.relevant_grant_type}".strip()
+
+        return f"{heading_percentage} of {self.relevant_grant_type}".strip()
 
     def format_heading_count(self, message, test_class_type=None, verb="have"):
         """Build a string with count of grants plus message
@@ -583,14 +583,11 @@ class AdditionalTest:
         prepended to message, eg: 1 grant has + message,
         2 grants have + message or 3 grants contain + message.
         """
-        count = (
-            self.count if test_class_type == QUALITY_TEST_CLASS else self.aggregates["count"]
-        )
-        noun = "grant" if count == 1 else "grants"
+        noun = "grant" if self.count == 1 else "grants"
         if verb == "have":
-            verb = "has" if count == 1 else verb
+            verb = "has" if self.count == 1 else verb
         elif verb == "do":
-            verb = "does" if count == 1 else verb
+            verb = "does" if self.count == 1 else verb
         else:
             # Naively!
             verb = verb + "s" if self.count == 1 else verb

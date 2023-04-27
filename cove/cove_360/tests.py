@@ -371,6 +371,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": "It’s worth taking a look at these grants and deciding if they should be included in your data. It’s unusual to have grants of £0, but there may be a reasonable explanation. If £0 value grants are to be published in your data consider adding an explanation to the description of the grant to help anyone using the data to understand how to interpret the information.",
             "type": "ZeroAmountTest",
             "count": 1,
+            "percentage": 0.3
         },
         ["grants/0/amountAwarded"],
         [
@@ -388,6 +389,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target=\"_blank\" href="https://org-id.guide/">org-id list locator</a>. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrgUnrecognisedPrefix",
             "count": 1,
+            "percentage": 0.3
         },
         ["grants/0/fundingOrganization/0/id"],
         [
@@ -405,6 +407,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target=\"_blank\" href="https://org-id.guide/">org-id list locator</a>. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrgUnrecognisedPrefix",
             "count": 1,
+            "percentage": 0.3
         },
         ["grants/1/recipientOrganization/0/id"],
         [
@@ -422,6 +425,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. You can check UK charity numbers online at <a target=\"_blank\" href="https://findthatcharity.uk/">FindthatCharity</a>. This error may also be triggered by correctly formatted non-UK charity numbers, in which case this message can be ignored.',
             "type": "RecipientOrgCharityNumber",
             "count": 1,
+            "percentage": 0.3
         },
         ["grants/0/recipientOrganization/0/charityNumber"],
         [
@@ -439,6 +443,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. UK Company numbers are typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter prefix, <span class="highlight-background-text">SC123459</span>. You can check company numbers online at <a target=\"_blank\" href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. This error may also be triggered by correctly formatted non-UK company numbers, in which case this message can be ignored.',
             "type": "RecipientOrgCompanyNumber",
             "count": 1,
+            "percentage": 0.3
         },
         ["grants/0/recipientOrganization/0/companyNumber"],
         [
@@ -456,6 +461,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": "The identifiers might not be valid for the recognised register that they refer to - for example, an identifier with the prefix 'GB-CHC' that contains an invalid charity number. Common causes of this are missing or extra digits, typos or incorrect values such as text appearing in this field. See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> for further help.",
             "type": "OrganizationIdLooksInvalid",
             "count": 2,
+            "percentage": 0.7
         },
         ["grants/2/fundingOrganization/0/id", "grants/2/recipientOrganization/0/id"],
         [
@@ -479,6 +485,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'If you are only publishing for a single funder then you should review your <span class="highlight-background-text">Funding Organisation identifier</span> field to see where multiple IDs have occurred. If you are expecting to be publishing data for multiple funders and the number of funders is correct, then you can ignore this error notice.',
             "type": "MoreThanOneFundingOrg",
             "count": 0,
+            "percentage": 0
         },
         [
             "grants/0/fundingOrganization/0/id",
@@ -512,6 +519,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": "Your data may contain an email address (or something that looks like one), which can constitute personal data if it is the email of an individual. The use and distribution of personal data is restricted by the Data Protection Act. You should ensure that any personal data is removed from your data prior to publishing it, or that it is only included with the knowledge and consent of the person to whom it refers.",
             "type": "LooksLikeEmail",
             "count": 2,
+            "percentage": 0.7,
         },
         ["grants/0/Grant type", "grants/0/title"],
         [
@@ -521,10 +529,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants have dates that don’t exist",
+            "heading": "1 grant has dates that don’t exist",
             "message": "Your data contains dates that didn't, or won't, exist - such as the 31st of September, or the 29th of February in a year that's not a leap year. This error is commonly caused by typos during data entry.",
             "type": "ImpossibleDates",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/2/plannedDates/0/startDate"],
         [
@@ -538,10 +547,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": '33% of grants have <span class="highlight-background-text">Planned Dates:Start Date</span> entries that are after the corresponding <span class="highlight-background-text">Planned Dates:End Date</span>',
+            "heading": '1 grant has <span class="highlight-background-text">Planned Dates:Start Date</span> entries that are after the corresponding <span class="highlight-background-text">Planned Dates:End Date</span>',
             "message": "This can happen when the fields are accidentally reversed, or if there is a typo in the date. This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software.",
             "type": "PlannedStartDateBeforeEndDate",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/0/plannedDates/0/startDate"],
         [
@@ -555,10 +565,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": '33% of grants have <span class="highlight-background-text">Actual Dates:Start Date</span> entries that are after the corresponding <span class="highlight-background-text">Actual Dates:End Date</span>',
+            "heading": '1 grant has <span class="highlight-background-text">Actual Dates:Start Date</span> entries that are after the corresponding <span class="highlight-background-text">Actual Dates:End Date</span>',
             "message": "This can happen when the fields are accidentally reversed, or if there is a typo in the date. This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software.",
             "type": "ActualStartDateBeforeEndDate",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/actualDates/0/startDate"],
         [
@@ -572,10 +583,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants have Planned Dates that are over 12 years in the future",
+            "heading": "1 grant has Planned Dates that are over 12 years in the future",
             "message": "Your data contains Planned Dates that are more than 12 years into the future. You can disregard this error notice if your data describes activities that run a long time into the future, but you should check for data entry errors if this isn't expected.",
             "type": "FarFuturePlannedDates",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/plannedDates/0/endDate"],
         [
@@ -589,10 +601,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants have Actual Date entries that are over 5 years in the future",
+            "heading": "1 grant has Actual Date entries that are over 5 years in the future",
             "message": "Your data contains Actual Date entries that are more than 5 years into the future. You can disregard this error notice if your data describes activities far in the future, but you should check for data entry errors if this isn't expected.",
             "type": "FarFutureActualDates",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/2/actualDates/0/endDate"],
         [
@@ -606,10 +619,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants have dates that are over 25 years ago",
+            "heading": "1 grant has dates that are over 25 years ago",
             "message": "Your data contains dates that are more than 25 years ago. You can disregard this error notice if your data is about activities far in the past, but you should check for data entry errors if this isn't expected.",
             "type": "FarPastDates",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/2/actualDates/0/startDate"],
         [
@@ -623,10 +637,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "67% of grants have Award Dates that are in the future",
+            "heading": "2 grants have Award Dates that are in the future",
             "message": "Your data contains grant Award Dates in the future. This date is when the decision to award the grant was made so it would normally be in the past. This error can happen when there is a typo in the date, or the data includes grants that are not yet fully committed",
             "type": "PostDatedAwardDates",
             "count": 2,
+            "percentage": 0.7,
         },
         ["grants/0/awardDate", "grants/1/awardDate"],
         [
@@ -640,10 +655,11 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
 USEFULNESS_CHECKS_RESULTS = [
     (
         {
-            "heading": "33% of recipient organisation grants have a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
+            "heading": "1 recipient organisation grant has a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
             "message": 'Use an external reference, such as a charity or company number, to identify an organisation whenever possible. Doing so makes it possible to see when recipients have received grants from multiple funders, and allows grants data to be linked or combined with information from official registers. Some organisations, such as small unregistered groups, do not have an official registration number that can be used. In these cases the organisation identifier should start ‘360G-‘ and use an identifier taken from the publisher’s internal systems. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrg360GPrefix",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/0/recipientOrganization/0/id"],
         [
@@ -657,10 +673,11 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of grants have a <span class=\"highlight-background-text\">Funding Org:Identifier</span> that starts '360G-'",
+            "heading": "1 grant has a <span class=\"highlight-background-text\">Funding Org:Identifier</span> that starts '360G-'",
             "message": 'Use an external reference, such as a charity or company number, to identify a funding organisation whenever possible. Some funders do not have an official registration number that can be used. In these cases the funding organisation identifier should reuse the publisher prefix and therefore start with “360G-”. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrg360GPrefix",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/fundingOrganization/0/id"],
         [
@@ -674,10 +691,11 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": '33% of recipient organisation grants do not have either a <span class="highlight-background-text">Recipient Org:Company Number</span> or a <span class="highlight-background-text">Recipient Org:Charity Number</span>',
+            "heading": '1 recipient organisation grant does not have either a <span class="highlight-background-text">Recipient Org:Company Number</span> or a <span class="highlight-background-text">Recipient Org:Charity Number</span>',
             "message": "Company and charity numbers are important for understanding grantmaking in the UK and including these separately makes it easier for users to match grants data with official sources of information about the recipients. If your grants are to organisations that don’t have UK Company or UK Charity numbers, you can ignore this notice.",
             "type": "NoRecipientOrgCompanyCharityNumber",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/2/recipientOrganization/0/id"],
         [
@@ -691,10 +709,11 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "33% of recipient organisation grants do not have recipient organisation location information",
+            "heading": "1 recipient organisation grant does not have recipient organisation location information",
             "message": 'Recipient location data in the form of postcodes or geocodes provides a consistent way to describe a location. This data can be used to produce maps, such as the maps in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help. ',
             "type": "IncompleteRecipientOrg",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/0/recipientOrganization/0/id"],
         [
@@ -708,60 +727,66 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": '33% of grants do not contain any <span class="highlight-background-text">Grant Programme</span> fields',
+            "heading": '1 grant does not contain any <span class="highlight-background-text">Grant Programme</span> fields',
             "message": "Grant programme names help users to understand a funder’s different types of funding and priorities, and see how their grants vary across and within these. This information is especially useful when it refers to the communities, sectors, issues or places that are the focus of the programme. If your organisation does not have grant programmes this notice can be ignored.",
             "type": "NoGrantProgramme",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/0/id"],
         [{"sheet": "grants", "letter": "A", "row_number": 2, "header": "Identifier"}],
     ),
     (
         {
-            "heading": "33% of grants do not contain any beneficiary location fields",
+            "heading": "1 grant does not contain any beneficiary location fields",
             "message": 'Beneficiary location data in the form of place names and geocodes allow users to understand which places funding is reaching. This data can be more accurate in showing where grants are going geographically, especially in cases where the recipient location is in a different place from the activity being funded. Beneficiary location codes can be used to produce maps, such as the ones in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>for further help.',
             "type": "NoBeneficiaryLocation",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/id"],
         [{"sheet": "grants", "letter": "A", "row_number": 3, "header": "Identifier"}],
     ),
     (
         {
-            "heading": "33% of grants have a title and a description that are the same",
+            "heading": "1 grant has a title and a description that are the same",
             "message": "Users may find that the data is less useful as they are unable to discover more about the grants. Consider including a more detailed description if you have one.",
             "type": "TitleDescriptionSame",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/2/description"],
         [{"sheet": "grants", "letter": "Z", "row_number": 4, "header": "Description"}],
     ),
     (
         {
-            "heading": "33% of grants have a title that is longer than recommended",
+            "heading": "1 grant has a title that is longer than recommended",
             "message": "Titles for grant activities should be under 140 characters long so that people can quickly understand the purpose of the grant.",
             "type": "TitleLength",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/title"],
         [{"sheet": "grants", "letter": "O", "row_number": 3, "header": "Title"}],
     ),
     (
         {
-            "heading": '33% of grants do not have <span class="highlight-background-text">Last Modified</span> information',
+            "heading": '1 grant does not have <span class="highlight-background-text">Last Modified</span> information',
             "message": '<span class="highlight-background-text">Last Modified</span> shows the date and time when information about a grant was last updated in your file. Including this information allows data users to see when changes have been made and reconcile differences between versions of your data.',
             "type": "NoLastModified",
             "count": 1,
+            "percentage": 0.3,
         },
         ["grants/1/id"],
         [{"sheet": "grants", "letter": "A", "row_number": 3, "header": "Identifier"}],
     ),
     (
         {
-            "heading": '67% of grants do not have <span class="highlight-background-text">Data Source</span> information',
+            "heading": '2 grants do not have <span class="highlight-background-text">Data Source</span> information',
             "message": '<span class="highlight-background-text">Data Source</span> is a web link pointing to the source of this data. It informs users about where information came from and is an important part of establishing trust in your data. This may be a link to an original 360Giving data file, a file from which the data was converted, or your organisation’s website.',
             "type": "NoDataSource",
             "count": 2,
+            "percentage": 0.7,
         },
         ["grants/0/id", "grants/2/id"],
         [
