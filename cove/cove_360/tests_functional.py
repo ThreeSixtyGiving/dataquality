@@ -66,7 +66,7 @@ def server_url(request, live_server):
                                                   'your data is not yet using the 360Giving Data Standard',
                                                   'Incorrect Formats',
                                                   'Non-unique id values',
-                                                  '100% of grants do not contain any beneficiary location fields',
+                                                  '4 grants do not contain any beneficiary location fields',
                                                   'Unique grant identifiers:  2',
                                                   'Unique funder organisation identifiers:  1',
                                                   '360G-fundingproviders-000002/X/00/X'], True),
@@ -504,7 +504,7 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
     modal_additional_checks = browser.find_element_by_css_selector('.usefulness-checks-2')
     assert "in" in modal_additional_checks.get_attribute("class").split()
     modal_additional_checks_text = modal_additional_checks.text
-    assert "100% of recipient organisation grants do not have recipient organisation location information" in modal_additional_checks_text
+    assert "4 recipient organisation grants do not have recipient organisation location information" in modal_additional_checks_text
     assert "grants/0/recipientOrganization/0/id" in modal_additional_checks_text
     table_rows = browser.find_elements_by_css_selector('.usefulness-checks-2 tbody tr')
     assert len(table_rows) == 4
@@ -704,12 +704,12 @@ def test_oneof_validation(server_url, browser, httpserver):
 
 @pytest.mark.parametrize(('source_filename', 'expected_texts', 'unexpected_texts'), [
     ("RecipientIndWithoutToIndividualsDetails.xlsx", [
-        "33% of recipient individual grants have Recipient Ind but no To Individuals Details:Grant Purpose or To Individuals Details:Primary Grant Reason",
+        "1 recipient individual grant has Recipient Ind but no To Individuals Details:Grant Purpose or To Individuals Details:Primary Grant Reason",
         "Your data contains grants to individuals, but without the grant purpose or grant reason codes. This can make it difficult to use data on grants to individuals, as much of the information is anonymised, so it is recommended that you share these codes for all grants to individuals.",
         "Sheet: grants Row: 2 Header: Recipient Ind:Identifier",
     ], []),
     ("RecipientIndDEI.json", [
-        "1 grant has Recipient Ind and DEI information",
+        "1 recipient individual grant has Recipient Ind and DEI information",
         "Your data contains grants to individuals which also have DEI (Diversity, Equity and Inclusion) information. You must not share any DEI data about individuals as this can make them personally identifiable when combined with other information in the grant.",
         "grants/0/recipientIndividual/id",
     ], []),
@@ -720,7 +720,7 @@ def test_oneof_validation(server_url, browser, httpserver):
         "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
     ]),
     ("GeoCodePostcodeRecipientInd.xlsx", [
-        "67% of recipient individual grants have Geographic Code that looks like a postcode",
+        "2 recipient individual grants have Geographic Code that looks like a postcode",
         "Your data contains a Beneficiary Location:Geographic Code that looks like a postcode on grants to individuals. You must not share any postcodes for grants to individuals as this can make them personally identifiable when combined with other information in the grant.",
         "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
         "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
