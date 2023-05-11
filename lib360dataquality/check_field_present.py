@@ -1,4 +1,4 @@
-from lib360dataquality.cove.threesixtygiving import AdditionalTest
+from lib360dataquality.cove.threesixtygiving import AdditionalTest, RECIPIENT_INDIVIDUAL
 from functools import wraps
 
 
@@ -92,3 +92,26 @@ class GrantProgrammeTitleNotPresent(FieldNotPresentBase):
     @exception_to_false
     def check_field(self, grant):
         return grant["grantProgramme"][0]["title"]
+
+
+class IndividualsCodeListsNotPresent(FieldNotPresentBase):
+    field = (
+        "toIndividualsDetails/grantPurpose or toIndividualsDetails/primaryGrantReason"
+    )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+
+    def check_field(self, grant):
+        # Not relevant
+        if not grant.get("recipientIndividual"):
+            return True
+
+        details = grant.get("toIndividualsDetails")
+        if details:
+            return (
+                len(details.get("grantPurpose", [])) > 0
+                or len(details.get("primaryGrantReason", "")) > 0
+            )
+        return False
