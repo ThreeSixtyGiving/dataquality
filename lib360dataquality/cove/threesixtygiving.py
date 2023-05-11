@@ -553,6 +553,9 @@ class AdditionalTest:
         elif self.relevant_grant_type == RECIPIENT_ORGANISATION:
             total = self.aggregates["count"] - self.aggregates["recipient_individuals_count"]
         elif self.relevant_grant_type == RECIPIENT_INDIVIDUAL:
+            # if there are no individuals in this data then reset the count
+            if self.aggregates["recipient_individuals_count"] == 0:
+                self.count = 0
             total = self.aggregates["recipient_individuals_count"]
 
         # Guard against a division by 0
