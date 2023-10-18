@@ -119,8 +119,15 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                                         lib_cove_config=lib_cove_config))
 
     else:
+        def conversion_warning_hook(w):
+            if hasattr(w.message, "path_till_now"):
+                if w.message.path_till_now == "publisher":
+                    return 'Just "Publisher" should not appear in the Meta tab, did you mean "Publisher:Name"?'
+            else:
+                return w
+
         context.update(convert_spreadsheet(upload_dir, upload_url, file_name, file_type, lib_cove_config, schema_360.schema_url,
-                                           schema_360.pkg_schema_url))
+                                           schema_360.pkg_schema_url, conversion_warning_hook=conversion_warning_hook))
         with open(context['converted_path'], encoding='utf-8') as fp:
             json_data = json.load(fp, parse_float=Decimal)
 
