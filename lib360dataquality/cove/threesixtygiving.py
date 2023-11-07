@@ -571,10 +571,10 @@ class AdditionalTest:
             return self.count
 
         if self.aggregates["count"] == 1 and self.count == 1:
-            self.grants_percentage = 100
+            self.grants_percentage = 1.0
             return f"1 {self.relevant_grant_type}".strip()
 
-        if self.grants_percentage < 5:
+        if self.count < 5:
             return f"{self.count} {self.relevant_grant_type}".strip()
 
         return f"{heading_percentage} of {self.relevant_grant_type}".strip()
