@@ -47,11 +47,11 @@ def exception_to_false(f):
 
 
 class ClassificationNotPresent(FieldNotPresentBase):
-    field = "classifications"
+    field = "classifications/0/title"
 
     @exception_to_false
     def check_field(self, grant):
-        return grant["classifications"]
+        return grant["classifications"][0]["title"]
 
 
 class BeneficiaryLocationNameNotPresent(FieldNotPresentBase):
@@ -79,11 +79,19 @@ class BeneficiaryLocationGeoCodeNotPresent(FieldNotPresentBase):
 
 
 class PlannedDurationNotPresent(FieldNotPresentBase):
-    field = "plannedDates/0/duration"
+    field = (
+        "plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)"
+    )
 
     @exception_to_false
     def check_field(self, grant):
-        return grant["plannedDates"][0]["duration"]
+        if not grant["plannedDates"][0].get("duration") or not (
+            grant["plannedDates"][0].get("startDate")
+            and grant["plannedDates"][0].get("endDate")
+        ):
+            return False
+
+        return True
 
 
 class GrantProgrammeTitleNotPresent(FieldNotPresentBase):
