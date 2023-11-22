@@ -562,8 +562,7 @@ class AdditionalTest:
         if total < 1:
             total = 1
 
-        self.grants_percentage = round(self.count / total, 1)
-        heading_percentage = "{:.0%}".format(self.grants_percentage)
+        self.grants_percentage = self.count / total
 
         # Return conditions
 
@@ -574,10 +573,10 @@ class AdditionalTest:
             self.grants_percentage = 1.0
             return f"1 {self.relevant_grant_type}".strip()
 
-        if self.count < 5:
+        if self.count <= 5:
             return f"{self.count} {self.relevant_grant_type}".strip()
 
-        return f"{heading_percentage} of {self.relevant_grant_type}".strip()
+        return f"{round(self.grants_percentage*100)}% of {self.relevant_grant_type}".strip()
 
     def format_heading_count(self, message, test_class_type=None, verb="have"):
         """Build a string with count of grants plus message
