@@ -4,6 +4,7 @@ import itertools
 import json
 import logging
 import re
+import os
 from decimal import Decimal
 
 from cove.views import explore_data_context, cove_web_input_error
@@ -20,7 +21,7 @@ from libcove.config import LibCoveConfig
 from libcove.lib.converters import convert_spreadsheet, convert_json
 from libcove.lib.exceptions import CoveInputDataError
 
-from lib360dataquality.cove.schema import Schema360
+from lib360dataquality.cove.schema import Schema360, ExtensionsError
 from lib360dataquality.cove.threesixtygiving import TEST_CLASSES
 from lib360dataquality.cove.threesixtygiving import common_checks_360
 
@@ -63,7 +64,6 @@ def explore_360(request, pk, template='cove_360/explore.html'):
         print("Cache hit")
         return render(request, template, cached_context)
 
-    schema_360 = Schema360()
     context, db_data, error = explore_data_context(request, pk)
     if error:
         return error
@@ -91,6 +91,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     upload_url = db_data.upload_url()
     file_name = db_data.original_file.file.name
     file_type = context['file_type']
+    schema_360 = Schema360(upload_dir)
 
     if file_type == 'json':
         # open the data first so we can inspect for record package
@@ -114,15 +115,43 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                     'link_text': _('Try Again'),
                     'msg': _('360Giving JSON should have an object as the top level, the JSON you supplied does not.'),
                 })
-            context.update(convert_json(upload_dir, upload_url, file_name, schema_url=schema_360.schema_url,
-                                        request=request, flatten=request.POST.get('flatten'),
-                                        lib_cove_config=lib_cove_config))
+
+            extension_metadatas = schema_360.resolve_extension(json_data)
+
+            context.update(convert_json(upload_dir, upload_url, file_name, schema_url=schema_360.schema_file,
+                                    request=request, flatten=request.POST.get('flatten'),
+                                    lib_cove_config=lib_cove_config))
 
     else:
-        context.update(convert_spreadsheet(upload_dir, upload_url, file_name, file_type, lib_cove_config, schema_360.schema_url,
-                                           schema_360.pkg_schema_url))
+        # Convert spreadsheet to json
+        context.update(convert_spreadsheet(upload_dir, upload_url, file_name, file_type, lib_cove_config, schema_360.schema_file,
+                                           schema_360.pkg_schema_file))
+
         with open(context['converted_path'], encoding='utf-8') as fp:
             json_data = json.load(fp, parse_float=Decimal)
+
+        try:
+            # Check data for presence of any schema extensions if exists re-convert using the newly patched schema
+            if extension_metadatas := schema_360.resolve_extension(json_data):
+                # Delete old converted data. If it is detected by libcove it will skip conversion (unflattening)
+                os.unlink(context["converted_path"])
+
+                context.update(convert_spreadsheet(upload_dir, upload_url, file_name, file_type, lib_cove_config, schema_360.schema_file, schema_360.pkg_schema_file))
+                # Re-load the newly flattened data
+                with open(context['converted_path'], encoding='utf-8') as fp:
+                    json_data = json.load(fp, parse_float=Decimal)
+
+                context["extension_metadatas"] = extension_metadatas
+        except ExtensionsError as err:
+            raise CoveInputDataError(context={
+                    'sub_title': _("Sorry, we can't process the data with the specified extension(s)"),
+                    'link': 'index',
+                    'link_text': _('Try Again'),
+                    'msg': _(format_html('We think you tried to upload data that uses an extension to the 360Giving standard. However there was a problem with the extension.'
+                             '\n\n<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">'
+                             '</span> <strong>Error message:</strong> {}', err)),
+                    'error': format(err)
+                })
 
     context = common_checks_360(context, upload_dir, json_data, schema_360)
 

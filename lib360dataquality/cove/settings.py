@@ -19,5 +19,10 @@ COVE_CONFIG = {
     'convert_titles': True,
     'input_methods': ['upload', 'url', 'text'],
     'support_email': 'support@threesixtygiving.org',
-    'hashcomments': True
+    'hashcomments': True,
+    "flatten_tool": {
+        "disable_local_refs": False,
+        "remove_empty_schema_columns": True,
+        "xml_comment": None,
+    },
 }
