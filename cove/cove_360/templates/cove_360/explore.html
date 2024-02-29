@@ -60,24 +60,24 @@
 
         <script>
           window.addEventListener('load', function() {
-      
+
             let publisherValidation, dataValidation, validation;
-      
+
             if ('{{ data_status.publisher.self_publish.enabled }}' === 'True') {
               publisherValidation = "publishing-enabled"
             } else {
               publisherValidation = "publishing-disabled"
             }
-      
+
             if ('{{ data_status.passed }}' === 'True') {
               dataValidation = "data-valid"
             } else {
               dataValidation = 'data-invalid'
             }
-      
+
             validation = `${publisherValidation}-${dataValidation}`;
             source = '{{ source_url }}'
-      
+
             _paq.push(['trackEvent', 'Status', validation, source]);
             _paq.push(['trackPageView']);
           })
@@ -133,6 +133,9 @@
               {% endif %}
               {% if metadata.license %}
                 <strong> License: </strong> <a href="{{metadata.license}}">{{metadata.license}} </a><br>
+              {% endif %}
+              {% if extension_metadatas %}
+                <strong>Extensions: </strong> {% for extension_metadata in extension_metadatas %}<a href="{{extension_metadata.documentationUrl}}">{{extension_metadata.id}}</a> {% endfor %}<br>
               {% endif %}
             </div>
           </div>
@@ -319,7 +322,8 @@
           {% else %}
             {% trans "Congratulations! Your data is using the 360Giving Data Standard. We used the " %}
           {% endif %}
-          <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a> {% trans "to check this." %}
+          <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a>
+          {% trans "to check this." %}
         </p>
         <div class="explore-help">{% trans "This means that the data" %}
           {% if validation_errors or additional_closed_codelist_values %}
@@ -330,7 +334,17 @@
 
           {% blocktrans %}the requirements of the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a>.{% endblocktrans %}
           {% blocktrans %} Making sure your data uses the standard correctly is important. Otherwise it cannot be used alongside other valid 360Giving data and cannot be included in 360Giving tools, such as GrantNav and 360Insights.{% endblocktrans %}
-        </diV>
+        </div>
+
+        {% if extension_metadatas %}
+        <p class="explanation">{% trans "The 360Giving Data Standard was extended using these extensions:" %}</p>
+        <ol>
+          {% for extension_metadata in extension_metadatas %}
+          <li><a href="{{extension_metadata.documentationUrl}}" title="{{extension_metadata.description}}">{{extension_metadata.title}} ({{extension_metadata.id}})</a></li>
+          {% endfor %}
+        </ol>
+        {% endif %}
+
         {% if validation_errors or additional_closed_codelist_values %}
           <br>
           <p class="explanation">&nbsp;{% trans "The following <strong>errors</strong> are preventing your data from being valid 360Giving data. Please use the feedback below to find and resolve the issues in your file" %}</p>
