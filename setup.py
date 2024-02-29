@@ -16,6 +16,7 @@ setup(
         'rangedict',
         'ijson',
         'jsonschema<4',
+        'json-merge-patch',
     ],
     extras_require={
         'perf': [
