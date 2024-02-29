@@ -168,6 +168,9 @@ def server_url(request, live_server):
         'bad currency 3',
         'bad currency 4',
     ], True),
+    ("dei_extension.xlsx", [
+        "do not use the 360Giving Data Standard codelists correctly.",
+    ], True),
 ])
 @pytest.mark.parametrize('authed', [True, False])
 def test_explore_360_url_input(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
