@@ -19,7 +19,7 @@ def lookup_publisher_by_domain(source_url):
 
     registry_url = os.environ.get(
         "REGISTRY_PUBLISHERS_URL",
-        "https://data.threesixtygiving.org/publishers.json",
+        "https://registry.threesixtygiving.org/publishers.json",
     )
 
     try:
