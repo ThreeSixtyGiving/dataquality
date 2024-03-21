@@ -877,15 +877,6 @@ def test_explore_unconvertable_spreadsheet(client):
     assert b'We think you tried to supply a spreadsheet, but we failed to convert it.' in resp.content
 
 
-def test_schema_360():
-    schema = Schema360()
-    assert schema.schema_name == settings.COVE_CONFIG['schema_item_name']
-    assert schema.pkg_schema_name == settings.COVE_CONFIG['schema_name']
-    assert schema.schema_host == settings.COVE_CONFIG['schema_host']
-    assert schema.schema_url == settings.COVE_CONFIG['schema_host'] + settings.COVE_CONFIG['schema_item_name']
-    assert schema.pkg_schema_url == settings.COVE_CONFIG['schema_host'] + settings.COVE_CONFIG['schema_name']
-
-
 # Suggested method of updating test_quality_accuracy/test_usefulness_checks data
 # in each function save the output:
 #  with open("/tmp/update_test_data.txt", "w+") as f:

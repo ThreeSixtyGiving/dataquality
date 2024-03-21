@@ -18,7 +18,7 @@ from libcove.config import LibCoveConfig
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Check the data quality of some 360Giving standard data"
+        description="Check the data quality of some 360Giving standard data. This tool currently doesn't support extensions."
     )
     parser.add_argument("file_path", type=str, nargs=1, help="File for checking")
     parser.add_argument(
