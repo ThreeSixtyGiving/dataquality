@@ -9,8 +9,7 @@ import json
 import os
 from typing import Optional
 
-#FIXME - This will need changing when the extension goes live
-EXTENSIONS_REGISTRY_BASE_URL = "https://raw.githubusercontent.com/ThreeSixtyGiving/extensions-registry/add-dei-extension/extensions/"
+EXTENSIONS_REGISTRY_BASE_URL = "https://raw.githubusercontent.com/ThreeSixtyGiving/extensions-registry/main/extensions/"
 
 
 class ExtensionsError(Exception):
