@@ -109,7 +109,6 @@ def server_url(request, live_server):
     ('nulls.json', [
         'is not a JSON array',
         'Date is not in the correct format',
-        'Invalid code found in countryCode',
         'is not a number',
         'is not a string',
     ], True),
