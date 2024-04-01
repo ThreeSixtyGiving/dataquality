@@ -5,11 +5,9 @@ from django.urls import reverse_lazy
 import pytest
 import time
 from cove.input.models import SuppliedData
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 
-from lib360dataquality.cove.schema import Schema360
 from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
 
 # Source is cove_360/fixtures/fundingproviders-grants_fixed_2_grants.json
