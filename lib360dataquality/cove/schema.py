@@ -22,17 +22,23 @@ class Schema360(SchemaJsonMixin):
     schema_name = config["schema_item_name"]
     pkg_schema_name = config["schema_name"]
     pkg_schema_url = ""  # required by libcove but not in use
-    schema_host = ""  # required by libcove but not in use
     extended = False  # required by libcove but not in use
     extension_codelist_urls = []
 
     _pkg_schema_obj = {}
     _schema_obj = {}
 
-    def __init__(self, working_dir) -> None:
-        self.working_dir = working_dir
+    def __init__(self, data_dir) -> None:
+        # Create dedicated location for schema work
+        self.working_dir = os.path.join(data_dir, "schema")
+        try:
+            os.mkdir(self.working_dir)
+        except FileExistsError:
+            pass
 
-        self.schema_host = self.working_dir  # required by lib-cove
+        # required by lib-cove for CustomRefResolver the trailing / is needed to make sure
+        # urljoin does not discard the final part of the location.
+        self.schema_host = f"{self.working_dir}/"
 
         schema_url = urljoin(config["schema_host"], self.schema_name)
         pkg_schema_url = urljoin(config["schema_host"], self.pkg_schema_name)
@@ -130,8 +136,6 @@ class Schema360(SchemaJsonMixin):
 
         Returns an array of extension_infos or None
         """
-
-        # FIXME NOTE this currently requires env SCHEMA_BRANCH=1.4-staging
 
         try:
             extension_ids = json_data["extensions"]
