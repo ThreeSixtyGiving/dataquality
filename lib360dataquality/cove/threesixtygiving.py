@@ -1207,6 +1207,36 @@ class TitleLength(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+class GrantIdInvalidChars(AdditionalTest):
+    """Checks if any grant IDs contain weird chars
+    """
+
+    check_text = {
+        "heading": mark_safe("a Grant Identifier contains unexpected characters. This grant will not appear in GrantNav."),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+
+        "The Grant Identifier contains unexpected characters such as line breaks. These characters break 360Giving tools including GrantNav,"
+        " so the affected grants will not appear in 360Giving’s tools unless the unexpected characters are removed."
+        " <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#grant-identifier\">guidance on grant identifiers</a>"
+        " for further help."
+    )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ANY
+
+    def process(self, grant, path_prefix):
+        if "\n" in grant.get("id"):
+            self.failed = True
+            self.json_locations.append(path_prefix + "/id")
+            self.count += 1
+
+        self.heading = self.format_heading_count(
+            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+        )
+        self.message = self.check_text["message"][self.grants_percentage]
 
 
 class OrganizationIdInvalidChars(AdditionalTest):
@@ -1765,6 +1795,7 @@ TEST_CLASSES = {
         RecipientOrgCompanyNumber,
         OrganizationIdLooksInvalid,
         OrganizationIdInvalidChars,
+        GrantIdInvalidChars,
         MoreThanOneFundingOrg,
         LooksLikeEmail,
         ImpossibleDates,
