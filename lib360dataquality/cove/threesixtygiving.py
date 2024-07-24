@@ -1207,6 +1207,45 @@ class TitleLength(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+
+
+class OrganizationIdInvalidChars(AdditionalTest):
+    """Checks if any grants have org IDs for fundingOrg or recipientOrg that contain weird chars
+    """
+
+    check_text = {
+        "heading": mark_safe("a Funding or Recipient Organisation identifier contains unexpected characters. This grant will not appear in GrantNav."),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe("The org-id contains unexpected characters such as line breaks."
+        " These characters break 360Giving tools including GrantNav, so the affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
+        " See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> "
+        " for further help.")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = RECIPIENT_ORGANISATION
+
+    def process(self, grant, path_prefix):
+        for org_type in ("fundingOrganization", "recipientOrganization"):
+            orgs = grant.get(org_type, [])
+            for num, org in enumerate(orgs):
+                org_id = org.get("id")
+                if not org_id:
+                    continue
+                id_location = "{}/{}/{}/id".format(path_prefix, org_type, num)
+
+                if "\n" in org_id:
+                    self.failed = True
+                    self.json_locations.append(id_location)
+                    self.count += 1
+
+        self.heading = self.format_heading_count(
+            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+        )
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
 class OrganizationIdLooksInvalid(AdditionalTest):
     """Checks if any grants have org IDs for fundingOrg or recipientOrg that don't look correctly formatted for their
     respective registration agency (eg GB-CHC- not looking like a valid company number)
@@ -1239,6 +1278,7 @@ class OrganizationIdLooksInvalid(AdditionalTest):
                 if not org_id:
                     continue
                 id_location = "{}/{}/{}/id".format(path_prefix, org_type, num)
+
                 if org_id.upper().startswith("GB-CHC-"):
                     if not check_charity_number(org_id[7:]):
                         self.failed = True
@@ -1724,6 +1764,7 @@ TEST_CLASSES = {
         RecipientOrgCharityNumber,
         RecipientOrgCompanyNumber,
         OrganizationIdLooksInvalid,
+        OrganizationIdInvalidChars,
         MoreThanOneFundingOrg,
         LooksLikeEmail,
         ImpossibleDates,

@@ -170,6 +170,9 @@ def server_url(request, live_server):
     ("dei_extension.xlsx", [
         "do not use the 360Giving Data Standard codelists correctly.",
     ], True),
+    ("ids-strange-chars.xlsx", [
+        "2 grants have a Funding or Recipient Organisation identifier contains unexpected characters",
+    ], True),
 ])
 @pytest.mark.parametrize('authed', [True, False])
 def test_explore_360_url_input(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
