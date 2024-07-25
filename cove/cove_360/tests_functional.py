@@ -170,11 +170,9 @@ def server_url(request, live_server):
     ("dei_extension.xlsx", [
         "do not use the 360Giving Data Standard codelists correctly.",
     ], True),
-    ("ids-strange-chars.xlsx", [
+    ("ids-unexpected-chars.xlsx", [
         "2 grants have a Funding or Recipient Organisation identifier contains unexpected characters",
-    ], True),
-    ("ids-strange-chars.xlsx", [
-        "a Grant Identifier contains unexpected characters."
+        "1 grant has a Grant Identifier contains unexpected characters",
     ], True),
 ])
 @pytest.mark.parametrize('authed', [True, False])
