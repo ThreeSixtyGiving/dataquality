@@ -1207,8 +1207,8 @@ class TitleLength(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
-class GrantIdInvalidChars(AdditionalTest):
-    """Checks if any grant IDs contain weird chars
+class GrantIdUnexpectedChars(AdditionalTest):
+    """Checks if any grant IDs contains unexpected chars. Currently this is just line breaks.
     """
 
     check_text = {
@@ -1239,8 +1239,9 @@ class GrantIdInvalidChars(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
-class OrganizationIdInvalidChars(AdditionalTest):
-    """Checks if any grants have org IDs for fundingOrg or recipientOrg that contain weird chars
+class OrganizationIdUnexpectedChars(AdditionalTest):
+    """Checks if any grants have org IDs for fundingOrg or recipientOrg that contain unexpected chars.
+    Currently this is just line breaks.
     """
 
     check_text = {
@@ -1794,8 +1795,8 @@ TEST_CLASSES = {
         RecipientOrgCharityNumber,
         RecipientOrgCompanyNumber,
         OrganizationIdLooksInvalid,
-        OrganizationIdInvalidChars,
-        GrantIdInvalidChars,
+        OrganizationIdUnexpectedChars,
+        GrantIdUnexpectedChars,
         MoreThanOneFundingOrg,
         LooksLikeEmail,
         ImpossibleDates,
