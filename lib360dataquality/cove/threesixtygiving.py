@@ -1218,7 +1218,7 @@ class GrantIdInvalidChars(AdditionalTest):
     check_text["message"][(0, 100)] = mark_safe(
 
         "The Grant Identifier contains unexpected characters such as line breaks. These characters break 360Giving tools including GrantNav,"
-        " so the affected grants will not appear in 360Giving’s tools unless the unexpected characters are removed."
+        " so the affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
         " <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#grant-identifier\">guidance on grant identifiers</a>"
         " for further help."
     )
