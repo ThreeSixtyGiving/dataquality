@@ -1,0 +1,94 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+
+{% if usefulness_checks_count %}
+    <h2>Usefulness Opportunities</h2>
+    {% if usefulness_checks_errored %}
+      <p>{% blocktrans %}Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}</p>
+    {% endif %}
+
+    {% if usefulness_checks %}
+      <p>
+      We identified {% blocktrans count n_usefulness_checks=usefulness_checks_count %} usefulness opportunity{% plural %}{{n_usefulness_checks}} usefulness opportunities{% endblocktrans %}.
+      {% blocktrans %}These usefulness checks highlight ways the data could be made more useful.{% endblocktrans %}
+      </p>
+
+      {% blocktrans %}
+	    <p>These are the key features that make the data useful for analysis, which we recommend including in 360Giving data whenever possible.</p>
+	    <p>Receiving this feedback does not mean the data is invalid and it can be ignored when not relevant.</p>
+      <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
+	    {% endblocktrans %}
+      <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans 'Passed' %}</th>
+          <th>{% trans 'Check Description' %} </th>
+          <th>{% trans 'First 3 Locations' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for message, json_location, spreadsheet_location in usefulness_checks %}
+      <tr>
+          <td><i class="material-icons table--false">close</i></td>
+          <td>
+            <strong>{{ message.heading }}</strong><br /><br />{{ message.message }}
+          </td>
+        {% if file_type == 'xlsx' or file_type == 'csv' %}
+          <td style="white-space: nowrap">
+            <ul class="list-unstyled">
+              {% for location in spreadsheet_location|slice:":3" %}
+              <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
+              {% endfor %}
+              {% if spreadsheet_location|length > 3 %}
+                <li><a data-toggle="modal" ><sup>see all</sup></a></li>
+              {% endif %}
+            </ul>
+          </td>
+        {% else %}
+          <td>
+            <ul class="list-unstyled">
+              {% for location in json_location|slice:":3" %}
+                  <li>{{location}}</li>
+              {% endfor %}
+              {% if json_location|length > 3 %}
+                <li><a data-toggle="modal" ><sup>see all</sup></a></li>
+              {% endif %}
+            </ul>
+          </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+      {% endif %}
+    {% for message, json_location, spreadsheet_location in usefulness_checks %}
+      {% with msg=message.heading %}
+        {% if file_type == 'json' %}
+          {% cove_modal_errors className="usefulness-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+        {% else %}
+          {% cove_modal_errors className="usefulness-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
+
+  {% else %}
+   <p>No usefulness opportunities detected.</p>
+  {% endif %}
+
+  <h2>What is working well</h2>
+  {% if usefulness_checks_passed %}
+  <p>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> usefulness checks passed.</p>
+  <table class="table">
+    <thead>
+      <th>Passed</th>
+      <th>Test</th>
+    </thead>
+    {% for passed_test in usefulness_checks_passed %}
+    <tr>
+      <td><i class="material-icons table--true">check</i></td>
+      <td>{{passed_test}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}

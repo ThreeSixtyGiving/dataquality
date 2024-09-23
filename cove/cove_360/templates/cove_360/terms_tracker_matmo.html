@@ -1,0 +1,23 @@
+
+
+
+<p>Personal data we collect:<ul>
+<li>Your IP address - this is pseudonymised by redacting the second half of the address</li>
+<li>Referrer (what page you arrived at one of our web pages from)</li>
+<li>Information about your device, OS and browser</li>
+</ul>We do not use this data to personally identify individuals, but it is possible that it could be used to do so, particularly if combined with other datasets.</p>
+
+<p>You can opt out of this processing:
+If you have set your web browser to "I do not want to be tracked" (DoNotTrack is enabled) then Matomo will not track your visit.</p>
+
+<p>Matomo also it’s own opt out mechanism:</p>
+<!-- opt out iframe - clicking this will mean people can opt out of tracking -->
+<iframe style="border: 1; height: 150px; width: 600px;" src="https://mon.opendataservices.coop/piwik/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=en"></iframe>
+
+<p>Data processors: {% if app != 'cove_iati' %}Open Data Services Co-operative Limited, {% endif %}Bytemark.</p>
+
+{% include "terms_tracker_data_controller_international.html" %}
+
+{% include "terms_tracker_no_international.html" %}
+
+<p>The data is kept indefinitely, in pseudonymised form.</p>

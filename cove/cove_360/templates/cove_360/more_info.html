@@ -31,15 +31,3 @@
     {% endblock %}
     </div>
   </div>
-  <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-      $("[data-toggle='collapse']").click(function() {
-        var $this = $(this);
-        if($this.attr("aria-expanded") === "true"){
-          $this.find('.glyphicon-menu-up').removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down');
-        } else {
-          $this.find('.glyphicon-menu-down').removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up')
-        }
-      });
-    })
-  </script>

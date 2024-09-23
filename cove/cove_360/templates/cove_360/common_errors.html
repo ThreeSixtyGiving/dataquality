@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends request.current_app_base_template %}
 {% load i18n %}
 {% block content %}
 
@@ -16,7 +16,7 @@
   </ul>
   <p>{% blocktrans %}<strong>What is a URI?</strong> Short for “Uniform Resource Identifier” it is a sequence of characters that distinguishes one resource from another. A URL &mdash; short for “Uniform Resource Locator” &mdash; is a specific type of URI.{% endblocktrans %}</p>
   <p>{% blocktrans %}When the 360Giving Data Standard requires data to be provided in the format of a URI, this will mean you will very likely be providing a URL &mdash; or website address.{% endblocktrans %}</p>
-  
+
 
   <a id="date-time" class="anchor"></a>
   <h3>{% trans "Date is not in the correct format" %}</h3>
@@ -105,7 +105,7 @@
     </tbody>
     </table>
 
-    
+
     <a id="enum" class="anchor"></a>
     <h3>{% trans "Invalid code found in (something)" %}</h3>
     <p>{% blocktrans %}In the 360Giving Data Standard, there are three fields that require publishers to use values from a predefined list. When we validate people's data, we check the values of those fields against those lists.{% endblocktrans %}</p>
@@ -129,8 +129,8 @@
     </tbody>
     </table>
     <p>{% blocktrans %}The currency and country code lists are referenced in the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#giving-json-schemas">360Giving JSON Schemas</a> and the field descriptions link to the code lists on third-party websites.{% endblocktrans %}</p>
-    
-    
+
+
     <a id="string" class="anchor"></a>
     <h3>{% trans "Field <code>x</code> is not a string" %}</h3>
     <p>{% blocktrans %}Data in the 360Giving Data Standard is expected to be provided in a certain format.{% endblocktrans %}</p>

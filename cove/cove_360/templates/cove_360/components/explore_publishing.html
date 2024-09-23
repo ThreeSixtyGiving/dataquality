@@ -1,0 +1,116 @@
+{% load i18n %}
+
+<h3>{% trans "Submit your data" %}</h3>
+
+<div class="base-card base-card--red margin-bottom:2">
+  <div class="base-card__content">
+    <h2 class="base-card__title">
+      {{validation_and_closed_codelist_errors_count}}
+    </h2>
+    <p class="base-card__text">Validity errors to fix before submitting</p>
+  </div>
+</div>
+
+{% if data_status.can_publish %}
+<p>{% trans "Submitting for: " %}<strong>{{publisher.name}}</strong></p>
+<p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
+<p>
+  {% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %}
+  <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/" >{% trans "Guidance about using the submission form." %}</a>
+</p>
+<form>
+<input type="checkbox" id="read-report-confirmed" required=required />
+<label for="read-report-confirmed">Please confirm you have read and understood the <a href="#report">report</a> below</label>
+</form>
+<a class="button button--teal button--solid" style="opacity: 0.5" id="sf-form-link" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}" disabled>
+  Submit your file
+</a>
+{% endif %} {# Data passed, Domain not recognised/approved #}
+{% if data_status.passed and not data_status.can_publish %}
+<p>
+  {% blocktrans %} Sorry you aren't able to submit this file because the domain
+  name of the website hosting your file ({{source_url_domain}}) is not
+  authorised for publishing 360Giving data. {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %} Please email 360Giving Helpdesk via
+  <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>
+  with the link to the file you want to submit to the Data Registry.
+  {% endblocktrans %}
+</p>
+{% endif %} {# Validation failed #} {% if not data_status.passed %}
+<p>
+  {% blocktrans %}Sorry you aren't able to submit this file because it is not
+  valid 360Giving data.{% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %} Follow the feedback below to make the amendments needed to
+  your data. Once your data passes the Data Quality tool checks, upload the
+  updated file to your website and then restart the 360Giving data file
+  submission process. The data did not pass the checks and cannot be published.
+  See results below. {% endblocktrans %}
+</p>
+{% endif %}
+
+<div class="spacer-3"></div>
+
+<style scoped>
+    table {
+      width: 100%;
+    }
+
+    a[disabled] {
+      pointer-events: none;
+      opacity: 0.5! important;
+    }
+</style>
+
+<h1 id="report">Report</h1>
+{% include "cove_360/components/explore/summary.html" %}
+<hr />
+{% include "cove_360/components/explore/validity.html" %}
+<hr />
+{% include "cove_360/components/explore/accuracy.html" %}
+<hr />
+{% include "cove_360/components/explore/usefulness.html" %}
+
+<script>
+  window.addEventListener("load", function () {
+    let publisherValidation, dataValidation, validation;
+
+    if ("{{ data_status.publisher.self_publish.enabled }}" === "True") {
+      publisherValidation = "publishing-enabled";
+    } else {
+      publisherValidation = "publishing-disabled";
+    }
+
+    if ("{{ data_status.passed }}" === "True") {
+      dataValidation = "data-valid";
+    } else {
+      dataValidation = "data-invalid";
+    }
+
+    validation = `${publisherValidation}-${dataValidation}`;
+    source = "{{ source_url }}";
+
+    _paq.push(["trackEvent", "Status", validation, source]);
+    _paq.push(["trackPageView"]);
+  });
+
+  (function(){
+
+    document.getElementById("read-report-confirmed").addEventListener("change", function() {
+      const link = document.getElementById("sf-form-link");
+
+      if (this.checked) {
+        link.removeAttribute("disabled");
+        link.style.opacity = 1;
+      } else {
+        link.setAttribute("disabled", "disabled");
+        link.style.opacity = 0.5;
+      }
+    });
+
+  })();
+
+</script>

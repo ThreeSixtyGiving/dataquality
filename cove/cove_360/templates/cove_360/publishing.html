@@ -1,0 +1,27 @@
+{% extends request.current_app_base_template %}
+
+{% block hero_title %}Data submission tool{% endblock %}
+{% block hero_blurb %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% endblock %}
+
+{% block content %}
+
+{% if DATA_SUBMISSION_ENABLED %}
+      <h2>Submit your data</h2>
+      <p>Submit your 360Giving data file to the <a href="https://data.threesixtygiving.org/">360Giving Data Registry</a>. The file will be checked using the <a href="{% url 'index' %}">Data Quality Tool</a> to check it is valid 360Giving data.</p>
+    <form method="POST" class="generic-form" action="{% url 'index' %}" id="self-publishing-form">
+      {% csrf_token %}
+      <input type="hidden" name="self_publishing" value="true">
+      <label for="source-url-input">Provide a link to your file:</label>
+      <input style="width: 100%" class="margin-bottom:1" id="source-url-input" type="url" name="source_url"
+        class="form-control" placeholder="URL to your 360Giving data file (xlsx, ods, csv)">
+      <button type="submit" class="button button--teal-dark button--solid" title="Submit your data"
+        id="submit-for-publishing-btn">
+        Submit
+      </button>
+    </form>
+    <p style="text-align:center" class="margin-bottom:3">Read our guidance on <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/">how to submit your data</a>.</p>
+{% else %}
+<p>Data submission for publishing is not enabled on this instance of the Data Quality Tool.</p>
+{% endif %}
+
+{% endblock %}

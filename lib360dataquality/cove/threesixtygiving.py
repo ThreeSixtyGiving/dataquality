@@ -586,6 +586,15 @@ class AdditionalTest:
         2 grants have + message or 3 grants contain + message.
         """
         noun = "grant" if self.count == 1 else "grants"
+
+        # Positive result  - "what is working well"
+        # Avoid double negative
+        if not message.startswith("not have") and message.startswith("not") and self.count == 0:
+            message = message[len("not"):]
+        if message.startswith("not have") and self.count == 0:
+            verb = "do"
+        # End positive result flip
+
         if verb == "have":
             verb = "has" if self.count == 1 else verb
         elif verb == "do":
@@ -593,6 +602,7 @@ class AdditionalTest:
         else:
             # Naively!
             verb = verb + "s" if self.count == 1 else verb
+
         return "{} {} {} {}".format(
             self.get_heading_count(test_class_type), noun, verb, message
         )

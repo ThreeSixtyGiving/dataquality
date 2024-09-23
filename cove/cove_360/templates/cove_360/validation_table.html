@@ -2,20 +2,22 @@
 {% load cove_tags %}
 
 <table class="table table-condensed">
-<thead> 
-  <tr> 
-    <th>{% trans 'Error Description' %}</th> 
-    <th>{% trans 'Error Count' %}</th> 
-    <th>{% trans 'First 3 Examples' %}</th> 
+<thead>
+  <tr>
+    <th>{% trans 'Passed' %}</th>
+    <th>{% trans 'Error Description' %}</th>
+    <th>{% trans 'Error Count' %}</th>
+    <th>{% trans 'First 3 Examples' %}</th>
     {% if file_type != 'xlsx' and file_type != 'csv' %}
-      <th>{% trans 'Location of first 3 errors' %}</th> 
+      <th>{% trans 'Location of first 3 errors' %}</th>
     {% endif %}
-  </tr> 
+  </tr>
 </thead>
 <tbody>
 {% for error_json, error_extra in validation_errors %}
 {% with error=error_json|json_decode %}
 <tr>
+  <td><i class="material-icons table--false">close</i></td>
   <td>
     <p>
       <strong>{{ error | html_error_msg }}</strong>

@@ -13,7 +13,7 @@ from cove.input.models import SuppliedData
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from django.utils.html import format_html
+from django.utils.html import format_html, mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
 
@@ -189,9 +189,39 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     data_status.passed = context['validation_errors_count'] == 0
     data_status.save()
 
-    cache.set(pk, context)
+    import pprint
+    pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
 
+    pprint.pprint(TEST_CLASSES)
+
+    try:
+        context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])
+    except Exception:
+        context["quality_accuracy_errored"] = True
+
+    try:
+        context["usefulness_checks_passed"] = create_passed_tests_context_data(context["usefulness_checks"], TEST_CLASSES["usefulness"])
+    except Exception:
+        context["usefulness_errored"] = True
+
+
+    cache.set(pk, context)
     return render(request, template, context)
+
+
+def create_passed_tests_context_data(failed_tests, available_tests):
+
+    passed_tests_names = [test[0]["type"] for test in failed_tests]
+    passed_test_case_headings = []
+
+    for test in available_tests:
+        if test.__name__ in passed_tests_names:
+            continue
+        # We instantiate the test with no data to be able to utilise the heading formatting code
+        passed_test_case = test(grants=[], aggregates={"count": 0, "recipient_individuals_count": 0})
+        passed_test_case_headings.append(mark_safe(passed_test_case.format_heading_count(test.check_text["heading"])))
+
+    return passed_test_case_headings
 
 
 def common_errors(request):

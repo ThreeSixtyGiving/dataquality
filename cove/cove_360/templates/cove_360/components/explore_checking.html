@@ -1,0 +1,112 @@
+{% load i18n %} {% load humanize %} {% load cove_tags %}
+
+<div
+  class="margin-top:1 margin-bottom:2"
+  style="display: flex; flex-direction: row; justify-content: end"
+>
+  <a href="{% url 'index' %}">Load new file</a>
+  <span class="margin-left:1 margin-right:1">|</span>
+  <a href="{% url 'publishing' %}">Submit your data</a>
+</div>
+
+<div>
+  <div class="grid grid--three-columns">
+    <div class="grid__1">
+      <div class="base-card base-card--red">
+        <div class="base-card__content">
+          <h2 class="base-card__title">
+            {{validation_and_closed_codelist_errors_count}}
+          </h2>
+          <p class="base-card__text">Validity errors to fix</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid__1">
+      <div class="base-card base-card--yellow">
+        <div class="base-card__content">
+          <h2 class="base-card__title">{{quality_accuracy_checks_count}}</h2>
+          <p class="base-card__text">Potential accuracy issue</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid__1">
+      <div class="base-card base-card--teal">
+        <div class="base-card__content">
+          <h2 class="base-card__title">{{usefulness_checks_count }}</h2>
+          <p class="base-card__text">Usefulness opportunities</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end grid -->
+
+  <div class="spacer-4"></div>
+
+  <div class="tabs">
+    <span class="tab tab--active" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#summary"
+        id="summary-tab-link"
+      >
+        {% trans "Summary" %}
+      </a>
+    </span>
+
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#validity"
+        id="validity-tab-link"
+      >
+        {% trans "Validity" %} ({{validation_and_closed_codelist_errors_count}})
+      </a>
+    </span>
+
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#accuracy"
+        id="accuracy-tab-link"
+      >
+        {% trans "Accuracy" %} ({{quality_accuracy_checks_count}})
+      </a>
+    </span>
+
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#usefulness"
+        id="usefulness-tab-link"
+      >
+        {% trans "Usefulness" %} ({{usefulness_checks_count}})
+      </a>
+    </span>
+  </div>
+  <!-- / tabs -->
+
+  <style scoped>
+    .tab-content table {
+      width: 100%;
+    }
+  </style>
+  <div id="summary-tab" class="tab-content">
+  {% include "cove_360/components/explore/summary.html" %}
+  </div>
+
+  <div id="validity-tab" style="display:none" class="tab-content">
+    {% include "cove_360/components/explore/validity.html" %}
+  </div>
+
+  <div id="accuracy-tab" style="display:none" class="tab-content">
+    {% include "cove_360/components/explore/accuracy.html" %}
+  </div>
+
+  <div id="usefulness-tab" style="display:none" class="tab-content">
+    {% include "cove_360/components/explore/usefulness.html" %}
+  </div>
+</div>
+
+<div class="spacer-4"></div>

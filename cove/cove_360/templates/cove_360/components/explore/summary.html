@@ -1,0 +1,205 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+
+<h2>{% trans "Summary" %}</h2>
+
+    {% if validation_errors or additional_closed_codelist_values %}
+      <div class="box box--red">
+        <h3 class="box__heading">
+        {% trans "This data does not use the 360Giving Data Standard correctly" %} (<a href="#validity" title="View validation errors">{% blocktrans count n_errors=validation_and_closed_codelist_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</a>)
+        </h3>
+        <p>{% trans "Sorry your data is not yet using the 360Giving Data Standard. We used the " %}
+          <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a> {% trans "to check this." %}
+           See <a href="#validity" >Validity</a> for further details.
+        </p>
+      </div>
+    {% else %}
+      <div class="box box--teal">
+        <h3 class="box__heading">{% trans "This data uses the 360Giving Data Standard correctly" %}</h3>
+        <p>
+        {% trans "Congratulations! Your data is using the 360Giving Data Standard. We used the " %}
+        <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a>
+          {% trans "to check this." %}
+        </p>
+      </div>
+      {% endif %}
+      <div class="spacer-2"></div>
+  <p>
+  The file '{{file_name}}' was
+  {% if source_url %}
+  {% trans "downloaded from " %} <a href="{{source_url}}">{{source_url}}</a>
+  {% else %}
+  {% trans "uploaded " %}
+  {% endif %}
+  {% trans "on " %} {{created_date}} at {{created_time}}.
+  </p>
+
+  {% if metadata %}
+
+      <h3>Metadata</h3>
+      <div class="grid grid--two-columns" style="align-items: center;">
+        <div class="grid__1">
+          {% if metadata.publisher %}
+          <strong> Publisher: </strong> <a href="{{metadata.publisher.website}}"> {{metadata.publisher.name}} </a> <small> ({{metadata.publisher.identifier}}) </small> <br>
+          {% endif %}
+          {% if metadata.accessURL %}
+          <strong> Website that contains this Dataset: </strong> <a href="{{metadata.accessURL}}">{{metadata.accessURL}}</a> <br>
+          {% endif %}
+          {% if metadata.identifier %}
+          <strong> Dataset Identifier: </strong> {{metadata.identifier}} <br>
+          {% endif %}
+          {% if metadata.version %}
+          <strong> 360 Giving Schema Version: </strong> {{metadata.version}} <br>
+          {% endif %}
+          {% if metadata.license %}
+          <strong> License: </strong> <a href="{{metadata.license}}">{{metadata.license}} </a><br>
+          {% endif %}
+          {% if extension_metadatas %}
+          <strong>Extensions: </strong> {% for extension_metadata in extension_metadatas %}<a href="{{extension_metadata.documentationUrl}}">{{extension_metadata.id}}</a> {% endfor %}<br>
+          {% endif %}
+        </div>
+        <div class="grid__1">
+          {% if metadata.publisher.logo %}
+          <img src="{{metadata.publisher.logo}}" alt="{{metadata.publisher.name}}" title="{{metadata.publisher.name}}" class="publisher-logo">
+          {% endif %}
+        </div>
+      </div>
+  {% endif %}
+
+  {% if metadata.downloadURL or metadata.title %}
+  <h3>
+    {% if metadata.title %}
+    {{metadata.title}}
+    {% endif %}
+    {% if metadata.downloadURL %}
+    <a href="{{metadata.downloadURL}}"> <span>Original Data Download</span></a>
+    {% endif %}
+  </h3>
+  {% endif %}
+  {% if metadata.description %}
+  <p>
+  {{metadata.description}}
+  </p>
+  {% endif %}
+
+  <h3>This file contains</h3>
+
+  <p>{% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}</p>
+  <ul>
+    <li>
+      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}There is <strong>{{n_grants}} grant</strong>{% plural %}There are <strong>{{n_grants}} grants</strong> {% endblocktrans %}
+      {% blocktrans count n_recipients=grants_aggregates.distinct_recipient_org_identifier|length|default:0 %}to <strong>{{n_recipients}} recipient organisation</strong> and {% plural %}to <strong>{{n_recipients}} recipient organisations</strong> and{% endblocktrans %}
+      {% blocktrans count n_recipients_individuals=grants_aggregates.recipient_individuals_count|default:0 %}<strong>{{n_recipients_individuals}} to a recipient individual </strong>{% plural %}<strong>{{n_recipients_individuals}} to recipient individuals</strong>{% endblocktrans %}.
+    </li>
+    <li>{% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %} The grants are made by <strong>{{n_funders}}</strong> funding organisation{% plural %} The grants are made by <strong>{{n_funders}}</strong> funding organisations{% endblocktrans %}.</li>
+    <li>
+      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}The grant was awarded {% plural %}The grants were awarded {% endblocktrans %}
+      {% if grants_aggregates.min_award_date == grants_aggregates.max_award_date %}
+      {% blocktrans with start_date=grants_aggregates.min_award_date %}on <strong>{{start_date}}</strong>.{% endblocktrans %}
+      {% else %}
+      {% blocktrans with start_date=grants_aggregates.min_award_date end_date=grants_aggregates.max_award_date %}between <strong>{{start_date}}</strong> and <strong>{{end_date}}</strong>.{% endblocktrans %}
+    </li>
+    {% endif %}
+    {% if metadata.issued %}
+    <li>
+      The file was issued on <strong> {{metadata.issued|slice:":10"}} </strong>
+    </li>
+    {% endif %}
+    {% if metadata.modified %}
+    <li>
+      The file was modified on <strong> {{metadata.modified|slice:":10"}} </strong>
+    </li>
+    {% endif %}
+    {% for currency_code, currency_aggregates in grants_aggregates.currencies.items %}
+    <li>
+      {% if currency_aggregates.count == 1 %}
+      {% if currency_aggregates.count == grants_aggregates.count %}
+      {% trans "The grant" %}
+      {% else %}
+      {% trans "<strong>1 grant</strong>" %}
+      {% endif %}
+      {% blocktrans with amount_awarded=currency_aggregates.total_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} was awarded in <strong>{{currency_code}}</strong> with a value of <strong>{{currency_symbol}}{{amount_awarded}}</strong>.{% endblocktrans %}
+      {% else %}
+      {% if currency_aggregates.count == grants_aggregates.count %}
+      {% trans "The grants" %}
+      {% else %}
+      <strong>{{currency_aggregates.count}}</strong> {% trans "<strong>grants</strong>" %}
+      {% endif %}
+      {% blocktrans with n_grants=currency_aggregates.count total_amount=currency_aggregates.total_amount|intcomma max_amount=currency_aggregates.max_amount|intcomma min_amount=currency_aggregates.min_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} were awarded in <strong>{{currency_code}}</strong> with a total value of <strong>{{currency_symbol}}{{total_amount}}</strong> and individual awards ranging from <strong>{{currency_symbol}}{{min_amount}}</strong> (lowest) to <strong>{{currency_symbol}}{{max_amount}}</strong> (highest).{% endblocktrans %}
+      {% endif %}
+    </li>
+    {% endfor %}
+    {% if csv_encoding and csv_encoding != "utf-8-sig" %}
+    <li>
+      {% blocktrans %} This file is <strong>not 'utf-8'</strong> encoded (it is <em>{{csv_encoding}}</em> encoded).{% endblocktrans %}
+    </li>
+    {% endif %}
+  </ul>
+
+  <p><strong>{% blocktrans %}Do these results look correct?{% endblocktrans %}</strong></p>
+  <ul >
+    <li>{% blocktrans %}Do the numbers of funders, grants and recipients match what you expect?{% endblocktrans %}</li>
+    <li>{% blocktrans %}Are the dates for the right time period?{% endblocktrans %}</li>
+    <li>{% blocktrans %}Do the currency and total value figures show the correct amounts?{% endblocktrans %}</li>
+  </ul>
+  <p>{% blocktrans %}If any of this information appears incorrect, the feedback below will help you to investigate what happened. {% endblocktrans %}</p>
+
+  <h3>{% blocktrans %}About the feedback{% endblocktrans %}</h3>
+  <p>{% blocktrans %}The feedback is split into several sections. Use the small arrow icon on the far right side to display or hide the details for each section.{% endblocktrans %}</p>
+  <ul >
+    <li> {% blocktrans %}a red cross indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
+    <li>{% blocktrans %}a green tick indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
+    <li>{% blocktrans %}a question mark indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
+  </ul>
+  <p>A maximum of 10 additional checks can be displayed at once.</p>
+  <p>The <strong>check your data</strong> section allows you to review the data itself to help identify any issues.</p>
+  <p>If you make changes to the data prompted by this feedback, return here to upload the updated file for a new check. It may take several iterations to get the data to a state you are happy with and are ready to publish as open data.</p>
+
+  <h3>Getting further help</h3>
+  <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
+  <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
+
+  {% if conversion == 'flattenable' %}
+  <form method="post">
+    <button name="flatten" value="true" type="submit" class="">{% trans "Convert to Spreadsheet" %}</button>
+    {% csrf_token %}
+  </form>
+  {% endif %}
+
+{% if conversion == 'unflatten' or conversion == 'flatten'%}
+    <h3  id="conversion-title">
+      {% if conversion_warning_messages or conversion_error %}
+      {% trans "Data conversion unsuccessful - " %}
+      {% else %}
+      {% trans "Data conversion successful" %}
+      {% endif %}
+      {% if conversion_warning_messages %}
+      <small>{% blocktrans count n_warnings=conversion_warning_messages|length %}{{n_warnings}} Error has been found{% plural %}{{n_warnings}} Errors have been found{% endblocktrans %}</small>
+      {% endif %}
+    </h3>
+
+      {% if conversion == 'unflatten' %}
+      <p >{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
+      {% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
+        {% if conversion_error %}
+        {% blocktrans %}If a file cannot be converted to JSON it indicates that it cannot be correctly mapped to the standard and needs to be reviewed. If this is the case you should check the file and re-upload it once you’ve fixed the problem. The conversion errors below will give an indication of where the issue is.{% endblocktrans %}
+        {% endif %}
+      {% else %}
+      <p >We have converted your JSON data into spreadsheet format.</p>
+      {% if conversion_error %}
+      <p>{% blocktrans %}The JSON data could not be converted to spreadsheet due to the following error: {{conversion_error}}{% endblocktrans %}</p>
+      {% include 'error_extra.html' %}
+      {% endif %}
+      {% endif %}
+      {% if conversion_warning_messages %}
+      <br>
+      <p>{% trans "Conversion <strong>errors:</strong>" %}</p>
+      <ul >
+        {% for warning_message in conversion_warning_messages %}
+        <li>{{warning_message}}</li>
+        {% endfor %}
+      </ul>
+      <p>{% trans "Please resolve this error, as well as any others found, and test the data again." %}</p>
+      {% endif %}
+{% endif %}
