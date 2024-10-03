@@ -609,7 +609,7 @@ def test_favicon(server_url, browser):
 
 def test_explore_360_sample_data_link(server_url, browser):
     browser.get(server_url)
-    browser.find_element_by_partial_link_text('loading some sample data.').click()
+    browser.find_element_by_id("load-sample-data-btn").click()
 
     wait_for_results_page(browser)
 
@@ -619,7 +619,7 @@ def test_explore_360_sample_data_link(server_url, browser):
     assert 'Sorry, we can\'t process that data' not in body_text
     # Show sample data link in the home page only
     with pytest.raises(NoSuchElementException):
-        browser.find_element_by_partial_link_text('loading some sample data.')
+        browser.find_element_by_id("load-sample-data-btn")
 
 
 def test_publishing_invalid_domain(server_url, browser):

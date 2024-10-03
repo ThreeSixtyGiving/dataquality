@@ -60,7 +60,12 @@
     {% if request.path == "/" %}
       <h4>{% blocktrans %}Further guidance{% endblocktrans %}</h4>
       <p>{% blocktrans %}Read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.{% endblocktrans %}</p>
-      <p>{% blocktrans %}To preview how this tool works, try <a href="?source_url=https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true"> loading some sample data.</a>{% endblocktrans%}</p>
+      <p style="display: inline">{% blocktrans %}To preview how this tool works, try{% endblocktrans %}</p>
+      <form method="POST" action="" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="source_url" value="https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true">
+        <input type="submit" style="padding:0" id="load-sample-data-btn" class="btn-link" value="{% blocktrans %}loading some sample data.{% endblocktrans%}" >
+      </form>
     {% endif %}
     <h3><small>{% blocktrans %}Formats{% endblocktrans %}</small></h3>
     <p>{% blocktrans %}The application accepts data in the formats set out in the {% endblocktrans %}<a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#reference">360Giving Data Standard guidance</a>.</p>
