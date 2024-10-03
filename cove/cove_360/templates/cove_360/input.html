@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<style scoped>
+  .tab-content input, textarea {
+    width: 100% !important;
+  }
+</style>
+
 <h2>Check your data</h2>
 <p>Upload or provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.</p>
 
@@ -80,7 +86,7 @@
 </div>
 {% endif %}
 
-<p><a href="#TODO" >Or submit your data for publication.</a></p>
+<p style="text-align: center;" class="margin-bottom:2"><a href="#TODO" >Or submit your data for publication.</a></p>
 
 
 {% if DATA_SUBMISSION_ENABLED %}
