@@ -77,7 +77,7 @@ libcove==0.31.0
     #   -r requirements_cove.in
     #   lib360dataquality
     #   libcoveweb
-libcoveweb==0.30.5
+libcoveweb==0.30.4
     # via -r requirements_cove.in
 lxml==5.3.0
     # via flattentool
