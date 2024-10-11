@@ -101,7 +101,7 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    <form method="GET" action="." id="self-publishing-form">
+    <form method="POST" action="." id="self-publishing-form">
       {% csrf_token %}
       <input type="hidden" name="self_publishing" value="true">
       <div class="form-group">
