@@ -17,20 +17,18 @@
   {% block data_supplied %}
 
   {% if "self_publishing" in data_status.supplied_data.parameters %}
-  <div class="panel panel-default">
-    <div class="panel-heading" >
-      <h3 class="panel-title panel-title-explore">
+      <h3>
         {% if data_status.can_publish %}
           <span class="font-tick tick" aria-hidden="true"></span>
         {% endif %}
         {% trans "Submit your data" %}</h3>
         </div>
-      <div class="panel-body">
+      <div>
         {% if data_status.can_publish %}
         <p>{% trans "Submitting for:" %} {{publisher.name}}</p>
         <p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
         <p>{% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %} <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/">{% trans "Guidance about using the submission form." %}</a></p>
-        <a class="btn btn-success" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}">Submit your file</a>
+        <a class="button button--teal button--solid" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}">Submit your file</a>
         {% endif %}
 
         {# Data passed, Domain not recognised/approved #}
@@ -87,17 +85,15 @@
   </div>
   {% endif %}
 
-    <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" data-target="#data-supplied-body" aria-expanded="true" role="button">
-        <h3 class="panel-title panel-title-explore">
-          <span class="font-tick tick" aria-hidden="true"></span>
+    <div>
+      <div >
+        <h3 >
           {% trans "Summary: Your data at a glance" %}
-          <span class="pull-right glyphicon glyphicon-collapse-up"></span>
         </h3>
       </div>
-      <div id="data-supplied-body" class="collapse in">
-        <div class="panel-body">
-          <p class="explanation">
+      <div id="data-supplied-body">
+        <div >
+          <p >
 	          {% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}
 	        </p>
            <br>
@@ -112,15 +108,15 @@
            </p>
 
           {% if metadata %}
-          <div class="row"> <!--Start Row (Detail Table)-->
+          <div > <!--Start Row (Detail Table)-->
             {% if metadata.publisher.logo %}
-              <div class="col-xs-6">
+              <div>
                   <img src="{{metadata.publisher.logo}}" alt="{{metadata.publisher.name}}" title="{{metadata.publisher.name}}" class="publisher-logo">
               </div>
             {% endif %}
             <div class="col-xs-6">
               {% if metadata.publisher %}
-                <strong> Publisher: </strong> <a href="{{metadata.publisher.website}}"> {{metadata.publisher.name}} </a> <small class="small-font"> ({{metadata.publisher.identifier}}) </small> <br>
+                <strong> Publisher: </strong> <a href="{{metadata.publisher.website}}"> {{metadata.publisher.name}} </a> <small> ({{metadata.publisher.identifier}}) </small> <br>
               {% endif %}
               {% if metadata.accessURL %}
                 <strong> Website that contains this Dataset: </strong> <a href="{{metadata.accessURL}}">{{metadata.accessURL}}</a> <br>
@@ -148,19 +144,19 @@
                 {{metadata.title}}
               {% endif %}
               {% if metadata.downloadURL %}
-                <a href="{{metadata.downloadURL}}"> <span class="small-font">Original Data Download</span></a>
+                <a href="{{metadata.downloadURL}}"> <span>Original Data Download</span></a>
               {% endif %}
             </h4>
           {% endif %}
           {% if metadata.description %}
-            <p class="explanation">
+            <p>
               {{metadata.description}}
             </p>
           {% endif %}
 
           <br>
           <p>This file contains</p>
-          <ul class="left-space">
+          <ul >
             <li>
               {% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %}Data about <strong>{{n_funders}} funder</strong>{% plural %}Data about <strong>{{n_funders}} funders</strong>{% endblocktrans %}
             </li>
@@ -215,7 +211,7 @@
 
           <br>
           <p>{% blocktrans %}Do these results look correct?{% endblocktrans %}</p>
-          <ul class="left-space">
+          <ul >
             <li>{% blocktrans %}Do the numbers of funders, grants and recipients match what you expect?{% endblocktrans %}</li>
             <li>{% blocktrans %}Are the dates for the right time period?{% endblocktrans %}</li>
             <li>{% blocktrans %}Do the currency and total value figures show the correct amounts?{% endblocktrans %}</li>
@@ -225,10 +221,10 @@
           <br>
           <h4>{% blocktrans %}About the feedback{% endblocktrans %}</h4>
           <p>{% blocktrans %}The feedback is split into several sections. Use the small arrow icon on the far right side to display or hide the details for each section.{% endblocktrans %}</p>
-          <ul class="list-unstyled">
-            <li><span class="font-tick cross"></span> {% blocktrans %}a red cross indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
-            <li><span class="font-tick tick"></span> {% blocktrans %}a green tick indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
-            <li><span class="font-tick question"></span> {% blocktrans %}a question mark indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
+          <ul >
+            <li> {% blocktrans %}a red cross indicates <em>warnings</em> or <em>errors</em>. These types of issues must be resolved before the data can be published and used alongside other valid 360Giving data. {% endblocktrans %}</li>
+            <li>{% blocktrans %}a green tick indicates that the file is valid 360Giving data. {% endblocktrans %}</li>
+            <li>{% blocktrans %}a question mark indicates additional checks which suggest ways to improve the quality or usefulness of the data. {% endblocktrans %}</li>
           </ul>
           <p>A maximum of 10 additional checks can be displayed at once.</p>
           <p>The <strong>check your data</strong> section allows you to review the data itself to help identify any issues.</p>
@@ -236,12 +232,12 @@
 
           <br>
           <h4>Getting further help</h4>
-          <p>You can read about common data errors and what causes them in the <a target="_blank" href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
-          <p>Visit our <a target="_blank" href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
+          <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
+          <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
 
           {% if conversion == 'flattenable' %}
             <form method="post">
-              <button name="flatten" value="true" type="submit" class="btn btn-success btn-sm pull-right">{% trans "Convert to Spreadsheet" %}</button>
+              <button name="flatten" value="true" type="submit" class="">{% trans "Convert to Spreadsheet" %}</button>
               {% csrf_token %}
             </form>
           {% endif %}
@@ -252,33 +248,30 @@
 
   {% block conversion %}
   {% if conversion == 'unflatten' or conversion == 'flatten'%}
-    <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" data-target="#conversion-body">
-        <h3 class="panel-title panel-title-explore" id="conversion-title">
+    <div class="">
+      <div class="" >
+        <h3  id="conversion-title">
           {% if conversion_warning_messages or conversion_error %}
-            <span class="font-tick cross" aria-hidden="true"></span>
             {% trans "Data conversion unsuccessful - " %}
           {% else %}
-            <span class="font-tick tick" aria-hidden="true"></span>
             {% trans "Data conversion successful" %}
           {% endif %}
           {% if conversion_warning_messages %}
             <small>{% blocktrans count n_warnings=conversion_warning_messages|length %}{{n_warnings}} Error has been found{% plural %}{{n_warnings}} Errors have been found{% endblocktrans %}</small>
           {% endif %}
-          <span class="glyphicon glyphicon-collapse-down pull-right"></span>
         </h3>
       </div>
-      <div id="conversion-body" class="collapse">
-        <div class="panel-body">
+      <div id="conversion-body">
+        <div>
           {% if conversion == 'unflatten' %}
-            <p class="explanation">{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
-            <div class="explore-help">{% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
+            <p >{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
+            <div >{% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
             {% if conversion_error %}
               {% blocktrans %}If a file cannot be converted to JSON it indicates that it cannot be correctly mapped to the standard and needs to be reviewed. If this is the case you should check the file and re-upload it once you’ve fixed the problem. The conversion errors below will give an indication of where the issue is.{% endblocktrans %}
             {% endif %}
             </div>
           {% else %}
-            <p class="explanation">We have converted your JSON data into spreadsheet format.</p>
+            <p >We have converted your JSON data into spreadsheet format.</p>
             {% if conversion_error %}
               <p>{% blocktrans %}The JSON data could not be converted to spreadsheet due to the following error: {{conversion_error}}{% endblocktrans %}</p>
               {% include 'error_extra.html' %}
@@ -287,7 +280,7 @@
           {% if conversion_warning_messages %}
             <br>
             <p>{% trans "Conversion <strong>errors:</strong>" %}</p>
-            <ul class="left-space">
+            <ul >
               {% for warning_message in conversion_warning_messages %}
                 <li>{{warning_message}}</li>
               {% endfor %}
@@ -301,22 +294,22 @@
   {% endblock conversion %}
 
   {% block validation %}
-  <div class="panel panel-default">
-    <div class="panel-heading" id="validation-panel-heading" data-toggle="collapse" data-target="#validation-body">
-      <h3 class="panel-title panel-title-explore">
+  <div >
+    <div  id="validation-panel-heading">
+      <h3 >
         {% if validation_errors or additional_closed_codelist_values %}
-          <span class="font-tick cross" aria-hidden="true"></span>
+
             {% trans "This data does not use the 360Giving Data Standard correctly" %} <small>{% blocktrans count n_errors=validation_and_closed_codelist_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</small>
         {% else %}
-          <span class="font-tick tick" aria-hidden="true"></span>
+
           {% trans "This data uses the 360Giving Data Standard correctly" %}
         {% endif %}
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
+
       </h3>
     </div>
-    <div id="validation-body" class="collapse">
-      <div class="panel-body">
-        <p class="explanation">
+    <div id="validation-body" >
+      <div >
+        <p >
           {% if validation_errors or additional_closed_codelist_values %}
             {% trans "Sorry your data is not yet using the 360Giving Data Standard. We used the " %}
           {% else %}
@@ -325,7 +318,7 @@
           <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a>
           {% trans "to check this." %}
         </p>
-        <div class="explore-help">{% trans "This means that the data" %}
+        <div >{% trans "This means that the data" %}
           {% if validation_errors or additional_closed_codelist_values %}
             {% trans " does not meet " %}
           {% else %}
@@ -337,7 +330,7 @@
         </div>
 
         {% if extension_metadatas %}
-        <p class="explanation">{% trans "The 360Giving Data Standard was extended using these extensions:" %}</p>
+        <p>{% trans "The 360Giving Data Standard was extended using these extensions:" %}</p>
         <ol>
           {% for extension_metadata in extension_metadatas %}
           <li><a href="{{extension_metadata.documentationUrl}}" title="{{extension_metadata.description}}">{{extension_metadata.title}} ({{extension_metadata.id}})</a></li>
@@ -347,16 +340,16 @@
 
         {% if validation_errors or additional_closed_codelist_values %}
           <br>
-          <p class="explanation">&nbsp;{% trans "The following <strong>errors</strong> are preventing your data from being valid 360Giving data. Please use the feedback below to find and resolve the issues in your file" %}</p>
+          <p >&nbsp;{% trans "The following <strong>errors</strong> are preventing your data from being valid 360Giving data. Please use the feedback below to find and resolve the issues in your file" %}</p>
           <br>
           {% with validation_errors=validation_errors_grouped.required error_prefix='required-' %}
             {% if validation_errors %}
-              <div class="panel panel-default">
-                <div class="panel-heading">
+              <div >
+                <div >
                   <h4>Missing Fields</h4>
                 </div>
                 <div>
-                  <p class="panel-body">Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
+                  <p >Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
                   {% include "cove_360/validation_table.html" %}
                 </div>
               </div>
@@ -369,12 +362,12 @@
           {% endwith %}
           {% with validation_errors=validation_errors_grouped.format error_prefix='format-' %}
             {% if validation_errors %}
-              <div class="panel panel-default">
-                <div class="panel-heading">
+              <div >
+                <div >
                   <h4>Incorrect Formats</h4>
                 </div>
                 <div>
-                  <p class="panel-body">Some or all of your entries have incorrectly formatted data.</p>
+                  <p >Some or all of your entries have incorrectly formatted data.</p>
                   {% include "cove_360/validation_table.html" %}
                 </div>
               </div>
@@ -386,12 +379,12 @@
             {% endif %}
           {% endwith %}
           {% if additional_closed_codelist_values %}
-              <div class="panel panel-default">
-                <div class="panel-heading">
+              <div >
+                <div >
                   <h4>{% trans 'Codelist Errors' %}</h4>
                 </div>
                 <div>
-                  <div class="panel-body">
+                  <div >
                     <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
                     <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
                   </div>
@@ -405,12 +398,12 @@
         {% endif %}
           {% with validation_errors=validation_errors_grouped.other error_prefix='other-' %}
             {% if validation_errors %}
-              <div class="panel panel-default">
-                <div class="panel-heading">
+              <div >
+                <div >
                   <h4>Other</h4>
                 </div>
                 <div>
-                  <p class="panel-body">Other validation errors.</p>
+                  <p >Other validation errors.</p>
                   {% include "cove_360/validation_table.html" %}
                 </div>
               </div>
@@ -429,20 +422,19 @@
 
   {% block quality_accuracy %}
   {% if quality_accuracy_checks_count %}
-  <div class="panel panel-default">
-    <div class="panel-heading" id="quality-accuracy-panel-heading" data-toggle="collapse" data-target="#quality-accuracy-body">
-      <h3 class="panel-title panel-title-explore">
-        <span class="font-tick question" aria-hidden="true"></span>
+  <div >
+    <div  id="quality-accuracy-panel-heading">
+      <h3 >
+        <span class="font-tick question" ></span>
           {% trans "Data Quality Check: Incorrect values" %}
             <small>{% blocktrans count n_quality_accuracy_checks=quality_accuracy_checks_count %}{{n_quality_accuracy_checks}} Incorrect value check{% plural %}{{n_quality_accuracy_checks}} Incorrect value checks{% endblocktrans %}</small>
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
       </h3>
     </div>
-    <div id="quality-accuracy-body" class="collapse panel-body">
+    <div id="quality-accuracy-body" >
         {% if quality_accuracy_checks_errored %}
-        <div class="row"> <!--Start Row (Detail Table)-->
-          <div class="col-xs-12">
-            <div class="alert alert-danger">
+        <div > <!--Start Row (Detail Table)-->
+          <div >
+            <div >
               {% blocktrans %}Quality checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}
             </div>
           </div>
@@ -478,7 +470,7 @@
                 <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
                 {% endfor %}
                 {% if spreadsheet_location|length > 3 %}
-                  <li><a data-toggle="modal" data-target=".{{"quality_accuracy-checks-"|concat:forloop.counter}}"><sup>see all</sup></a></li>
+                  <li><a data-toggle="modal" ><sup>see all</sup></a></li>
                 {% endif %}
               </ul>
             </td>
@@ -489,7 +481,7 @@
                    <li>{{location}}</li>
                 {% endfor %}
                 {% if json_location|length > 3 %}
-                  <li><a data-toggle="modal" data-target=".{{"quality_accuracy-checks-"|concat:forloop.counter}}"><sup>see all</sup></a></li>
+                  <li><a data-toggle="modal" ><sup>see all</sup></a></li>
                 {% endif %}
               </ul>
             </td>
@@ -515,20 +507,20 @@
 
   {% block usefulness %}
   {% if usefulness_checks_count %}
-  <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#usefulness-body">
-      <h3 class="panel-title panel-title-explore">
+  <div >
+    <div   >
+      <h3 class=" -explore">
         <span class="font-tick question" aria-hidden="true"></span>
           {% trans "Data Quality Check: Usefulness" %}
             <small>{% blocktrans count n_usefulness_checks=usefulness_checks_count %} Usefulness checks{% plural %}{{n_usefulness_checks}} Usefulness checks{% endblocktrans %}</small>
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
+
       </h3>
     </div>
-    <div id="usefulness-body" class="collapse panel-body">
+    <div id="usefulness-body" >
         {% if usefulness_checks_errored %}
-        <div class="row"> <!--Start Row (Detail Table)-->
-          <div class="col-xs-12">
-            <div class="alert alert-danger">
+        <div > <!--Start Row (Detail Table)-->
+          <div >
+            <div >
               {% blocktrans %}Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}
             </div>
           </div>
@@ -566,7 +558,7 @@
                 <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
                 {% endfor %}
                 {% if spreadsheet_location|length > 3 %}
-                  <li><a data-toggle="modal" data-target=".{{"usefulness-checks-"|concat:forloop.counter}}"><sup>see all</sup></a></li>
+                  <li><a data-toggle="modal" ><sup>see all</sup></a></li>
                 {% endif %}
               </ul>
             </td>
@@ -577,7 +569,7 @@
                    <li>{{location}}</li>
                 {% endfor %}
                 {% if json_location|length > 3 %}
-                  <li><a data-toggle="modal" data-target=".{{"usefulness-checks-"|concat:forloop.counter}}"><sup>see all</sup></a></li>
+                  <li><a data-toggle="modal" ><sup>see all</sup></a></li>
                 {% endif %}
               </ul>
             </td>
@@ -603,16 +595,16 @@
 
   {% block additional_fields %}
   {% if additional_fields_count %}
-  <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#additional-checks-body">
-      <h3 class="panel-title panel-title-explore">
+  <div >
+    <div   >
+      <h3 class=" -explore">
         <span class="font-tick question" aria-hidden="true"></span>
         {% trans "Additional Fields" %}
         <small>{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %}{{n_additional_fields}} Additional fields{% endblocktrans %}</small>
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
+
       </h3>
     </div>
-    <div id="additional-checks-body" class="collapse panel-body">
+    <div id="additional-checks-body" >
         {% if data_only %}
           <hr class="heading-in-panel">
           <p class="left-space"> {% blocktrans %} <strong>Additional fields</strong> which do not use 360Giving Data Standard titles were found in your data.{% endblocktrans %}</p>
@@ -634,15 +626,15 @@
   {% endblock additional_fields %}
 
   {% block review %}
-  <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#review-body">
-      <h3 class="panel-title panel-title-explore"><span class="glyphicon glyphicon-list-alt"></span>
+  <div >
+    <div   >
+      <h3 class=" -explore">
         {% trans "Check your data" %} <small>{% blocktrans count n_grants=grants_aggregates.count|default:0 %}{{n_grants}} Grant{% plural %}{{n_grants}} Grants{% endblocktrans %}</small>
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
+
       </h3>
     </div>
     <div id="review-body" class="collapse">
-      <div class="panel-body">
+      <div >
         <p class="explanation">{% trans "Review your data." %}</p>
         <div class="explore-help">
           We recommend having a look over your data here. This table shows how the data looks after it has been converted.
@@ -655,7 +647,7 @@
           <li>
             {% trans "Unique grant identifiers:" %}&nbsp;
             <strong>
-              {% if grants_aggregates.unique_ids|length %}<a data-toggle="modal" data-target=".unique-ids">{% endif %}
+              {% if grants_aggregates.unique_ids|length %}<a data-toggle="modal" >{% endif %}
               {{ grants_aggregates.unique_ids|length}}
               {% if grants_aggregates.unique_ids|length %}</a>{% endif %}
             </strong>
@@ -663,7 +655,7 @@
           <li>
             {% trans "Unique funder organisation identifiers:" %}&nbsp;
             <strong>
-              {% if grants_aggregates.distinct_funding_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-funding-org-identifier">{% endif %}
+              {% if grants_aggregates.distinct_funding_org_identifier|length %}<a data-toggle="modal" >{% endif %}
               {{ grants_aggregates.distinct_funding_org_identifier|length}}
               {% if grants_aggregates.distinct_funding_org_identifier|length %}</a>
               {% endif %}
@@ -672,22 +664,22 @@
           <li>
             {% trans "Unique recipient organisation identifiers:" %}&nbsp;
             <strong>
-              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-recipient-org-identifier">{% endif %}
+              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<a data-toggle="modal" >{% endif %}
               {{ grants_aggregates.distinct_recipient_org_identifier|length}}
               {% if grants_aggregates.distinct_recipient_org_identifier|length %}</a>{% endif %}
             </strong>
           </li>
         </ul>
         <br>
-        <div class="row">
+        <div >
           <div class="col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-title">
+            <div >
+              <div >
+                <h4 class="">
                   {% trans 'Grants Table' %}
                 </h4>
               </div>
-              <div class="panel-body">
+              <div >
                   <table class="table table-striped result-table table-condensed">
                     <thead>
                       <tr>
@@ -723,23 +715,23 @@
   {% endblock review %}
 
   {% block download_and_share %}
-  <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#save-and-share-body">
-      <h3 class="panel-title panel-title-explore"><span class="glyphicon glyphicon-save"></span>
+  <div >
+    <div   >
+      <h3 class=" -explore">
         {% trans "Download data and share these results" %}
-        <span class="glyphicon glyphicon-collapse-down pull-right"></span>
+
       </h3>
     </div>
     <div id="save-and-share-body" class="collapse {% if conversion == 'flatten' %}in{% endif %}">
-      <div class="panel-body">
-	<h4><span class="glyphicon glyphicon-share"></span> Share</h4>
+      <div >
+	<h4> Share</h4>
         <p>{% trans "You can share these test results with others by using the following url:" %}</p>
         <div class="copy-div">
             <span class="copy-span"> {{ current_url }} <span id="copy-url-button" title="Click to copy." data-clipboard-text={{ current_url }} class="btn copy-button glyphicon glyphicon-copy" aria-hidden="true"></span> </span>
             <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
         </div>
         <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
-        <h4><span class="glyphicon glyphicon-download-alt"></span> Download</h4>
+        <h4> Download</h4>
         <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
         <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
         {% if not conversion_error and conversion != 'flattenable' %}
@@ -779,27 +771,6 @@
 
 {% endblock explore_content %}
 
-{% block extrafooterscript %}
-  {{ block.super }}
-  <script type="text/javascript">
-    $("[data-toggle='collapse']").click(function() {
-      var $this = $(this);
-      if($this.attr("aria-expanded") === "true"){
-        $this.find('.glyphicon-collapse-up').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down');
-      } else {
-        $this.find('.glyphicon-collapse-down').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up')
-      }
-    });
-    function expand_all() {
-        $('.collapse').collapse('show');
-        $("[data-toggle='collapse']").find('.glyphicon-collapse-down').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up');
-    }
-    function collapse_all() {
-        $('.collapse').collapse('hide');
-        $("[data-toggle='collapse']").find('.glyphicon-collapse-up').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down');
-    }
-  </script>
-{% endblock extrafooterscript %}
 
 
 {% comment %}

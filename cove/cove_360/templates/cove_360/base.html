@@ -10,7 +10,7 @@
   <meta property="og:description" content="360Insights is a free tool to help you understand funders better. You can combine and visualise 360Giving and charity data, and explore funding across different areas - from grant dates to types of recipients.">
   <meta name="description" content="360Insights is a free tool to help you understand funders better. You can combine and visualise 360Giving and charity data, and explore funding across different areas - from grant dates to types of recipients.">
 
-  <title>360Giving Data Quality Tool</title>
+{% block title_tag %}<title>360Giving Data Quality Tool</title>{% endblock %}
 
   <link rel="shortcut icon" href="{% static 'dataexplore/images/favicon/favicon.ico' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}?{request.tag}">
@@ -27,7 +27,7 @@
 
 
             <li class="contextual-menu__item">
-                <a class="contextual-menu__button" href="/" >Data Quality Tool</a>
+                <a class="contextual-menu__button" href="{% url 'index' %}" >Data Quality Tool</a>
             </li>
 
             <li class="contextual-menu__item">
@@ -72,8 +72,8 @@
                   <a href="/"><img src="{% static 'dataexplore/images/360-giving-logo.svg' %}" alt="360 Giving"></a>
               </div>
               <div class="hero__column hero__lead">
-                  <h2 class="hero__title">Data Quality Tool</h2>
-                  <p class="hero__blurb">Convert, Validate, Explore 360 Giving Data.</p>
+                  <h2 class="hero__title">{% block hero_title %}Data Quality Tool{% endblock %}</h2>
+                  <p class="hero__blurb">{% block hero_blurb %}Convert, Validate, Explore 360 Giving Data.{% endblock %}</p>
               </div>
           </div>
       </div>
