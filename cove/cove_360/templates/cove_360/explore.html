@@ -13,6 +13,11 @@
 {% endblock %}
 
 {% block explore_content %}
+  <div class="margin-top:1" style="display: flex; flex-direction:row; justify-content: end">
+    <a href="{% url 'index' %}">Load new file</a>
+    <span class="margin-left:1 margin-right:1">|</span>
+    <a href="{% url 'publishing' %}">Submit your data</a>
+  </div>
 
   {% block data_supplied %}
 
@@ -86,11 +91,66 @@
   {% endif %}
 
     <div>
-      <div >
-        <h3 >
-          {% trans "Summary: Your data at a glance" %}
-        </h3>
-      </div>
+
+<div class="tabs">
+  <span class="tab tab--active" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#summary" data-tab-id="summary" id="summary-tab-link">
+      {% trans "Summary" %}
+    </a>
+  </span>
+
+  <span class="tab" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#validity" data-tab-id="validity" id="validity-tab-link">
+      {% trans "Validity" %} ({{validation_and_closed_codelist_errors_count}})
+    </a>
+  </span>
+
+  <span class="tab" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#accuracy" data-tab-id="accuracy" id="accuracy-tab-link">
+      {% trans "Accuracy" %} (?)
+    </a>
+  </span>
+
+  <span class="tab" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#usefulness" data-tab-id="usefullness" id="usefulness-tab-link">
+      {% trans "Usefulness" %} ({{usefulness_checks_count}})
+    </a>
+  </span>
+</div> <!-- / tabs -->
+
+      <h3>{% trans "Summary" %}</h3>
+
+      <div class="grid grid--three-columns">
+          <div class="grid__1">
+            <div class="base-card base-card--red">
+                <div class="base-card__content">
+                    <h2 class="base-card__title">{{validation_and_closed_codelist_errors_count}}</h2>
+                    <p class="base-card__text">Validity errors to fix</p>
+                </div>
+            </div>
+          </div>
+
+           <div class="grid__1">
+            <div class="base-card base-card--yellow">
+                <div class="base-card__content">
+                    <h2 class="base-card__title">{{usefulness_checks_count }}</h2>
+                    <p class="base-card__text">Potential accuracy issue</p>
+                </div>
+            </div>
+          </div>
+
+           <div class="grid__1">
+            <div class="base-card base-card--teal">
+                <div class="base-card__content">
+                    <h2 class="base-card__title">{{usefulness_checks_count }}</h2>
+                    <p class="base-card__text">Usefulness opportunities</p>
+                </div>
+            </div>
+          </div>
+
+
+
+        </div> <!-- end grid -->
       <div id="data-supplied-body">
         <div >
           <p >
@@ -156,9 +216,11 @@
 
           <br>
           <p>This file contains</p>
+
+
+
           <ul >
             <li>
-              {% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %}Data about <strong>{{n_funders}} funder</strong>{% plural %}Data about <strong>{{n_funders}} funders</strong>{% endblocktrans %}
             </li>
             <li>
               {% blocktrans count n_grants=grants_aggregates.count|default:0 %}There is <strong>{{n_grants}} grant</strong>{% plural %}There are <strong>{{n_grants}} grants</strong> {% endblocktrans %}
