@@ -1,0 +1,73 @@
+
+{% block hero_title %}Data submission tool{% endblock %}
+{% block hero_blurb %}Submit your 360Giving data file be included in the 360Giving Data Registry{% endblock %}
+
+{% if "self_publishing" in data_status.supplied_data.parameters %}
+      <h3>
+        {% if data_status.can_publish %}
+          <span class="font-tick tick" aria-hidden="true"></span>
+        {% endif %}
+        {% trans "Submit your data" %}</h3>
+        </div>
+      <div>
+        {% if data_status.can_publish %}
+        <p>{% trans "Submitting for:" %} {{publisher.name}}</p>
+        <p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
+        <p>{% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %} <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/">{% trans "Guidance about using the submission form." %}</a></p>
+        <a class="button button--teal button--solid" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}">Submit your file</a>
+        {% endif %}
+
+        {# Data passed, Domain not recognised/approved #}
+        {% if data_status.passed and not data_status.can_publish %}
+        <p>
+          {% blocktrans %}
+          Sorry you aren't able to submit this file because the domain name of the website hosting your file ({{source_url_domain}}) is not authorised for publishing 360Giving data.
+          {% endblocktrans %}
+        </p>
+        <p>
+          {% blocktrans %}
+          Please email 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a> with the link to the file you want to submit to the Data Registry.
+          {% endblocktrans %}
+        </p>
+        {% endif %}
+
+        {# Validation failed #}
+        {% if not data_status.passed %}
+        <p>{% blocktrans %}Sorry you aren't able to submit this file because it is not valid 360Giving data.{% endblocktrans %}</p>
+        <p>
+          {% blocktrans %}
+          Follow the feedback below to make the amendments needed to your data. Once your data passes the Data Quality tool checks, upload the updated file to your website and then restart the 360Giving data file submission process.
+          The data did not pass the checks and cannot be published. See results below.
+          {% endblocktrans %}
+        </p>
+        {% endif %}
+
+        <script>
+          window.addEventListener('load', function() {
+
+            let publisherValidation, dataValidation, validation;
+
+            if ('{{ data_status.publisher.self_publish.enabled }}' === 'True') {
+              publisherValidation = "publishing-enabled"
+            } else {
+              publisherValidation = "publishing-disabled"
+            }
+
+            if ('{{ data_status.passed }}' === 'True') {
+              dataValidation = "data-valid"
+            } else {
+              dataValidation = 'data-invalid'
+            }
+
+            validation = `${publisherValidation}-${dataValidation}`;
+            source = '{{ source_url }}'
+
+            _paq.push(['trackEvent', 'Status', validation, source]);
+            _paq.push(['trackPageView']);
+          })
+        </script>
+
+    </div>
+  </div>
+  {% endif %}
+
