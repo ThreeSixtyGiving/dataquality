@@ -4,6 +4,11 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DATA_SUBMISSION_ENABLED: "true"
+      REGISTRY_PUBLISHERS_URL: ${{secrets.REGISTRY_PUBLISHERS_URL}}
+      REGISTRY_PUBLISHERS_USER: ${{secrets.REGISTRY_PUBLISHERS_USER}}
+      REGISTRY_PUBLISHERS_PASS: ${{secrets.REGISTRY_PUBLISHERS_PASS}}
     strategy:
       matrix:
         # Python 3.8 is used by the live cove and datastore servers
@@ -27,21 +32,10 @@ jobs:
     - name: Install Ubuntu Translation Libraries
       run: sudo apt install gettext
     - name: Test 360
-      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings py.test -vv -n 2 --cov-append --cov --cov-report=
-    - name: Migrate Database
-      run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py migrate
-    - name: Compile Messages
-      run: DJANGO_SETTINGS_MODULE=cove_project.settings python ./cove/manage.py compilemessages
 
-# Disable these tests as TBC as to whether they are relevant and also rely on direct source_url query which is no longer supported
-#    - name: Install vnu
- #     run: cd cove; wget "https://github.com/validator/validator/releases/download/16.3.3/vnu.jar_16.3.3.zip"; unzip vnu.jar_16.3.3.zip
-  #  - name: VNU tests
-    #  run: "cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings DEBUG=false ALLOWED_HOSTS=localhost python manage.py runserver & (sleep 10s; java -jar dist/vnu.jar 'http://localhost:8000/' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/master/cove/cove_360/fixtures/fundingproviders_grants_2_grants.csv
-   #     ' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/main/cove/cove_360/fixtures/badfile_all_validation_errors.xlsx
-    #    ' 'http://localhost:8000/?source_url=https://github.com/threesixtygiving/dataquality/raw/main/cove/cove_360/fixtures/badfile_all_validation_errors.json
-     #   ' 'http://localhost:8000/common_errors/' 'http://localhost:8000/additional_checks/')"
-        #   - name: Report to coveralls
-        #     env:
-        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #run: coveralls --service=github
+      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings_test py.test -vv -n 2 --cov-append --cov --cov-report=
+
+    - name: Migrate Database
+      run: DJANGO_SETTINGS_MODULE=cove_project.settings_test python ./cove/manage.py migrate
+    - name: Compile Messages
+      run: DJANGO_SETTINGS_MODULE=cove_project.settings_test python ./cove/manage.py compilemessages

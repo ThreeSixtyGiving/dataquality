@@ -25,7 +25,7 @@
         {% endif %}
         {% trans "Submit your data" %}</h3>
         </div>
-      <div class="panel-body">
+      <div class="panel-body" id="publish-status-text">
         {% if data_status.can_publish %}
         <p>{% trans "Submitting for:" %} {{publisher.name}}</p>
         <p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>

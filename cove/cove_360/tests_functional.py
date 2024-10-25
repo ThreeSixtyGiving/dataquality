@@ -766,3 +766,40 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
         assert expected_text in quality_accuracy_body_text, f"Expected: '{expected_text}'\nGot: '{quality_accuracy_body_text}'"
     for unexpected_text in unexpected_texts:
         assert unexpected_text not in quality_accuracy_body_text
+
+
+def test_file_submission(server_url, browser, httpserver):
+    """
+    Test the file submission process works to the point of getting to the "submit"
+    into the sales force form
+
+    This requires valid file submission settings via envs:
+
+    "DATA_SUBMISSION_ENABLED"
+    "REGISTRY_PUBLISHERS_URL"
+    "REGISTRY_PUBLISHERS_USER"
+    "REGISTRY_PUBLISHERS_PASS"
+
+    Hint: Skip this test via pytest -k "not test_file_submission" if file
+    submission credentials aren't available.
+    """
+
+    browser.get(server_url)
+    browser.find_element_by_class_name("cookie-consent-no").click()
+
+    valid_for_publishing = "https://www.threesixtygiving.org/wp-content/uploads/love-kingston-funding-data-2018.xlsx"
+
+    browser.find_element_by_id("source-url-input").send_keys(valid_for_publishing)
+    browser.find_element_by_id("submit-for-publishing-btn").click()
+
+    time.sleep(2)
+
+    # Await for the validation checks to finish for a max of 30s
+    count = 0
+    while "results" not in browser.current_url and count < 30:
+        time.sleep(1)
+        count = count + 1
+
+    body_text = browser.find_element_by_tag_name("body").text
+
+    assert "The data was checked and can now be submitted to the 360Giving Data Registry." in body_text, f"Expected '...can now be submitted' in {body_text}"
