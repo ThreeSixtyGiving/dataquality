@@ -204,7 +204,6 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     except Exception:
         context["usefulness_errored"] = True
 
-
     cache.set(pk, context)
     return render(request, template, context)
 

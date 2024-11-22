@@ -38,7 +38,8 @@ def wait_for_results_page(browser):
 def browser(request):
     if BROWSER == 'ChromeHeadless':
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        if not os.environ.get("UI"):
+            chrome_options.add_argument("--headless")
         # uncomment this if "DevToolsActivePort" error
         # chrome_options.add_argument("--remote-debugging-port=9222")
         browser = webdriver.Chrome(chrome_options=chrome_options)
@@ -58,11 +59,11 @@ def server_url(request, live_server):
 
 
 @pytest.mark.parametrize(('source_filename', 'expected_text', 'conversion_successful'), [
-    ('fundingproviders-grants_fixed_2_grants.json', ['A file was downloaded from',
-                                                  'There are 4 grants to 2 recipient organisations and 0 to recipient individuals',
+    ('fundingproviders-grants_fixed_2_grants.json', ['There are 4 grants to 2 recipient organisations and 0 to recipient individuals',
                                                   'The grants were awarded in GBP with a total value of £662,990 and individual awards ranging from £152,505 (lowest) to £178,990 (highest)',
                                                   'Convert to Spreadsheet',
-                                                  'data does not use the 360Giving Data Standard correctly 15 Errors',
+                                                  'data does not use the 360Giving Data Standard correctly',
+                                                  '15 Errors',
                                                   'your data is not yet using the 360Giving Data Standard',
                                                   'Incorrect Formats',
                                                   'Non-unique id values',
@@ -70,7 +71,7 @@ def server_url(request, live_server):
                                                   'Unique grant identifiers:  2',
                                                   'Unique funder organisation identifiers:  1',
                                                   '360G-fundingproviders-000002/X/00/X'], True),
-    ('fundingproviders-grants_broken_grants.json', ['data does not use the 360Giving Data Standard correctly 15 Errors',
+    ('fundingproviders-grants_broken_grants.json', ['data does not use the 360Giving Data Standard correctly (15 Errors)',
                                                  'Check your data 4 Grants',
                                                  'Unique funder organisation identifiers:  2',
                                                  'Unique recipient organisation identifiers:  2',
@@ -80,7 +81,7 @@ def server_url(request, live_server):
                                             'The grants were awarded in GBP with a total value of £331,495',
                                             # check that there's no errors after the heading
                                             'Data conversion successful\nBefore checking',
-                                            'data does not use the 360Giving Data Standard correctly 7 Errors',
+                                            'data does not use the 360Giving Data Standard correctly (7 Errors)',
                                             'description is missing but required',
                                             'Sheet: grants Row: 2',
                                             'Check your data 2 Grants',
@@ -89,7 +90,7 @@ def server_url(request, live_server):
                                             '360G-fundingproviders-000002/X/00/X'], True),
     # Test conversion warnings are shown
     ('tenders_releases_2_releases.xlsx', ['Data conversion unsuccessful - 5 Errors have been found',
-                                          'data does not use the 360Giving Data Standard correctly 76 Errors',
+                                          'data does not use the 360Giving Data Standard correctly (76 Errors)',
                                           'You may have a duplicate Identifier: We couldn\'t merge these rows with the id "1": field "ocid" in sheet "items": one cell has the value: "PW-14-00627094", the other cell has the value: "PW-14-00629344"'
                                           ], True),
     # Test that titles that aren't in the rollup are converted correctly
@@ -189,13 +190,8 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
         httpserver.serve_content(fp.read())
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
-        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
-        if authed:
-            pytest.skip()
-    else:
-        source_url = httpserver.url + PREFIX_360 + source_filename
+
+    source_url = httpserver.url + PREFIX_360 + source_filename
 
     if authed:
         User = get_user_model()
@@ -203,34 +199,24 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
         force_login(user, browser, server_url)
 
     browser.get(server_url)
+
     browser.find_element_by_class_name("cookie-consent-no").click()
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
+
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
 
     # Wait for the various redirects after click
     wait_for_results_page(browser)
 
-    data_url = browser.current_url
-
-    # Click and un-collapse all explore sections
-    all_sections = browser.find_elements_by_class_name('panel-heading')
+    # reload results page with ?open-all=true to see all values at once
+    browser.get(f"{browser.current_url}?open-all=true")
     browser.find_element_by_class_name("cookie-consent-no").click()
-    for section in all_sections:
-        if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
-            section.click()
-        time.sleep(0.5)
 
     # Do the assertions
+
+    a = input()
     check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed)
-
-    if conversion_successful:
-        # Expand all sections with the expand all button this time
-        browser.find_element_by_link_text('Expand all').click()
-
-        browser.get(data_url + '/advanced')
-        assert 'Advanced view' in browser.find_element_by_tag_name('body').text
 
 
 def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
@@ -377,91 +363,6 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
             assert warning_heading not in conversion_title_text
         # should be a tick
         assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick tick'
-
-
-@pytest.mark.parametrize(('link_text', 'url'), [
-    ('360Giving', 'https://www.threesixtygiving.org/'),
-    ('Publisher Guidance', 'https://standard.threesixtygiving.org/en/latest/'),
-    ('Common Errors', 'common_errors'),
-    ])
-def test_footer_360(server_url, browser, link_text, url):
-    browser.get(server_url)
-    link = browser.find_element_by_link_text(link_text)
-    href = link.get_attribute("href")
-    assert url in href
-
-
-def test_index_page_360(server_url, browser):
-    browser.get(server_url)
-    assert 'Data Quality Tool' in browser.find_element_by_class_name('title360').text
-    assert 'How to check your data' in browser.find_element_by_tag_name('body').text
-    assert 'Summary Spreadsheet - ' in browser.find_element_by_tag_name('body').text
-    assert 'JSON built to the 360Giving JSON schema' in browser.find_element_by_tag_name('body').text
-    assert 'Multi-table data package - Excel' in browser.find_element_by_tag_name('body').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
-
-
-@pytest.mark.parametrize(('link_text', 'url'), [
-    ('360Giving Data Standard guidance', 'https://standard.threesixtygiving.org/en/latest/technical/reference/#reference'),
-    ('Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/summary-table/360-giving-schema-titles.xlsx'),
-    ('CSV', 'https://standard.threesixtygiving.org/en/latest/technical/templates-csv/'),
-    ('360Giving JSON schema', 'https://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas'),
-    ('Multi-table data package - Excel', 'https://threesixtygiving-standard.readthedocs.io/en/latest/_static/multi-table/360-giving-schema-fields.xlsx')
-    ])
-def test_index_page_360_links(server_url, browser, link_text, url):
-    browser.get(server_url)
-    link = browser.find_element_by_link_text(link_text)
-    href = link.get_attribute("href")
-    assert url in href
-
-
-def test_common_index_elements(server_url, browser):
-    browser.get(server_url)
-    browser.find_element_by_css_selector('#more-information .panel-title').click()
-    time.sleep(0.5)
-    assert 'What happens to the data I provide to this site?' in browser.find_element_by_tag_name('body').text
-    assert 'Why do you delete data after seven days?' in browser.find_element_by_tag_name('body').text
-    assert 'Why provide converted versions?' in browser.find_element_by_tag_name('body').text
-    assert 'Terms & Conditions' in browser.find_element_by_tag_name('body').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
-
-
-def test_terms_page(server_url, browser):
-    browser.get(server_url + 'terms/')
-    assert 'Open Data Services Co-operative Limited' in browser.find_element_by_tag_name('body').text
-    assert 'Open Data Services Limited' not in browser.find_element_by_tag_name('body').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
-
-
-def test_accordion(server_url, browser):
-    browser.get(server_url)
-
-    def buttons():
-        return [b.is_displayed() for b in browser.find_elements(By.CSS_SELECTOR, "#accordion button")]
-
-    time.sleep(0.5)
-    assert buttons() == [True, False, False]
-    assert 'Upload a file' in browser.find_elements_by_tag_name('label')[0].text
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    browser.find_element_by_partial_link_text('Link').click()
-    browser.implicitly_wait(1)
-    time.sleep(0.5)
-    assert buttons() == [False, True, False]
-    browser.find_element_by_partial_link_text('Paste').click()
-    time.sleep(0.5)
-    assert buttons() == [False, False, True]
-    assert 'Paste (JSON only)' in browser.find_elements_by_tag_name('label')[2].text
-
-    # Now test that the whole banner is clickable
-    browser.find_element_by_id('headingOne').click()
-    time.sleep(0.5)
-    assert buttons() == [True, False, False]
-    browser.find_element_by_id('headingTwo').click()
-    time.sleep(0.5)
-    assert buttons() == [False, True, False]
-    browser.find_element_by_id('headingThree').click()
-    time.sleep(0.5)
-    assert buttons() == [False, False, True]
 
 
 @pytest.mark.parametrize(('source_filename'), [

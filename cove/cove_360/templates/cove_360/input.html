@@ -47,7 +47,7 @@
     {% bootstrap_form forms.upload_form %}
     {% buttons %}
 
-    <button type="submit" class="margin-top:2 button button--teal-dark button--solid">
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-upload-btn">
       {% trans 'Check Data' %}
     </button>
     {% endbuttons %}
@@ -60,7 +60,7 @@
   <form method="POST" action="." class="generic-form" id="fetchURL">{% csrf_token %}
     {% bootstrap_form forms.url_form %}
     {% buttons %}
-    <button type="submit" class="margin-top:2 button button--teal-dark button--solid">
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-link-btn">
       {% trans 'Check Data' %}
     </button>
     {% endbuttons %}
@@ -73,7 +73,7 @@
   <form method="POST" class="generic-form" action=".">{% csrf_token %}
     {% bootstrap_form forms.text_form %}
     {% buttons %}
-    <button type="submit" class="margin-top:2 button button--teal-dark button--solid">
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-paste-btn">
       {% trans 'Check Data' %}
     </button>
     {% endbuttons %}

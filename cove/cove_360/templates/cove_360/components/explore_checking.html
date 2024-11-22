@@ -110,3 +110,17 @@
 </div>
 
 <div class="spacer-4"></div>
+
+<script>
+  (function(){
+    /* If "?open-all=true" is passed show all tabs on the page at once */
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("open-all")){
+      for (const tab of document.getElementsByClassName("tab-content")){
+        tab.removeAttribute("style");
+      }
+    }
+
+  })();
+</script>

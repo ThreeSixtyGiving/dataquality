@@ -65,7 +65,7 @@
           {% endif %}
         </div>
       </div>
-  {% endif %}
+  {% endif %} {# end if the file had a metadata tab #}
 
   {% if metadata.downloadURL or metadata.title %}
   <h3>
@@ -77,6 +77,7 @@
     {% endif %}
   </h3>
   {% endif %}
+
   {% if metadata.description %}
   <p>
   {{metadata.description}}
@@ -99,8 +100,35 @@
       {% blocktrans with start_date=grants_aggregates.min_award_date %}on <strong>{{start_date}}</strong>.{% endblocktrans %}
       {% else %}
       {% blocktrans with start_date=grants_aggregates.min_award_date end_date=grants_aggregates.max_award_date %}between <strong>{{start_date}}</strong> and <strong>{{end_date}}</strong>.{% endblocktrans %}
+      {% endif %}
     </li>
-    {% endif %}
+
+         <li>
+            {% trans "Unique grant identifiers:" %}&nbsp;
+            <strong>
+              {% if grants_aggregates.unique_ids|length %}<a data-toggle="modal" data-target=".unique-ids">{% endif %}
+              {{ grants_aggregates.unique_ids|length}}
+              {% if grants_aggregates.unique_ids|length %}</a>{% endif %}
+            </strong>
+          </li>
+          <li>
+            {% trans "Unique funder organisation identifiers:" %}&nbsp;
+            <strong>
+              {% if grants_aggregates.distinct_funding_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-funding-org-identifier">{% endif %}
+              {{ grants_aggregates.distinct_funding_org_identifier|length}}
+              {% if grants_aggregates.distinct_funding_org_identifier|length %}</a>
+              {% endif %}
+            </strong>
+          </li>
+          <li>
+            {% trans "Unique recipient organisation identifiers:" %}&nbsp;
+            <strong>
+              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-recipient-org-identifier">{% endif %}
+              {{ grants_aggregates.distinct_recipient_org_identifier|length}}
+              {% if grants_aggregates.distinct_recipient_org_identifier|length %}</a>{% endif %}
+            </strong>
+          </li>
+
     {% if metadata.issued %}
     <li>
       The file was issued on <strong> {{metadata.issued|slice:":10"}} </strong>
@@ -203,3 +231,7 @@
       <p>{% trans "Please resolve this error, as well as any others found, and test the data again." %}</p>
       {% endif %}
 {% endif %}
+
+      {% cove_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
+      {% cove_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
+      {% cove_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}

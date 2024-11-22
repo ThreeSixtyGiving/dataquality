@@ -38,6 +38,18 @@ const allTabs = [
 })();
 
 (function(){
+	/* If "?open-all=true" is passed show all tabs on the page at once
+		and ignore any resuming of the tab state.
+	*/
+	const params = new URLSearchParams(window.location.search);
+
+	if (params.get("open-all")){
+		for (const tab of document.getElementsByClassName("tab-content")){
+			tab.removeAttribute("style");
+		}
+
+		return;
+	}
 
 	/* Resume the tab selection state from the window hash on page load.
 	 * substring to remove the # to match values in allTabs array.
