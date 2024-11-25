@@ -235,3 +235,46 @@
       {% cove_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
       {% cove_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
       {% cove_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}
+
+
+      <h3 class="panel-title panel-title-explore">
+        {% trans "Download data and share these results" %}
+      </h3>
+      <h4>Share</h4>
+        <p>{% trans "You can share these test results with others by using the following url:" %}</p>
+            <p><a href="{{current_url}}"> {{ current_url }}</a>
+            <button class="button button--small margin-left:1" onclick="navigator.clipboard.writeText('{{current_url}}'); this.innerHTML = 'Copied!';">Copy Link to Clipboard</button>
+            </p>
+            <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
+        <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
+        <h4><span class="glyphicon glyphicon-download-alt"></span> Download</h4>
+        <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
+        <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
+        {% if not conversion_error and conversion != 'flattenable' %}
+          <p>{% trans "We provide the following formats to download:" %}</p>
+          <ul class="left-space">
+            {% if conversion == 'unflatten' %}
+            <li>
+              <a href="{{converted_url}}">{{JSON}} ({% trans converted %})</a> {{converted_file_size|filesizeformat}}
+            </li>
+            {% elif conversion == 'flatten' %}
+            <li>
+              <a href="{{converted_url}}-titles.xlsx">{{xlsx}} ({% trans converted %})</a> {{converted_file_size_titles|filesizeformat}}
+            </li>
+            <li class="list-unstyled">
+              <sub>{% trans "You can also download an" %}<a href="{{converted_url}}.xlsx"> {% trans "Excel Spreadsheet (.xlsx) with JSON field names" %}</a> {% trans "instead of titles as column headers" %} ({{converted_file_size|filesizeformat}})</sub>
+            </li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <p>(No downloads available as the conversion hasn't happened, or has errored).</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <h3 class="box__heading">Original file download for admin users</h2>
+            <p>Warning, this is the original file uploaded. Do not download if you don't trust whoever sent you a link to this page, it could contain a virus. Note that this box and this download link are only visible to admin users, not others you share this page with.</p>
+            <ul class="left-space">
+              <li>
+                <a href="{{original_file.url}}">{% trans "Original file" %} ({{file_type}})</a> {{original_file.size|filesizeformat}}
+              </li>
+            </ul>
+        {% endif %}

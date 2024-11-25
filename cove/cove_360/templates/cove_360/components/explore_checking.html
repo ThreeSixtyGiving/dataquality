@@ -1,5 +1,16 @@
 {% load i18n %} {% load humanize %} {% load cove_tags %}
 
+{% trans 'Converted from Original' as converted %}
+{% trans 'Original' as original %}
+{% trans 'Excel Spreadsheet (.xlsx)' as xlsx %}
+{% trans 'OpenDocument Spreadsheet (.ods)' as ods %}
+{% trans 'CSV Spreadsheet (.csv)' as csv %}
+{% trans 'Excel Spreadsheet (.xlsx) with titles' as xlsx_titles %}
+{% trans 'OpenDocument Spreadsheet (.ods) with titles' as ods_titles %}
+{# Translators: JSON probably does not need a transalation: http://www.json.org/ #}
+{% trans 'JSON' as JSON %}
+{% trans 'XML' as XML %}
+
 <div
   class="margin-top:1 margin-bottom:2"
   style="display: flex; flex-direction: row; justify-content: end"
@@ -112,15 +123,5 @@
 <div class="spacer-4"></div>
 
 <script>
-  (function(){
-    /* If "?open-all=true" is passed show all tabs on the page at once */
-    const params = new URLSearchParams(window.location.search);
 
-    if (params.get("open-all")){
-      for (const tab of document.getElementsByClassName("tab-content")){
-        tab.removeAttribute("style");
-      }
-    }
-
-  })();
 </script>

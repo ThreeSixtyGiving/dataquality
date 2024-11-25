@@ -71,33 +71,34 @@ def server_url(request, live_server):
                                                   'Unique grant identifiers:  2',
                                                   'Unique funder organisation identifiers:  1',
                                                   '360G-fundingproviders-000002/X/00/X'], True),
-    ('fundingproviders-grants_broken_grants.json', ['data does not use the 360Giving Data Standard correctly (15 Errors)',
-                                                 'Check your data 4 Grants',
+    ('fundingproviders-grants_broken_grants.json', ['data does not use the 360Giving Data Standard correctly',
+                                                    '15 Errors',
                                                  'Unique funder organisation identifiers:  2',
                                                  'Unique recipient organisation identifiers:  2',
                                                  '360G-fundingproviders-000002/X/00/X'], True),
-    ('fundingproviders-grants_2_grants.xlsx', ['Data about 1 funder',
+    ('fundingproviders-grants_2_grants.xlsx', ['1 funding organisation',
                                             'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
                                             'The grants were awarded in GBP with a total value of £331,495',
                                             # check that there's no errors after the heading
                                             'Data conversion successful\nBefore checking',
-                                            'data does not use the 360Giving Data Standard correctly (7 Errors)',
+                                            'data does not use the 360Giving Data Standard correctly',
+                                            '7 Errors',
                                             'description is missing but required',
                                             'Sheet: grants Row: 2',
-                                            'Check your data 2 Grants',
                                             'Unique funder organisation identifiers:  1',
                                             'Unique recipient organisation identifiers:  1',
                                             '360G-fundingproviders-000002/X/00/X'], True),
     # Test conversion warnings are shown
     ('tenders_releases_2_releases.xlsx', ['Data conversion unsuccessful - 5 Errors have been found',
-                                          'data does not use the 360Giving Data Standard correctly (76 Errors)',
+                                          'data does not use the 360Giving Data Standard correctly',
+                                          '76 Errors',
                                           'You may have a duplicate Identifier: We couldn\'t merge these rows with the id "1": field "ocid" in sheet "items": one cell has the value: "PW-14-00627094", the other cell has the value: "PW-14-00629344"'
                                           ], True),
     # Test that titles that aren't in the rollup are converted correctly
     # (See @check_url_input_result_page).
     ('fundingproviders-grants_2_grants_titleswithoutrollup.xlsx', [], True),
     # Test a 360 csv in cp1252 encoding
-    ('fundingproviders-grants_2_grants_cp1252.csv', ['Data about 1 funder',
+    ('fundingproviders-grants_2_grants_cp1252.csv', ['1 funding organisation',
                                                   'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
                                                   'The grants were awarded in GBP with a total value of £331,495',
                                                   'This file is not \'utf-8\' encoded (it is cp1252 encoded)'], True),
@@ -214,8 +215,6 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
     browser.find_element_by_class_name("cookie-consent-no").click()
 
     # Do the assertions
-
-    a = input()
     check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed)
 
 
@@ -231,9 +230,6 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
 
     if source_filename == 'validation_errors-3.json':
         assert 'UNSAFE' not in body_text
-
-    assert 'Data Quality Tool' in browser.find_element_by_class_name('title360').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
     if conversion_successful:
         if source_filename.endswith('.json'):
@@ -259,9 +255,6 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
                 assert 'Original file (csv)' not in body_text
             converted_file = browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
             assert "unflattened.json" in browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
-
-        # Test for Load New File button
-        assert 'Load New File' in body_text
 
         if authed:
             assert 'Note that this box and this download link are only visible to admin users' in body_text

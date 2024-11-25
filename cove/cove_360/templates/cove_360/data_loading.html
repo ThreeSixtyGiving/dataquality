@@ -27,30 +27,36 @@ const resultsUrl = "{% url "results" pk %}";
 
 // Start the results processing if it returns in time
 // If it doesn't, it will fail silently and rely on the polling mechanism
-fetch(resultsUrl)
-  .then((response) => {
-    if (response.ok) {
+
+(async function(){
+
+try {
+  const response = await fetch(resultsUrl);
+  if (response.ok) {
+    window.location.href = resultsUrl;
+  } else {
+    throw Error(`Server has errored ${response.statusText}`);
+  }
+} catch (error) {
+  console.error("Error fetching results:", error);
+  window.location.href = resultsUrl;
+}
+
+})();
+
+
+async function updateStatus() {
+  try {
+    const response = await fetch(pollUrl);
+    const data = response.json();
+    if (data.done) {
+      clearInterval(poller);
       window.location.href = resultsUrl;
     }
-  })
-  .catch((error) => {
-    console.error("Error fetching results:", error);
-  });
-
-function updateStatus() {
-  fetch(pollUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.done) {
-        clearInterval(poller);
-        window.location.href = resultsUrl;
-      }
-      console.log(data);
-    })
-    .catch((error) => {
+  } catch {
       console.error("Error updating status:", error);
       window.location.href = resultsUrl;
-    });
+  }
 }
 
 const poller = setInterval(updateStatus, 5000);
