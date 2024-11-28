@@ -12,14 +12,13 @@
 
 <script>
   window.addEventListener('load', function () {
-
-    let publisherValidation = 'domain-invalid'
-    let dataValidation = 'data-unchecked'
-    let validation = publisherValidation + '-' + dataValidation;
-    source = '{{ source_url }}'
+    const publisherValidation = 'domain-invalid';
+    const dataValidation = 'data-unchecked';
+    const validation = publisherValidation + '-' + dataValidation;
+    const source = '{{ source_url }}';
 
     _paq.push(['trackEvent', 'Status', validation, source]);
     _paq.push(['trackPageView']);
-  })
+  });
 </script>
 {% endblock %}

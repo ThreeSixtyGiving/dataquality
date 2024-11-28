@@ -86,42 +86,39 @@
 {% include "cove_360/components/explore/usefulness.html" %}
 
 <script>
-  window.addEventListener("load", function () {
-    let publisherValidation, dataValidation, validation;
+  window.addEventListener('load', function () {
+    let publisherValidation, dataValidation;
 
-    if ("{{ data_status.publisher.self_publish.enabled }}" === "True") {
-      publisherValidation = "publishing-enabled";
+    if ('{{ data_status.publisher.self_publish.enabled }}' === 'True') {
+      publisherValidation = 'publishing-enabled';
     } else {
-      publisherValidation = "publishing-disabled";
+      publisherValidation = 'publishing-disabled';
     }
 
-    if ("{{ data_status.passed }}" === "True") {
-      dataValidation = "data-valid";
+    if ('{{ data_status.passed }}' === 'True') {
+      dataValidation = 'data-valid';
     } else {
-      dataValidation = "data-invalid";
+      dataValidation = 'data-invalid';
     }
 
-    validation = `${publisherValidation}-${dataValidation}`;
-    source = "{{ source_url }}";
+    const validation = `${publisherValidation}-${dataValidation}`;
+    const source = '{{ source_url }}';
 
-    _paq.push(["trackEvent", "Status", validation, source]);
-    _paq.push(["trackPageView"]);
+    _paq.push(['trackEvent', 'Status', validation, source]);
+    _paq.push(['trackPageView']);
   });
 
-  (function(){
-
-    document.getElementById("read-report-confirmed").addEventListener("change", function() {
-      const link = document.getElementById("sf-form-link");
+  (function () {
+    document.getElementById('read-report-confirmed').addEventListener('change', function () {
+      const link = document.getElementById('sf-form-link');
 
       if (this.checked) {
-        link.removeAttribute("disabled");
+        link.removeAttribute('disabled');
         link.style.opacity = 1;
       } else {
-        link.setAttribute("disabled", "disabled");
+        link.setAttribute('disabled', 'disabled');
         link.style.opacity = 0.5;
       }
     });
-
   })();
-
 </script>
