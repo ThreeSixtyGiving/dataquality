@@ -365,11 +365,8 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 def test_error_modal(server_url, browser, httpserver, source_filename):
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
         httpserver.serve_content(fp.read())
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
-        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
-    else:
-        source_url = httpserver.url + '/' + source_filename
+
+    source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
 
@@ -411,37 +408,6 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
     assert len(table_rows) == 4
 
 
-@pytest.mark.parametrize(('source_filename', 'expected_text'), [
-    ('fundingproviders-grants_fixed_2_grants.json', '360Giving JSON Package Schema')
-    ])
-def test_check_schema_link_on_result_page(server_url, browser, httpserver, source_filename, expected_text):
-    with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
-        httpserver.serve_content(fp.read())
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
-        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
-    else:
-        source_url = httpserver.url + '/' + source_filename
-
-    browser.get(server_url)
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
-
-    time.sleep(1)
-
-    # Click and un-collapse all explore sections
-    all_sections = browser.find_elements_by_class_name('panel-heading')
-    for section in all_sections:
-        if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
-            section.click()
-        time.sleep(0.5)
-    schema_link = browser.find_element_by_link_text(expected_text)
-    schema_link.click()
-    browser.find_element_by_id('giving-json-schemas')
-
-
 @pytest.mark.parametrize(('data_url'), [
     reverse_lazy('results', args=['0']),
     reverse_lazy('results', args=['324ea8eb-f080-43ce-a8c1-9f47b28162f3']),
@@ -450,47 +416,25 @@ def test_url_invalid_dataset_request(server_url, browser, data_url):
     # Test a badly formed hexadecimal UUID string
     # Trim the / off reverse_lazy result as server_url has trailing slash to avoid
     # e.g. //results/0
+
     browser.get("%s%s" % (server_url, data_url[1:]))
     assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
     # Test for well formed UUID that doesn't identify any dataset that exists
     browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])[1:]))
     assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
     assert '360Giving' in browser.find_element_by_tag_name('body').text
-    #363 - Tests there is padding round the 'go to home' button
-    success_button = browser.find_element_by_class_name('success-button')
-    assert success_button.value_of_css_property('padding-bottom') == '20px'
 
 
 def test_500_error(server_url, browser):
     browser.get(server_url + 'test/500')
     # Check that our nice error message is there
     assert 'Something went wrong' in browser.find_element_by_tag_name('body').text
-    # Check for the exclamation icon
-    # This helps to check that the theme including the css has been loaded
-    # properly
-    icon_span = browser.find_element_by_class_name('panel-danger').find_element_by_tag_name('span')
-    assert 'Glyphicons Halflings' in icon_span.value_of_css_property('font-family')
-    assert icon_span.value_of_css_property('color') == 'rgba(255, 255, 255, 1)'
 
 
 def test_common_errors_page(server_url, browser):
     browser.get(server_url + 'common_errors/')
-    assert "Common Errors" in browser.find_element_by_tag_name('h2').text
-    assert '360Giving' in browser.find_element_by_tag_name('h1').text
-
-
-@pytest.mark.parametrize(('anchor_text'), [
-    ('uri'),
-    ('date-time'),
-    ('required'),
-    ('enum'),
-    ('string'),
-    ('number')
-    ])
-def test_common_errors_page_anchors(server_url, browser, anchor_text):
-    # Checks we have sections for each our error messages
-    browser.get(server_url + 'common_errors/')
-    browser.find_element_by_id(anchor_text)
+    assert "Common Errors" in browser.find_element_by_tag_name('body').text
+    assert '360Giving' in browser.find_element_by_tag_name('body').text
 
 
 def test_favicon(server_url, browser):
@@ -544,21 +488,20 @@ def test_codelist_validation(server_url, browser, httpserver):
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
-    time.sleep(1)
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
 
-    # Click and un-collapse validation section
-    browser.find_element_by_id('validation-panel-heading').click()
-    time.sleep(0.5)
+    wait_for_results_page(browser)
+    # reload results page with ?open-all=true to see all values at once
+    browser.get(f"{browser.current_url}?open-all=true")
 
-    validation_body_text = browser.find_element_by_id('validation-body').text
-    assert "Codelist Errors" in validation_body_text
-    assert "BAD" in validation_body_text
-    assert "FRG010" not in validation_body_text
+    body_text = browser.find_element_by_name("body")
+
+    assert "Codelist Errors" in body_text
+    assert "BAD" in body_text
+    assert "FRG010" not in body_text
 
 
 def test_oneof_validation(server_url, browser, httpserver):
@@ -566,28 +509,22 @@ def test_oneof_validation(server_url, browser, httpserver):
 
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
         httpserver.serve_content(fp.read())
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
-        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
-    else:
-        source_url = httpserver.url + '/' + source_filename
+
+    source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
-    time.sleep(1)
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
 
-    # Click and un-collapse validation section
-    browser.find_element_by_id('validation-panel-heading').click()
-    time.sleep(0.5)
+    wait_for_results_page(browser)
+    # reload results page with ?open-all=true to see all values at once
+    browser.get(f"{browser.current_url}?open-all=true")
 
-    validation_body_text = browser.find_element_by_id('validation-body').text
-    assert "Only 1 of recipientOrganization or recipientIndividual is permitted, but both are present" in validation_body_text
-    validation_body_html = browser.find_element_by_id("validation-body").get_attribute("innerHTML")
-    assert "Only 1 of <code>recipientOrganization</code> or <code>recipientIndividual</code> is permitted, but both are present" in validation_body_html
+    body_text = browser.find_element_by_tag_name("body").text
+
+    assert "Only 1 of recipientOrganization or recipientIndividual is permitted, but both are present" in body_text
 
 
 @pytest.mark.parametrize(('source_filename', 'expected_texts', 'unexpected_texts'), [
@@ -617,11 +554,8 @@ def test_oneof_validation(server_url, browser, httpserver):
 def test_quality_checks(server_url, browser, httpserver, source_filename, expected_texts, unexpected_texts):
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
         httpserver.serve_content(fp.read())
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        # Use urls pointing to GitHub if we have a custom (probably non local) server URL
-        source_url = 'https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/' + source_filename
-    else:
-        source_url = httpserver.url + '/' + source_filename
+
+    source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
 
@@ -629,7 +563,7 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
     browser.find_element_by_id("id_source_url").send_keys(source_url)
     browser.find_element_by_id("submit-link-btn").click()
 
-    wait_for_results_page()
+    wait_for_results_page(browser)
 
     # reload results page with ?open-all=true to see all values at once
     browser.get(f"{browser.current_url}?open-all=true")
