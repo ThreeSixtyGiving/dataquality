@@ -5,7 +5,7 @@ import pytest
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 from seleniumlogin import force_login
 import time
 import os
@@ -36,15 +36,18 @@ def wait_for_results_page(browser):
 
 @pytest.fixture(scope="module")
 def browser(request):
-    if BROWSER == 'ChromeHeadless':
+    if BROWSER == 'Chrome':
         chrome_options = Options()
-        if not os.environ.get("UI"):
-            chrome_options.add_argument("--headless")
+        browser = webdriver.Chrome(chrome_options=chrome_options)
+    elif BROWSER == 'ChromeHeadless':
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
         # uncomment this if "DevToolsActivePort" error
         # chrome_options.add_argument("--remote-debugging-port=9222")
         browser = webdriver.Chrome(chrome_options=chrome_options)
     else:
         browser = getattr(webdriver, BROWSER)()
+
     browser.implicitly_wait(3)
     request.addfinalizer(lambda: browser.quit())
     return browser
@@ -289,10 +292,6 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
 ])
 @pytest.mark.parametrize('flatten_or_unflatten', ['flatten', 'unflatten'])
 def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warning_args, flatten_or_unflatten, iserror):
-    # If we're testing a remove server then we can't run this test as we can't
-    # set up the mocks
-    if 'CUSTOM_SERVER_URL' in os.environ:
-        pytest.skip()
     if flatten_or_unflatten == 'flatten':
         source_filename = 'example.json'
     else:
@@ -324,12 +323,29 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
     # flattentool behaviour with a mock below
     httpserver.serve_content('{}')
     source_url = httpserver.url + '/' + source_filename
-    browser.get(server_url + '?source_url=' + source_url)
+
+    browser.get(server_url)
+
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
+
+    wait_for_results_page(browser)
+
+    browser.find_element_by_class_name("cookie-consent-no").click()
+    # The file conversion stuff is in the summary section of the results
+    # (which is the default tab)
 
     if source_filename.endswith('.json'):
         browser.find_element_by_name("flatten").click()
 
-    time.sleep(3)
+    time.sleep(2)
+
+    try:
+        browser.find_element_by_class_name("cookie-consent-no").click()
+    except ElementNotInteractableException:
+        # Happens if already dismissed
+        pass
 
     assert 'Warning' not in browser.find_element_by_tag_name("body").text
 
@@ -343,19 +359,12 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
             assert warning_heading in conversion_title_text
         else:
             assert warning_heading in conversion_title_text
-        # should be a cross
-        assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick cross'
-        browser.find_element_by_class_name("cookie-consent-no").click()
-        conversion_title.click()
-        time.sleep(2)
-        assert warning_args[0] in browser.find_element_by_id('conversion-body').text
+        assert warning_args[0] in browser.find_element_by_id('conversion-area').text
     else:
         if flatten_or_unflatten == 'flatten':
             assert warning_heading not in conversion_title_text
         else:
             assert warning_heading not in conversion_title_text
-        # should be a tick
-        assert conversion_title.find_element_by_class_name('font-tick').get_attribute('class') == 'font-tick tick'
 
 
 @pytest.mark.parametrize(('source_filename'), [

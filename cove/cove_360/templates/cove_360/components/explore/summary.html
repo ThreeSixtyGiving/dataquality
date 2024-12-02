@@ -188,15 +188,11 @@
   <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
   <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
 
-  {% if conversion == 'flattenable' %}
-  <form method="post">
-    <button name="flatten" value="true" type="submit" class="">{% trans "Convert to Spreadsheet" %}</button>
-    {% csrf_token %}
-  </form>
-  {% endif %}
 
-{% if conversion == 'unflatten' or conversion == 'flatten'%}
-    <h3  id="conversion-title">
+  <div id="conversion-area">
+  <h2>Data Conversion</h2>
+  {% if conversion == 'unflatten' or conversion == 'flatten'%}
+  <h3 id="conversion-title">
       {% if conversion_warning_messages or conversion_error %}
       {% trans "Data conversion unsuccessful - " %}
       {% else %}
@@ -205,7 +201,7 @@
       {% if conversion_warning_messages %}
       <small>{% blocktrans count n_warnings=conversion_warning_messages|length %}{{n_warnings}} Error has been found{% plural %}{{n_warnings}} Errors have been found{% endblocktrans %}</small>
       {% endif %}
-    </h3>
+  </h3>
 
       {% if conversion == 'unflatten' %}
       <p >{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
@@ -243,13 +239,21 @@
       <h4>Share</h4>
         <p>{% trans "You can share these test results with others by using the following url:" %}</p>
             <p><a href="{{current_url}}"> {{ current_url }}</a>
-            <button class="button button--small margin-left:1" onclick="navigator.clipboard.writeText('{{current_url}}'); this.innerHTML = 'Copied!';">Copy Link to Clipboard</button>
+            <button class="button button--small margin-left:1" onclick="navigator.clipboard.writeText('{{current_url}}'); this.innerHTML = 'Copied!';">Copy link to Clipboard</button>
             </p>
             <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
         <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
-        <h4><span class="glyphicon glyphicon-download-alt"></span> Download</h4>
+        <h4>Download</h4>
         <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
         <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
+
+        {% if conversion == 'flattenable' %}
+        <form method="post">
+          <button name="flatten" value="true" type="submit" class="button">{% trans "Convert to Spreadsheet" %}</button>
+          {% csrf_token %}
+        </form>
+        {% endif %}
+
         {% if not conversion_error and conversion != 'flattenable' %}
           <p>{% trans "We provide the following formats to download:" %}</p>
           <ul class="left-space">
@@ -278,3 +282,4 @@
               </li>
             </ul>
         {% endif %}
+          </div>
