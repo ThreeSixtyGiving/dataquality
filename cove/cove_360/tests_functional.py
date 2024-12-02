@@ -20,6 +20,8 @@ BROWSER = os.environ.get('BROWSER', 'ChromeHeadless')
 
 PREFIX_360 = os.environ.get('PREFIX_360', '/')
 
+settings.DISABLE_COOKIE_POPUP = True
+
 # Ensure the correct version of chromedriver is installed
 try:
     chromedriver_autoinstaller.install()
@@ -204,8 +206,6 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     browser.get(server_url)
 
-    browser.find_element_by_class_name("cookie-consent-no").click()
-
     browser.find_element_by_id("link-tab-link").click()
     browser.find_element_by_id("id_source_url").send_keys(source_url)
     browser.find_element_by_id("submit-link-btn").click()
@@ -215,7 +215,6 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     # reload results page with ?open-all=true to see all values at once
     browser.get(f"{browser.current_url}?open-all=true")
-    browser.find_element_by_class_name("cookie-consent-no").click()
 
     # Do the assertions
     check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed)
@@ -332,7 +331,6 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     wait_for_results_page(browser)
 
-    browser.find_element_by_class_name("cookie-consent-no").click()
     # The file conversion stuff is in the summary section of the results
     # (which is the default tab)
 
@@ -340,12 +338,6 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
         browser.find_element_by_name("flatten").click()
 
     time.sleep(2)
-
-    try:
-        browser.find_element_by_class_name("cookie-consent-no").click()
-    except ElementNotInteractableException:
-        # Happens if already dismissed
-        pass
 
     assert 'Warning' not in browser.find_element_by_tag_name("body").text
 
@@ -380,17 +372,17 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
-    time.sleep(1)
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
+
+    wait_for_results_page(browser)
+
+    #FIXME Modals not working
 
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
-    browser.find_element_by_class_name("cookie-consent-no").click()
     for section in all_sections:
         if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
             section.click()
@@ -432,7 +424,6 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
@@ -442,7 +433,6 @@ def test_check_schema_link_on_result_page(server_url, browser, httpserver, sourc
 
     # Click and un-collapse all explore sections
     all_sections = browser.find_elements_by_class_name('panel-heading')
-    browser.find_element_by_class_name("cookie-consent-no").click()
     for section in all_sections:
         if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
             section.click()
@@ -531,9 +521,6 @@ def test_publishing_invalid_domain(server_url, browser):
 
     browser.get(server_url)
 
-    # Dismiss the cookie popup
-    browser.find_element_by_class_name("cookie-consent-no").click()
-
     url_input = browser.find_element(By.CSS_SELECTOR, "#self-publishing-form input[type='url']")
     url_input.send_keys("https://raw.githubusercontent.com/OpenDataServices/grantnav-sampledata/master/grantnav-20180903134856.json")
 
@@ -557,16 +544,12 @@ def test_codelist_validation(server_url, browser, httpserver):
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
     time.sleep(1)
-
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    time.sleep(0.5)
 
     # Click and un-collapse validation section
     browser.find_element_by_id('validation-panel-heading').click()
@@ -590,16 +573,12 @@ def test_oneof_validation(server_url, browser, httpserver):
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
     browser.find_element_by_partial_link_text('Link').click()
     time.sleep(0.5)
     browser.find_element_by_id('id_source_url').send_keys(source_url)
     browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
     time.sleep(1)
-
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    time.sleep(0.5)
 
     # Click and un-collapse validation section
     browser.find_element_by_id('validation-panel-heading').click()
@@ -645,30 +624,22 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
         source_url = httpserver.url + '/' + source_filename
 
     browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    browser.find_element_by_partial_link_text('Link').click()
-    time.sleep(0.5)
-    browser.find_element_by_id('id_source_url').send_keys(source_url)
-    browser.find_element_by_css_selector("#fetchURL > div.form-group > button.btn.btn-primary").click()
 
-    time.sleep(1)
+    browser.find_element_by_id("link-tab-link").click()
+    browser.find_element_by_id("id_source_url").send_keys(source_url)
+    browser.find_element_by_id("submit-link-btn").click()
 
-    browser.find_element_by_class_name("cookie-consent-no").click()
-    time.sleep(0.5)
+    wait_for_results_page()
 
-    try:
-        # Click and un-collapse quality accuracy section
-        browser.find_element_by_id('quality-accuracy-panel-heading').click()
-        time.sleep(0.5)
+    # reload results page with ?open-all=true to see all values at once
+    browser.get(f"{browser.current_url}?open-all=true")
 
-        quality_accuracy_body_text = browser.find_element_by_id('quality-accuracy-body').text
-    except NoSuchElementException:
-        quality_accuracy_body_text = ""
+    body_text = browser.find_element_by_tag_name('body').text
 
     for expected_text in expected_texts:
-        assert expected_text in quality_accuracy_body_text, f"Expected: '{expected_text}'\nGot: '{quality_accuracy_body_text}'"
+        assert expected_text in body_text, f"Expected: '{expected_text}'\nGot: '{body_text}'"
     for unexpected_text in unexpected_texts:
-        assert unexpected_text not in quality_accuracy_body_text
+        assert unexpected_text not in body_text
 
 
 def test_file_submission(server_url, browser, httpserver):

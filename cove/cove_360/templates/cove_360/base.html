@@ -71,7 +71,7 @@
         {% endblock %}
       </div>
 
-      {% if not DEBUG %}
+      {% if DEBUG == True or DISABLE_COOKIE_POPUP == False %}
       {% include "cove_360/components/cookie_consent.html" %}
       {% endif %}
 

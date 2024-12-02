@@ -127,3 +127,8 @@ DATA_SUBMISSION_ENABLED = False
 
 if "true" in os.environ.get("DATA_SUBMISSION_ENABLED", "").lower():
     DATA_SUBMISSION_ENABLED = True
+
+DISABLE_COOKIE_POPUP = False
+
+if "true" in os.environ.get("DISABLE_COOKIE_POPUP", "").lower():
+    DISABLE_COOKIE_POPUP = True
