@@ -209,6 +209,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
 
 
 def create_passed_tests_context_data(failed_tests, available_tests):
+    """ Creates a list of test that have passed """
 
     passed_tests_names = [test[0]["type"] for test in failed_tests]
     passed_test_case_headings = []

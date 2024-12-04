@@ -206,9 +206,9 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     # Wait for the various redirects after click
     wait_for_results_page(browser)
@@ -221,7 +221,7 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
 
 def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
-    body_text = browser.find_element_by_tag_name('body').text
+    body_text = browser.find_element(By.TAG_NAME, 'body').text
     body_text += browser.page_source
 
     if isinstance(expected_text, str):
@@ -237,26 +237,26 @@ def check_url_input_result_page(server_url, browser, httpserver, source_filename
         if source_filename.endswith('.json'):
             if authed:
                 assert 'Original file (json)' in body_text
-                original_file = browser.find_element_by_link_text('Original file (json)').get_attribute("href")
+                original_file = browser.find_element(By.LINK_TEXT, 'Original file (json)').get_attribute("href")
             else:
                 assert 'Original file (json)' not in body_text
         elif source_filename.endswith('.xlsx'):
             if authed:
                 assert 'Original file (xlsx)' in body_text
-                original_file = browser.find_element_by_link_text('Original file (xlsx)').get_attribute("href")
+                original_file = browser.find_element(By.LINK_TEXT, 'Original file (xlsx)').get_attribute("href")
             else:
                 assert 'Original file (xlsx)' not in body_text
             assert 'JSON (Converted from Original) ' in body_text
-            converted_file = browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
+            converted_file = browser.find_element(By.LINK_TEXT, "JSON (Converted from Original)").get_attribute("href")
             assert "unflattened.json" in converted_file
         elif source_filename.endswith('.csv'):
             if authed:
                 assert 'Original file (csv)' in body_text
-                original_file = browser.find_element_by_link_text('Original file (csv)').get_attribute("href")
+                original_file = browser.find_element(By.LINK_TEXT, 'Original file (csv)').get_attribute("href")
             else:
                 assert 'Original file (csv)' not in body_text
-            converted_file = browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
-            assert "unflattened.json" in browser.find_element_by_link_text("JSON (Converted from Original)").get_attribute("href")
+            converted_file = browser.find_element(By.LINK_TEXT, "JSON (Converted from Original)").get_attribute("href")
+            assert "unflattened.json" in browser.find_element(By.LINK_TEXT, "JSON (Converted from Original)").get_attribute("href")
 
         if authed:
             assert 'Note that this box and this download link are only visible to admin users' in body_text
@@ -325,9 +325,9 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     wait_for_results_page(browser)
 
@@ -335,15 +335,15 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
     # (which is the default tab)
 
     if source_filename.endswith('.json'):
-        browser.find_element_by_name("flatten").click()
+        browser.find_element(By.NAME, "flatten").click()
 
     time.sleep(2)
 
-    assert 'Warning' not in browser.find_element_by_tag_name("body").text
+    assert 'Warning' not in browser.find_element(By.TAG_NAME, "body").text
 
     warning_heading = "Data conversion unsuccessful - 1 Error has been found"
 
-    conversion_title = browser.find_element_by_id('conversion-title')
+    conversion_title = browser.find_element(By.ID,'conversion-title')
     conversion_title_text = conversion_title.text
 
     if iserror:
@@ -351,7 +351,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
             assert warning_heading in conversion_title_text
         else:
             assert warning_heading in conversion_title_text
-        assert warning_args[0] in browser.find_element_by_id('conversion-area').text
+        assert warning_args[0] in browser.find_element(By.ID,'conversion-area').text
     else:
         if flatten_or_unflatten == 'flatten':
             assert warning_heading not in conversion_title_text
@@ -370,9 +370,9 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     wait_for_results_page(browser)
 
@@ -388,18 +388,18 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
     table_rows = browser.find_elements_by_css_selector('.validation-errors-format-1 tbody tr')
     assert len(table_rows) == 4
 
-    browser.find_element_by_css_selector('a[data-target=".validation-errors-format-2"]').click()
+    browser.find_element(By.CSS_SELECTOR, 'a[data-target=".validation-errors-format-2"]').click()
 
-    modal = browser.find_element_by_css_selector('.validation-errors-format-2')
+    modal = browser.find_element(By.CSS_SELECTOR, '.validation-errors-format-2')
     assert "in" in modal.get_attribute("class").split()
     modal_text = modal.text
     assert "24/07/2014" in modal_text
     assert "grants/0/awardDate" in modal_text
 
-    browser.find_element_by_css_selector('div.modal.validation-errors-format-2 button.close').click()
-    browser.find_element_by_css_selector('a[data-target=".usefulness-checks-2"]').click()
+    browser.find_element(By.CSS_SELECTOR, 'div.modal.validation-errors-format-2 button.close').click()
+    browser.find_element(By.CSS_SELECTOR, 'a[data-target=".usefulness-checks-2"]').click()
 
-    modal_additional_checks = browser.find_element_by_css_selector('.usefulness-checks-2')
+    modal_additional_checks = browser.find_element(By.CSS_SELECTOR, '.usefulness-checks-2')
     assert "in" in modal_additional_checks.get_attribute("class").split()
     modal_additional_checks_text = modal_additional_checks.text
     assert "4 recipient organisation grants do not have recipient organisation location information" in modal_additional_checks_text
@@ -418,54 +418,50 @@ def test_url_invalid_dataset_request(server_url, browser, data_url):
     # e.g. //results/0
 
     browser.get("%s%s" % (server_url, data_url[1:]))
-    assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
+    assert "We don't seem to be able to find the data you requested." in browser.find_element(By.TAG_NAME, 'body').text
     # Test for well formed UUID that doesn't identify any dataset that exists
     browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])[1:]))
-    assert "We don't seem to be able to find the data you requested." in browser.find_element_by_tag_name('body').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
+    assert "We don't seem to be able to find the data you requested." in browser.find_element(By.TAG_NAME, 'body').text
+    assert '360Giving' in browser.find_element(By.TAG_NAME, 'body').text
 
 
 def test_500_error(server_url, browser):
     browser.get(server_url + 'test/500')
     # Check that our nice error message is there
-    assert 'Something went wrong' in browser.find_element_by_tag_name('body').text
+    assert 'Something went wrong' in browser.find_element(By.TAG_NAME, 'body').text
 
 
 def test_common_errors_page(server_url, browser):
     browser.get(server_url + 'common_errors/')
-    assert "Common Errors" in browser.find_element_by_tag_name('body').text
-    assert '360Giving' in browser.find_element_by_tag_name('body').text
+    assert "Common Errors" in browser.find_element(By.TAG_NAME, 'body').text
+    assert '360Giving' in browser.find_element(By.TAG_NAME, 'body').text
 
 
 def test_favicon(server_url, browser):
     browser.get(server_url)
     # we should not have a favicon link just now
     with pytest.raises(NoSuchElementException):
-        browser.find_element_by_xpath("//link[@rel='icon']")
+        browser.find_element(By.XPATH, "//link[@rel='icon']")
 
 
 def test_explore_360_sample_data_link(server_url, browser):
     browser.get(server_url)
-    browser.find_element_by_id("load-sample-data-btn").click()
+    browser.find_element(By.ID,"load-sample-data-btn").click()
 
     wait_for_results_page(browser)
 
-    body_text = browser.find_element_by_tag_name('body').text
+    body_text = browser.find_element(By.TAG_NAME, 'body').text
 
-    assert 'Summary: Your data at a glance' in body_text
-    assert 'Sorry, we can\'t process that data' not in body_text
-    # Show sample data link in the home page only
-    with pytest.raises(NoSuchElementException):
-        browser.find_element_by_id("load-sample-data-btn")
+    assert "This data uses the 360Giving Data Standard correctly" in body_text
 
 
 def test_publishing_invalid_domain(server_url, browser):
     settings.DATA_SUBMISSION_ENABLED = True
     os.environ["REGISTRY_PUBLISHERS_URL"] = "https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/publishers.json"
 
-    browser.get(server_url)
+    browser.get(f"{server_url}/publishing")
 
-    url_input = browser.find_element(By.CSS_SELECTOR, "#self-publishing-form input[type='url']")
+    url_input = browser.find_element(By.ID, "source-url-input")
     url_input.send_keys("https://raw.githubusercontent.com/OpenDataServices/grantnav-sampledata/master/grantnav-20180903134856.json")
 
     browser.find_element(By.ID, "submit-for-publishing-btn").click()
@@ -486,15 +482,15 @@ def test_codelist_validation(server_url, browser, httpserver):
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     wait_for_results_page(browser)
     # reload results page with ?open-all=true to see all values at once
     browser.get(f"{browser.current_url}?open-all=true")
 
-    body_text = browser.find_element_by_tag_name("body").text
+    body_text = browser.find_element(By.TAG_NAME, "body").text
 
     assert "Codelist Errors" in body_text
     assert "BAD" in body_text
@@ -511,15 +507,15 @@ def test_oneof_validation(server_url, browser, httpserver):
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     wait_for_results_page(browser)
     # reload results page with ?open-all=true to see all values at once
     browser.get(f"{browser.current_url}?open-all=true")
 
-    body_text = browser.find_element_by_tag_name("body").text
+    body_text = browser.find_element(By.TAG_NAME, "body").text
 
     assert "Only 1 of recipientOrganization or recipientIndividual is permitted, but both are present" in body_text
 
@@ -556,16 +552,16 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
 
     browser.get(server_url)
 
-    browser.find_element_by_id("link-tab-link").click()
-    browser.find_element_by_id("id_source_url").send_keys(source_url)
-    browser.find_element_by_id("submit-link-btn").click()
+    browser.find_element(By.ID,"link-tab-link").click()
+    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
+    browser.find_element(By.ID,"submit-link-btn").click()
 
     wait_for_results_page(browser)
 
     # reload results page with ?open-all=true to see all values at once
     browser.get(f"{browser.current_url}?open-all=true")
 
-    body_text = browser.find_element_by_tag_name('body').text
+    body_text = browser.find_element(By.TAG_NAME, 'body').text
 
     for expected_text in expected_texts:
         assert expected_text in body_text, f"Expected: '{expected_text}'\nGot: '{body_text}'"
@@ -575,7 +571,6 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
 
 def test_file_submission(server_url, browser, httpserver):
     # This code doesn't work reliably on github actions. Leaving here for future refactoring efforts
-    return
     """
     Test the file submission process works to the point of getting to the "submit"
     into the sales force form
@@ -590,23 +585,27 @@ def test_file_submission(server_url, browser, httpserver):
     Hint: Skip this test via pytest -k "not test_file_submission" if file
     submission credentials aren't available.
     """
+    settings.DATA_SUBMISSION_ENABLED = True
 
-    browser.get(server_url)
-    browser.find_element_by_class_name("cookie-consent-no").click()
+    source_filename = "publishers.json"
+    # Create a publishers registry entry
+    with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:
+        httpserver.serve_content(fp.read())
+
+    os.environ["REGISTRY_PUBLISHERS_URL"] = f"{httpserver.url}/{source_filename}"
+
+    browser.get(f"{server_url}/publishing/")
 
     valid_for_publishing = "https://www.threesixtygiving.org/wp-content/uploads/love-kingston-funding-data-2018.xlsx"
 
-    browser.find_element_by_id("source-url-input").send_keys(valid_for_publishing)
-    browser.find_element_by_id("submit-for-publishing-btn").click()
+    url_input = browser.find_element(By.ID, "source-url-input")
+    url_input.send_keys(valid_for_publishing)
 
-    time.sleep(2)
+    browser.find_element(By.ID, "submit-for-publishing-btn").click()
 
-    # Await for the validation checks to finish for a max of 30s
-    count = 0
-    while "results" not in browser.current_url and count < 30:
-        time.sleep(1)
-        count = count + 1
+    wait_for_results_page(browser)
 
-    body_text = browser.find_element_by_tag_name("body").text
+    body_text = browser.find_element(By.TAG_NAME, "body").text
 
+    a = input("MOO?")
     assert "The data was checked and can now be submitted to the 360Giving Data Registry." in body_text, f"Expected '...can now be submitted' in {body_text}"

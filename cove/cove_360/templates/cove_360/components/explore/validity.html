@@ -75,9 +75,8 @@
           <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
           <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
 
-        </p>
         {% with additional_codelist_values=additional_closed_codelist_values %}
-
+            {% include "additional_codelist_values.html" %}
         {% endwith %}
 
 

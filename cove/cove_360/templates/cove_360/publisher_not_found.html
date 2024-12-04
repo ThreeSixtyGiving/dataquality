@@ -1,5 +1,9 @@
-{% extends "base.html" %}
+{% extends request.current_app_base_template %}
 {% load i18n %}
+
+{% block hero_title %}Data submission tool{% endblock %}
+{% block hero_blurb %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% endblock %}
+
 {% block content %}
 <h3>Problem submitting your data</h3>
 <div id="publisher-not-found-message">
