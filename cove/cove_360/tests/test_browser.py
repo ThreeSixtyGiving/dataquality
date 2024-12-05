@@ -376,35 +376,30 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
 
     wait_for_results_page(browser)
 
-    #FIXME Modals not working
+    # reload results page with ?open-all=true to see all values at once
+    browser.get(f"{browser.current_url}?open-all=true")
 
-    # Click and un-collapse all explore sections
-    all_sections = browser.find_elements_by_class_name('panel-heading')
-    for section in all_sections:
-        if section.get_attribute('data-toggle') == "collapse" and section.get_attribute('aria-expanded') != 'true':
-            section.click()
-        time.sleep(0.5)
-
-    table_rows = browser.find_elements_by_css_selector('.validation-errors-format-1 tbody tr')
+    table_rows = browser.find_elements(By.CSS_SELECTOR, ".validation-errors-format-1 tbody tr")
     assert len(table_rows) == 4
 
-    browser.find_element(By.CSS_SELECTOR, 'a[data-target=".validation-errors-format-2"]').click()
+    browser.find_element(By.CSS_SELECTOR, "button[data-target-class=\"validation-errors-format-2\"]").click()
 
     modal = browser.find_element(By.CSS_SELECTOR, '.validation-errors-format-2')
-    assert "in" in modal.get_attribute("class").split()
+    assert "modal--shown" in modal.get_attribute("class").split()
     modal_text = modal.text
     assert "24/07/2014" in modal_text
     assert "grants/0/awardDate" in modal_text
 
-    browser.find_element(By.CSS_SELECTOR, 'div.modal.validation-errors-format-2 button.close').click()
-    browser.find_element(By.CSS_SELECTOR, 'a[data-target=".usefulness-checks-2"]').click()
+    browser.find_element(By.CSS_SELECTOR, ".validation-errors-format-2 .modal__close").click()
 
-    modal_additional_checks = browser.find_element(By.CSS_SELECTOR, '.usefulness-checks-2')
-    assert "in" in modal_additional_checks.get_attribute("class").split()
+    browser.find_element(By.CSS_SELECTOR, "button[data-target-class=\"usefulness-checks-2\"]").click()
+
+    modal_additional_checks = browser.find_element(By.CLASS_NAME, "usefulness-checks-2")
+    assert "modal--shown" in modal_additional_checks.get_attribute("class").split()
     modal_additional_checks_text = modal_additional_checks.text
     assert "4 recipient organisation grants do not have recipient organisation location information" in modal_additional_checks_text
     assert "grants/0/recipientOrganization/0/id" in modal_additional_checks_text
-    table_rows = browser.find_elements_by_css_selector('.usefulness-checks-2 tbody tr')
+    table_rows = browser.find_elements(By.CSS_SELECTOR, ".usefulness-checks-2 tbody tr")
     assert len(table_rows) == 4
 
 
