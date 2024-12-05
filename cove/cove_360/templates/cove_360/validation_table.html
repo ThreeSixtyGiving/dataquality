@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load cove_tags %}
 
-<table class="table table-condensed">
+<table class="table">
 <thead>
   <tr>
     <th>{% trans 'Passed' %}</th>
@@ -19,6 +19,7 @@
 <tr>
   <td><i class="material-icons table--false">close</i></td>
   <td>
+    <!-- error description -->
     <p>
       <strong>{{ error | html_error_msg }}</strong>
       {% if error.message_type in common_error_types %}
@@ -32,25 +33,27 @@
     </div>
     {% endif %}
   </td>
-  <td class="text-center">
+  <td>
+    <!-- num of errors -->
+    <p>{{error_extra.values|length}}</p>
     {% if error_extra.values|length > 3 %}
-      {% if error_prefix %}
-      <a data-toggle="modal" data-target=".{{"validation-errors-"|concat:error_prefix|concat:forloop.counter}}">
-      {% else %}
-      <a data-toggle="modal" data-target=".{{"validation-errors-"|concat:forloop.counter}}">
-      {% endif %}
-        {{error_extra.values|length}}
-      </a>
-    {% else %}
-        {{error_extra.values|length}}
+        {% if error_prefix %}
+        <button class="button button--small show-all-errors-btn" title="Show all errors" data-toggle="modal" data-target-class="{{"validation-errors-"|concat:error_prefix|concat:forloop.counter}}">
+        {% else %}
+        <button class="button button--small show-all-errors-btn" title="Show all errors" data-toggle="modal" data-target-class="{{"validation-errors-"|concat:forloop.counter}}">
+        {% endif %}
+        show all
+        </button>
     {% endif %}
+
   </td>
   {% if error_extra.spreadsheet_style_errors_table %}
     <td>
+    <!-- first 3 examples -->
       {% for sheet, table in error_extra.spreadsheet_style_errors_table.items %}
         {% if sheet %}
           Sheet: {{sheet}}
-          <table class="table table-bordered">
+          <table class="table">
             {% for row in table %}
               {% with rowcounter=forloop.counter %}
                 <tr>
@@ -59,9 +62,9 @@
                       <th>{{cell}}</th>
                     {% else %}
                       {% if cell.type == 'example' %}
-                        <td style="background-color: #f8d7da; color: #721c24">{{cell.value}}</td>
+                        <td style="background-color: #f8d7da; color: #721c24">&quot;{{cell.value}}&quot;</td>
                       {% else %}
-                        <td>{{cell.value}}</td>
+                        <td>&quot;{{cell.value}}&quot;</td>
                       {% endif %}
                     {% endif %}
                   {% endfor %}
@@ -75,9 +78,10 @@
   {% else %}
     {% with values=error_extra.values %}
       <td>
+        <!-- Location of first 3 errors -->
         <ul class="list-unstyled">
           {% for value in values|slice:":3" %}
-            <li> {{value.value}} </li>
+            <li>&quot;{{value.value}}&quot;</li>
           {% endfor %}
         </ul>
       </td>

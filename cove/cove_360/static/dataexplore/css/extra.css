@@ -1,0 +1,9 @@
+ul.list-unstyled {
+  list-style-type: none;
+}
+
+button.show-all-errors-btn {
+  min-width: 70px !important;
+  padding-right: 6px !important;
+  padding-left: 6px !important;
+}

@@ -1,16 +1,14 @@
 {% load i18n %}
 {% load cove_tags %}
-<div class="modal {{className}}" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-         <h5 class="modal-title">{{ modalTitle }}</h5>
-      </div>
-      <div class="modal-body">
+<div class="modal {{className}}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal__overlay modal__trigger"></div>
+  <div class="modal__window">
+    <button class="modal__close modal__trigger" aria-label="Close" title="Close"></button>
+    <div class="modal__content">
+      <h4 class="modal-title">{{ modalTitle }}</h4>
         <p>
           {% if validation_error_locations_length and errorList|length > validation_error_locations_length %}
-            {% if validation_error_locations_sample %} 
+            {% if validation_error_locations_sample %}
               {% blocktrans %}Showing a random {{validation_error_locations_length}} locations for this error.{% endblocktrans %}
             {% else %}
               {% blocktrans %}Showing the first {{validation_error_locations_length}} locations for this error.{% endblocktrans %}
@@ -24,7 +22,7 @@
                 <th>{% trans 'Value' %}</th>
                 <th>{% trans 'Location' %}</th>
                 {% if file_type == 'xlsx' or file_type == 'csv' or file_type == 'ods' %}
-                  <th>{% trans 'Spreadsheet Location' %}</th> 
+                  <th>{% trans 'Spreadsheet Location' %}</th>
                 {% endif %}
               {% else %}
                 {% if file_type == 'json' %}
@@ -39,7 +37,7 @@
             {% for item in errorList|take_or_sample:validation_error_locations_length %}
               <tr>
               {% if full_table %}
-                <td> {{item.value}} </td>
+                <td>&quot;{{item.value}}&quot;</td>
                 <td>
                   {% if item.line %}
                     <b>{% trans 'Path:' %}</b> {{item.path}}
@@ -64,5 +62,4 @@
         </table>
       </div>
     </div>
-  </div>
 </div>

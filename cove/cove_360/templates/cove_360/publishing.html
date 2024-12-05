@@ -1,6 +1,7 @@
 {% extends request.current_app_base_template %}
 
-{% block hero_title %}Data submission tool{% endblock %}
+{% block header_title %}360Giving Data Submission Tool{% endblock %}
+{% block hero_title %}Data Submission Tool{% endblock %}
 {% block hero_blurb %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% endblock %}
 
 {% block content %}
@@ -13,7 +14,9 @@
       <input type="hidden" name="self_publishing" value="true">
       <label for="source-url-input">Provide a link to your file:</label>
       <input style="width: 100%" class="margin-bottom:1" id="source-url-input" type="url" name="source_url"
-        class="form-control" placeholder="URL to your 360Giving data file (xlsx, ods, csv)">
+        class="form-control" placeholder="URL to your 360Giving data file (xlsx, ods, csv)"
+        {% if request.GET.url %}value="{{request.GET.url}}"{% endif %}
+        />
       <button type="submit" class="button button--teal-dark button--solid" title="Submit your data"
         id="submit-for-publishing-btn">
         Submit

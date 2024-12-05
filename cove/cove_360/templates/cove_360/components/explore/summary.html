@@ -2,6 +2,7 @@
 {% load humanize %}
 {% load cove_tags %}
 
+
 <h2>{% trans "Summary" %}</h2>
 
     {% if validation_errors or additional_closed_codelist_values %}
@@ -26,7 +27,7 @@
       {% endif %}
       <div class="spacer-2"></div>
   <p>
-  The file '{{file_name}}' was
+  The file <strong>&quot;{{file_name}}&quot;</strong> was
   {% if source_url %}
   {% trans "downloaded from " %} <a href="{{source_url}}">{{source_url}}</a>
   {% else %}

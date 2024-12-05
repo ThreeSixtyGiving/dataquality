@@ -16,7 +16,7 @@
     <p>Receiving this feedback does not mean the data is invalid, and it can be ignored when not relevant.</p>
     {% endblocktrans %}
   <br>
-  <table class="table no-bottom-margin">
+  <table class="table">
     <thead>
       <tr>
         <th>{% trans 'Passed' %}</th>
@@ -27,7 +27,7 @@
     <tbody>
       {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
       <tr>
-        <td><i class="material-icons table--false">close</i></td>
+        <td><i class="material-icons table--false"></i></td>
         <td>
           <strong>{{ message.heading }}</strong><br><br>{{ message.message }}
         </td>
@@ -38,7 +38,7 @@
             <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
             {% endfor %}
             {% if spreadsheet_location|length > 3 %}
-            <li><a data-toggle="modal" ><sup>see all</sup></a></li>
+            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}">see all</button></li>
             {% endif %}
           </ul>
         </td>
@@ -49,7 +49,7 @@
             <li>{{location}}</li>
             {% endfor %}
             {% if json_location|length > 3 %}
-            <li><a data-toggle="modal" ><sup>see all</sup></a></li>
+            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}" >see all</button></li>
             {% endif %}
           </ul>
         </td>
@@ -64,19 +64,7 @@
 
   <h2>What is working well</h2>
   {% if quality_accuracy_checks_passed %}
-  <p>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> data accuracy checks passed.</p>
-  <table class="table" style="width: 100%">
-    <thead>
-      <th>Passed</th>
-      <th>Test</th>
-    </thead>
-    {% for passed_test in quality_accuracy_checks_passed %}
-    <tr>
-      <td><i class="material-icons table--true">check</i></td>
-      <td>{{passed_test}}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  <p>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> of our data accuracy checks passed.</p>
   {% endif %}
 {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
 {% with msg=message.heading %}

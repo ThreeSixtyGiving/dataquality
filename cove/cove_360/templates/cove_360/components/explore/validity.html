@@ -3,7 +3,7 @@
 {% load cove_tags %}
 
     <h2>Validation
-    {% if validation_errors or additional_codelist_values %}
+    {% if validation_and_closed_codelist_errors_count > 0 %}
     Failed
     {% else %}
     Passed
@@ -11,7 +11,7 @@
     </h2>
 
       <p>
-        {% if validation_errors or additional_closed_codelist_values %}
+        {% if validation_and_closed_codelist_errors_count > 0 %}
         {% trans "Validation failed means that the data does not meet " %}
         {% else %}
         {% trans "Validation passed means that the data meets " %}
@@ -42,7 +42,7 @@
 
     {% for error_json, error_extra in validation_errors %}
     {% with error=error_json|json_decode %}
-    {% cove_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
     {% endwith %}
     {% endfor %}
     {% endif %}
@@ -60,7 +60,7 @@
 
     {% for error_json, error_extra in validation_errors %}
     {% with error=error_json|json_decode %}
-    {% cove_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
     {% endwith %}
     {% endfor %}
     {% endif %}
@@ -95,7 +95,7 @@
 
     {% for error_json, error_extra in validation_errors %}
     {% with error=error_json|json_decode %}
-    {% cove_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
     {% endwith %}
     {% endfor %}
     {% endif %}

@@ -2,7 +2,7 @@ from cove.html_error_msg import html_error_msg
 from cove.templatetags.cove_tags import register
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-
+from cove.templatetags.cove_tags import cove_modal_errors, cove_modal_list
 
 @register.filter(name='html_error_msg')
 def html_error_msg_360(error):
@@ -23,3 +23,14 @@ def html_error_msg_360(error):
         ))
 
     return html_error_msg(error)
+
+
+# wrap lib-cove-web implementation to provide our own template
+@register.inclusion_tag("cove_360/modal_errors.html")
+def cove_360_modal_errors(**context):
+    return cove_modal_errors(**context)
+
+# wrap lib-cove-web implementation to provide our own template
+@register.inclusion_tag("cove_360/modal_list.html")
+def cove_360_modal_list(**context):
+    return cove_360_modal_list(**context)

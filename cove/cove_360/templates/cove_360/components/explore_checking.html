@@ -11,13 +11,17 @@
 {% trans 'JSON' as JSON %}
 {% trans 'XML' as XML %}
 
+
+
+<h2>Checking file <strong>&quot;{{file_name}}&quot;</strong></h2>
+
 <div
   class="margin-top:1 margin-bottom:2"
   style="display: flex; flex-direction: row; justify-content: end"
 >
   <a href="{% url 'index' %}">Load new file</a>
   <span class="margin-left:1 margin-right:1">|</span>
-  <a href="{% url 'publishing' %}">Submit your data</a>
+  <a href="{% url 'publishing' %}{% if source_url %}?url={{source_url}}{% endif %}">Submit your data</a>
 </div>
 
 <div>
@@ -96,6 +100,7 @@
       </a>
     </span>
   </div>
+
   <!-- / tabs -->
 
   <style scoped>

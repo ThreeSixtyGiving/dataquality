@@ -325,9 +325,9 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     wait_for_results_page(browser)
 
@@ -343,7 +343,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     warning_heading = "Data conversion unsuccessful - 1 Error has been found"
 
-    conversion_title = browser.find_element(By.ID,'conversion-title')
+    conversion_title = browser.find_element(By.ID, "conversion-title")
     conversion_title_text = conversion_title.text
 
     if iserror:
@@ -351,7 +351,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
             assert warning_heading in conversion_title_text
         else:
             assert warning_heading in conversion_title_text
-        assert warning_args[0] in browser.find_element(By.ID,'conversion-area').text
+        assert warning_args[0] in browser.find_element(By.ID, "conversion-area").text
     else:
         if flatten_or_unflatten == 'flatten':
             assert warning_heading not in conversion_title_text
@@ -370,9 +370,9 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     wait_for_results_page(browser)
 
@@ -607,5 +607,4 @@ def test_file_submission(server_url, browser, httpserver):
 
     body_text = browser.find_element(By.TAG_NAME, "body").text
 
-    a = input("MOO?")
     assert "The data was checked and can now be submitted to the 360Giving Data Registry." in body_text, f"Expected '...can now be submitted' in {body_text}"
