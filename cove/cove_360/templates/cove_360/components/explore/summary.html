@@ -106,28 +106,22 @@
 
          <li>
             {% trans "Unique grant identifiers:" %}&nbsp;
-            <strong>
-              {% if grants_aggregates.unique_ids|length %}<a data-toggle="modal" data-target=".unique-ids">{% endif %}
+              {% if grants_aggregates.unique_ids|length %}<button data-toggle="modal" data-target-class="unique-ids">{% endif %}
               {{ grants_aggregates.unique_ids|length}}
-              {% if grants_aggregates.unique_ids|length %}</a>{% endif %}
-            </strong>
+              {% if grants_aggregates.unique_ids|length %}</button>{% endif %}
           </li>
           <li>
             {% trans "Unique funder organisation identifiers:" %}&nbsp;
-            <strong>
-              {% if grants_aggregates.distinct_funding_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-funding-org-identifier">{% endif %}
+              {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier">{% endif %}
               {{ grants_aggregates.distinct_funding_org_identifier|length}}
-              {% if grants_aggregates.distinct_funding_org_identifier|length %}</a>
+              {% if grants_aggregates.distinct_funding_org_identifier|length %}</button>
               {% endif %}
-            </strong>
           </li>
           <li>
             {% trans "Unique recipient organisation identifiers:" %}&nbsp;
-            <strong>
-              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<a data-toggle="modal" data-target=".distinct-recipient-org-identifier">{% endif %}
+              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button data-toggle="modal" data-target-class="distinct-recipient-org-identifier">{% endif %}
               {{ grants_aggregates.distinct_recipient_org_identifier|length}}
-              {% if grants_aggregates.distinct_recipient_org_identifier|length %}</a>{% endif %}
-            </strong>
+              {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button>{% endif %}
           </li>
 
     {% if metadata.issued %}
@@ -229,9 +223,9 @@
       {% endif %}
 {% endif %}
 
-      {% cove_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
-      {% cove_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
-      {% cove_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}
+      {% cove_360_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
+      {% cove_360_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
+      {% cove_360_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}
 
 
       <h3 class="panel-title panel-title-explore">

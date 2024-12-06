@@ -5,7 +5,7 @@ import pytest
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException
 from seleniumlogin import force_login
 import time
 import os
@@ -206,9 +206,9 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     # Wait for the various redirects after click
     wait_for_results_page(browser)
@@ -441,7 +441,7 @@ def test_favicon(server_url, browser):
 
 def test_explore_360_sample_data_link(server_url, browser):
     browser.get(server_url)
-    browser.find_element(By.ID,"load-sample-data-btn").click()
+    browser.find_element(By.ID, "load-sample-data-btn").click()
 
     wait_for_results_page(browser)
 
@@ -477,9 +477,9 @@ def test_codelist_validation(server_url, browser, httpserver):
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     wait_for_results_page(browser)
     # reload results page with ?open-all=true to see all values at once
@@ -502,9 +502,9 @@ def test_oneof_validation(server_url, browser, httpserver):
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     wait_for_results_page(browser)
     # reload results page with ?open-all=true to see all values at once
@@ -547,9 +547,9 @@ def test_quality_checks(server_url, browser, httpserver, source_filename, expect
 
     browser.get(server_url)
 
-    browser.find_element(By.ID,"link-tab-link").click()
-    browser.find_element(By.ID,"id_source_url").send_keys(source_url)
-    browser.find_element(By.ID,"submit-link-btn").click()
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(source_url)
+    browser.find_element(By.ID, "submit-link-btn").click()
 
     wait_for_results_page(browser)
 
