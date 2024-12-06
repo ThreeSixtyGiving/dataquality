@@ -1,0 +1,22 @@
+<p>
+This web application is free software designed to help people check data published to the
+{% if app == 'cove_360' %}360Giving Standard.{% endif %}
+{% if app == 'cove_iati' %}IATI data standard.{% endif %}
+</p>
+
+<p>It is offered as service WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+<p>
+If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy notice govern
+  {% if app == 'cove_360' %}360Giving's{% endif %}
+  {% if app == 'cove_iati' %}Open Data Services Co-operative Limited's{% endif %}
+  relationship with you in relation to this website. If you disagree with any part of these terms and conditions, please do not use our website.
+</p>
+
+{% if app == 'cove_iati' %}
+<p>The term 'Open Data Services Co-operative Limited' or 'us' or 'we' refers to the owner of the website. Our company registration number is 09506232. Our registered address is 1st Floor, Holyoake House, Hanover Street, Manchester, Greater Manchester, England, M60 0AS. You can contact us by email <a href="mailto:company@opendataservices.coop">company@opendataservices.coop</a>. There is more company information on the <a href="https://opencorporates.com/companies/gb/09506232">Open Data Services Co-operative Limited page at Open Corporates</a>. The term 'you' refers to the user or viewer of our website.</p>
+{% elif app == 'cove_360' %}
+<p>The term ‘360Giving’ or ‘us’ or ‘we’ refers to the owner of the website. Our company registration number is 09668396. Our registered address is 360Giving, c/o Esmée Fairbairn Foundation, King's Place, 90 York Way, London, N1 9AG. You can contact us by email <a href="mailto:info@threesixtygiving.org">info@threesixtygiving.org</a>.</p>
+<p>The site is operated by Open Data Services Co-operative Limited.</p>
+<p>The term 'Open Data Services Co-operative Limited' refers to the operator of the website on behalf of 360Giving. Open Data Services Co-operative Limited's company registration number is 09506232. Their registered address is 1st Floor, Holyoake House, Hanover Street, Manchester, Greater Manchester, England, M60 0AS. Email: <a href="mailto:company@opendataservices.coop">company@opendataservices.coop</a></p>
+{% endif %}
