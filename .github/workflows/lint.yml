@@ -21,4 +21,5 @@ jobs:
     - run: flake8
 
     - run: npm install
-    - run: ./node_modules/eslint/bin/eslint.js --ext .js --ext .html cove/cove_360/**
+    - run: ./node_modules/eslint/bin/eslint.js --ext .js --ext .html cove/cove_360/templates/**
+    - run: ./node_modules/eslint/bin/eslint.js --ext .js --ext .html cove/cove_360/static/dataexplore/js/**
