@@ -104,26 +104,6 @@
       {% endif %}
     </li>
 
-         <li>
-            {% trans "Unique grant identifiers:" %}&nbsp;
-            {% if grants_aggregates.unique_ids|length %}<button class="button button--small" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">{% endif %}
-            {{ grants_aggregates.unique_ids|length}}
-            {% if grants_aggregates.unique_ids|length %}</button>{% endif %}
-          </li>
-          <li>
-            {% trans "Unique funder organisation identifiers:" %}&nbsp;
-            {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">{% endif %}
-            {{ grants_aggregates.distinct_funding_org_identifier|length}}
-            {% if grants_aggregates.distinct_funding_org_identifier|length %}</button>
-            {% endif %}
-          </li>
-          <li>
-            {% trans "Unique recipient organisation identifiers:" %}&nbsp;
-            {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">{% endif %}
-            {{ grants_aggregates.distinct_recipient_org_identifier|length}}
-            {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button>{% endif %}
-          </li>
-
     {% if metadata.issued %}
     <li>
       The file was issued on <strong> {{metadata.issued|slice:":10"}} </strong>
@@ -158,6 +138,30 @@
       {% blocktrans %} This file is <strong>not 'utf-8'</strong> encoded (it is <em>{{csv_encoding}}</em> encoded).{% endblocktrans %}
     </li>
     {% endif %}
+  </ul>
+
+  <h4>Identifiers</h4>
+  <ul>
+  <li>
+            {% trans "Unique grant identifiers:" %}&nbsp;
+            {% if grants_aggregates.unique_ids|length %}<button class="button button--small margin-bottom:1" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">{% endif %}
+            {{ grants_aggregates.unique_ids|length}}
+            {% if grants_aggregates.unique_ids|length %}</button>{% endif %}
+          </li>
+          <li>
+            {% trans "Unique funder organisation identifiers:" %}&nbsp;
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small margin-bottom:1" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">{% endif %}
+            {{ grants_aggregates.distinct_funding_org_identifier|length}}
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}</button>
+            {% endif %}
+          </li>
+          <li>
+            {% trans "Unique recipient organisation identifiers:" %}&nbsp;
+            {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button class="button button--small margin-bottom:1" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">{% endif %}
+            {{ grants_aggregates.distinct_recipient_org_identifier|length}}
+            {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button>{% endif %}
+          </li>
+
   </ul>
 
   <p><strong>{% blocktrans %}Do these results look correct?{% endblocktrans %}</strong></p>

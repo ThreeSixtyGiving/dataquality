@@ -55,6 +55,7 @@
           </td>
         {% else %}
           <td>
+            {# first 3 locations #}
             <ul class="list-unstyled">
               {% for location in json_location|slice:":3" %}
                   <li>{{location}}</li>

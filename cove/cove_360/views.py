@@ -163,7 +163,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                 re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
             )
 
-    if settings.GRANTS_TABLE and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    if settings.get("GRANTS_TABLE", False) and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}

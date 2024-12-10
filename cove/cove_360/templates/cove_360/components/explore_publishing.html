@@ -29,10 +29,6 @@
   {% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %}
   <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/" >{% trans "Guidance about using the submission form." %}</a>
 </p>
-<form>
-<input type="checkbox" id="read-report-confirmed" required=required />
-<label for="read-report-confirmed">Please confirm you have read and understood the <a href="#report">report</a> below</label>
-</form>
 <a class="button button--teal button--solid" style="opacity: 0.5" id="sf-form-link" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}" disabled>
   Submit your file
 </a>
@@ -108,17 +104,4 @@
     _paq.push(['trackPageView']);
   });
 
-  (function () {
-    document.getElementById('read-report-confirmed').addEventListener('change', function () {
-      const link = document.getElementById('sf-form-link');
-
-      if (this.checked) {
-        link.removeAttribute('disabled');
-        link.style.opacity = 1;
-      } else {
-        link.setAttribute('disabled', 'disabled');
-        link.style.opacity = 0.5;
-      }
-    });
-  })();
 </script>
