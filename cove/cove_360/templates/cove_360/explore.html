@@ -1,8 +1,7 @@
 {% extends 'explore.html' %}
 
 {% block content %}
-
-{% if "self_publishing" in data_status.supplied_data.parameters %}
+{% if submission_tool %}
   {% include "cove_360/components/explore_publishing.html" %}
 {% else %}
   {% include "cove_360/components/explore_checking.html" %}

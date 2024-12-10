@@ -13,7 +13,7 @@
     <meta name="description"
       content="360Giving Data Quality tool helps publishers to check their data conforms to the 360Giving Data Standard and submit the data for publishing." />
 
-    <title>{% block header_title %}360Giving Data Quality Tool{% endblock %}</title>
+    <title>360Giving Data {% if submission_tool %}Submission{% else %}Quality{% endif %} Tool</title>
 
     <link rel="shortcut icon" href="{% static 'dataexplore/images/favicon/favicon.ico' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}?v={{request.tag}}">
@@ -62,8 +62,8 @@
                 <a href="/"><img src="{% static 'dataexplore/images/360-giving-logo.svg' %}" alt="360 Giving"></a>
               </div>
               <div class="hero__column hero__lead">
-                <h2 class="hero__title">{% block hero_title %}Data Quality Tool{% endblock %}</h2>
-                <p class="hero__blurb">{% block hero_blurb %}Convert, Validate, Explore 360 Giving Data.{% endblock %}</p>
+                <h2 class="hero__title">Data {% if submission_tool %}Submission{% else %}Quality{% endif %} Tool</h2>
+                <p class="hero__blurb">{% if submission_tool %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% else %}Convert, Validate, Explore 360 Giving Data.{% endif %}</p>
               </div>
             </div>
           </div>

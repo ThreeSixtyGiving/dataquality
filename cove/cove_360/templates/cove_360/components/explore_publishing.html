@@ -10,9 +10,9 @@
 {# Translators: JSON probably does not need a transalation: http://www.json.org/ #}
 {% trans 'JSON' as JSON %}
 {% trans 'XML' as XML %}
-
 <h3>{% trans "Submit your data" %}</h3>
 
+{% if validation_and_closed_codelist_errors_count > 0 %}
 <div class="base-card base-card--red margin-bottom:2">
   <div class="base-card__content">
     <h2 class="base-card__title">
@@ -22,6 +22,8 @@
   </div>
 </div>
 
+{% endif %}
+
 {% if data_status.can_publish %}
 <p>{% trans "Submitting for: " %}<strong>{{publisher.name}}</strong></p>
 <p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
@@ -29,7 +31,7 @@
   {% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %}
   <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/" >{% trans "Guidance about using the submission form." %}</a>
 </p>
-<a class="button button--teal button--solid" style="opacity: 0.5" id="sf-form-link" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}" disabled>
+<a class="button button--teal button--solid" id="sf-form-link" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}">
   Submit your file
 </a>
 {% endif %} {# Data passed, Domain not recognised/approved #}
@@ -45,21 +47,26 @@
   with the link to the file you want to submit to the Data Registry.
   {% endblocktrans %}
 </p>
-{% endif %} {# Validation failed #} {% if not data_status.passed %}
+{% endif %}
+{# Validation failed #} {% if not data_status.passed %}
 <p>
   {% blocktrans %}Sorry you aren't able to submit this file because it is not
   valid 360Giving data.{% endblocktrans %}
 </p>
 <p>
-  {% blocktrans %} Follow the feedback below to make the amendments needed to
+  {% blocktrans %} Follow the feedback in the Data Quality Tool to make the amendments needed to
   your data. Once your data passes the Data Quality tool checks, upload the
   updated file to your website and then restart the 360Giving data file
   submission process. The data did not pass the checks and cannot be published.
   See results below. {% endblocktrans %}
 </p>
+
+<p><a href="{% url "results" data_uuid %}?new-mode=checks">Open the file in Data Quality Tool to see validation errors.</a></p>
 {% endif %}
 
 <div class="spacer-3"></div>
+
+{% comment %} TODO no longer needed?
 
 <style scoped>
     table {
@@ -72,6 +79,8 @@
     }
 </style>
 
+
+
 <h1 id="report">Report</h1>
 {% include "cove_360/components/explore/summary.html" %}
 <hr />
@@ -80,6 +89,8 @@
 {% include "cove_360/components/explore/accuracy.html" %}
 <hr />
 {% include "cove_360/components/explore/usefulness.html" %}
+#}
+{% endcomment %}
 
 <script>
   window.addEventListener('load', function () {

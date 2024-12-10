@@ -61,6 +61,23 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     cached_context = cache.get(pk)
 
     if cached_context and not request.POST.get("flatten"):
+
+        if request.GET.get("new-mode"):
+            try:
+                db_data = SuppliedData.objects.get(pk=pk)
+                data_params = json.loads(db_data.parameters)
+                del data_params["self_publishing"]
+                db_data.parameters = json.dumps(data_params)
+                db_data.save()
+                data_status, dsc = SuppliedDataStatus.objects.get_or_create(
+                    supplied_data=db_data,
+                )
+                cached_context["data_status"] = data_status
+                cache.set(pk, cached_context)
+
+            except KeyError:
+                pass
+
         print("Cache hit")
         return render(request, template, cached_context)
 
@@ -82,6 +99,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             # bail out early so user doesn't have to wait for validation to complete
             return render(request, "cove_360/publisher_not_found.html", context)
         data_status._publisher = json.dumps(publisher)
+        context["submission_tool"] = True
         context["publisher"] = publisher
 
     lib_cove_config = LibCoveConfig()
@@ -163,7 +181,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                 re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
             )
 
-    if settings.get("GRANTS_TABLE", False) and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    if settings.GRANTS_TABLE and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}
@@ -175,6 +193,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     else:
         context['grants'] = []
         context['metadata'] = {}
+        context["json_data"] = {}
 
     context['first_render'] = not db_data.rendered
     if not db_data.rendered:
