@@ -2,15 +2,23 @@
 {% load humanize %}
 {% load cove_tags %}
 
+<h2>Usefulness Opportunities</h2>
+
+{% if usefulness_checks_passed %}
+  <h3>What is working well</h3>
+  <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> of our usefulness checks passed.</p>
+  {% endif %}
+
+
 {% if usefulness_checks_count %}
-    <h2>Usefulness Opportunities</h2>
+    <h3>Potential opportunities</h3>
     {% if usefulness_checks_errored %}
       <p>{% blocktrans %}Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}</p>
     {% endif %}
 
     {% if usefulness_checks %}
       <p>
-      We identified {% blocktrans count n_usefulness_checks=usefulness_checks_count %} usefulness opportunity{% plural %}{{n_usefulness_checks}} usefulness opportunities{% endblocktrans %}.
+      We identified {% blocktrans count n_usefulness_checks=usefulness_checks_count %} usefulness opportunity{% plural %}<strong>{{n_usefulness_checks}}</strong> usefulness opportunities{% endblocktrans %}.
       {% blocktrans %}These usefulness checks highlight ways the data could be made more useful.{% endblocktrans %}
       </p>
 
@@ -74,21 +82,4 @@
 
   {% else %}
    <p>No usefulness opportunities detected.</p>
-  {% endif %}
-
-  <h2>What is working well</h2>
-  {% if usefulness_checks_passed %}
-  <p>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> usefulness checks passed.</p>
-  <table class="table">
-    <thead>
-      <th>Passed</th>
-      <th>Test</th>
-    </thead>
-    {% for passed_test in usefulness_checks_passed %}
-    <tr>
-      <td><i class="material-icons table--true">check</i></td>
-      <td>{{passed_test}}</td>
-    </tr>
-    {% endfor %}
-  </table>
   {% endif %}

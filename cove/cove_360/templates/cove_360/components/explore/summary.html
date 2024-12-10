@@ -106,22 +106,22 @@
 
          <li>
             {% trans "Unique grant identifiers:" %}&nbsp;
-              {% if grants_aggregates.unique_ids|length %}<button data-toggle="modal" data-target-class="unique-ids">{% endif %}
-              {{ grants_aggregates.unique_ids|length}}
-              {% if grants_aggregates.unique_ids|length %}</button>{% endif %}
+            {% if grants_aggregates.unique_ids|length %}<button class="button button--small" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">{% endif %}
+            {{ grants_aggregates.unique_ids|length}}
+            {% if grants_aggregates.unique_ids|length %}</button>{% endif %}
           </li>
           <li>
             {% trans "Unique funder organisation identifiers:" %}&nbsp;
-              {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier">{% endif %}
-              {{ grants_aggregates.distinct_funding_org_identifier|length}}
-              {% if grants_aggregates.distinct_funding_org_identifier|length %}</button>
-              {% endif %}
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">{% endif %}
+            {{ grants_aggregates.distinct_funding_org_identifier|length}}
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}</button>
+            {% endif %}
           </li>
           <li>
             {% trans "Unique recipient organisation identifiers:" %}&nbsp;
-              {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button data-toggle="modal" data-target-class="distinct-recipient-org-identifier">{% endif %}
-              {{ grants_aggregates.distinct_recipient_org_identifier|length}}
-              {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button>{% endif %}
+            {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">{% endif %}
+            {{ grants_aggregates.distinct_recipient_org_identifier|length}}
+            {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button>{% endif %}
           </li>
 
     {% if metadata.issued %}

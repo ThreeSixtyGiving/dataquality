@@ -132,3 +132,7 @@ DISABLE_COOKIE_POPUP = False
 
 if "true" in os.environ.get("DISABLE_COOKIE_POPUP", "").lower():
     DISABLE_COOKIE_POPUP = True
+
+# If enabled the grants data can be used in a template to create a browsable
+# table of grants.
+GRANTS_TABLE = False

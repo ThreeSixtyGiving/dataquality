@@ -603,3 +603,12 @@ def test_file_submission(server_url, browser, httpserver):
     body_text = browser.find_element(By.TAG_NAME, "body").text
 
     assert "The data was checked and can now be submitted to the 360Giving Data Registry." in body_text, f"Expected '...can now be submitted' in {body_text}"
+
+
+def test_cookie_popup(server_url, browser, httpserver):
+    """ Test that re-enabling the cookie popup does what we expect by including the cookie template """
+    settings.DISABLE_COOKIE_POPUP = False
+
+    browser.get(server_url)
+
+    assert "Allow analytics" in browser.find_element(By.ID, "cookie-dialog-title").text

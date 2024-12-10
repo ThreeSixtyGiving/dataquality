@@ -163,11 +163,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                 re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
             )
 
-    # Experimental to test performance impacts
-    # Note False will currently leave the grants table in the UI empty
-    do_grants_display = True
-
-    if do_grants_display and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    if settings.GRANTS_TABLE and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}
@@ -218,8 +214,10 @@ def create_passed_tests_context_data(failed_tests, available_tests):
         if test.__name__ in passed_tests_names:
             continue
         # We instantiate the test with no data to be able to utilise the heading formatting code
-        passed_test_case = test(grants=[], aggregates={"count": 0, "recipient_individuals_count": 0})
-        passed_test_case_headings.append(mark_safe(passed_test_case.format_heading_count(test.check_text["heading"])))
+        # TODO this may no longer be needed
+        # passed_test_case = test(grants=[], aggregates={"count": 0, "recipient_individuals_count": 0})
+        # passed_test_case_headings.append(mark_safe(passed_test_case.format_heading_count(test.check_text["heading"])))
+        passed_test_case_headings.append(test.__name__)
 
     return passed_test_case_headings
 

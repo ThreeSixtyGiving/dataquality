@@ -4,12 +4,19 @@
 
   <h2>Data Accuracy</h2>
 
+
+  {% if quality_accuracy_checks_passed %}
+  <h3>What is working well</h3>
+  <p>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> of our data accuracy checks passed.</p>
+  {% endif %}
+
+
   {% if quality_accuracy_errored %}
    <p>{% blocktrans %}Quality accuracy checks failed due to an issue with the data. Fix some <a href="#validity">validation</a> errors first.{% endblocktrans %}</p>
   {% else %}
 
-  <p>
   {% if quality_accuracy_checks %}
+  <h3>Potential issues</h3>
   <p class="explanation">{% blocktrans %}These checks highlight areas where your data may be incorrect or need further attention.{% endblocktrans %}</p>
     {% blocktrans %}
     <p>For each check we give feedback on the issue and what steps may be taken to resolve it.</p>
@@ -62,10 +69,6 @@
   <p>No accuracy issues found.</p>
   {% endif %}
 
-  <h2>What is working well</h2>
-  {% if quality_accuracy_checks_passed %}
-  <p>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> of our data accuracy checks passed.</p>
-  {% endif %}
 {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
 {% with msg=message.heading %}
 {% if file_type == 'json' %}
