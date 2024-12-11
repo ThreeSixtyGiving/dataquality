@@ -520,7 +520,18 @@ RECIPIENT_ORGANISATION = "recipient organisation"
 RECIPIENT_INDIVIDUAL = "recipient individual"
 
 
+class TestCategories(object):
+    GRANTS = "Grants"
+    ORGANISATIONS = "Organisations"
+    DATA_PROTECTION = "Data Protection"
+    DATES = "Dates"
+    LOCATION = "Location"
+    METADATA = "Metadata"
+
+
 class AdditionalTest:
+    category = TestCategories.GRANTS
+
     def __init__(self, **kw):
         self.grants = kw["grants"]
         self.aggregates = kw["aggregates"]
@@ -543,6 +554,7 @@ class AdditionalTest:
             "type": self.__class__.__name__,
             "count": self.count,
             "percentage": self.grants_percentage,
+            "category": self.__class__.category,
         }
 
     def get_heading_count(self, test_class_type):
@@ -607,7 +619,6 @@ class AdditionalTest:
             self.get_heading_count(test_class_type), noun, verb, message
         )
 
-
 class ZeroAmountTest(AdditionalTest):
     """Check if any grants have an amountAwarded of 0.
 
@@ -624,6 +635,8 @@ class ZeroAmountTest(AdditionalTest):
         "consider adding an explanation to the description of the grant to help anyone "
         "using the data to understand how to interpret the information."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         try:
@@ -667,6 +680,8 @@ class RecipientOrg360GPrefix(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.relevant_grant_type = RECIPIENT_ORGANISATION
@@ -705,6 +720,8 @@ class FundingOrg360GPrefix(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def process(self, grant, path_prefix):
         try:
             for num, organization in enumerate(grant["fundingOrganization"]):
@@ -738,6 +755,8 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -788,6 +807,8 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def process(self, grant, path_prefix):
         try:
             count_failure = False
@@ -837,6 +858,8 @@ class RecipientOrgCharityNumber(AdditionalTest):
         "correctly formatted non-UK charity numbers, in which case this message can be "
         "ignored."
     )
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -895,6 +918,8 @@ class RecipientOrgCompanyNumber(AdditionalTest):
         "in which case this message can be ignored."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.relevant_grant_type = RECIPIENT_ORGANISATION
@@ -943,6 +968,8 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
         "are to organisations that don’t have UK Company or UK Charity numbers, you can "
         "ignore this notice."
     )
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -995,6 +1022,8 @@ class IncompleteRecipientOrg(AdditionalTest):
         "for further help. "
     )
 
+    category = TestCategories.LOCATION
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.relevant_grant_type = RECIPIENT_ORGANISATION
@@ -1039,6 +1068,8 @@ class MoreThanOneFundingOrg(AdditionalTest):
         "If you are expecting to be publishing data for multiple funders and the number "
         "of funders is correct, then you can ignore this error notice."
     )
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -1090,6 +1121,8 @@ class LooksLikeEmail(AdditionalTest):
         "refers."
     )
 
+    category = TestCategories.DATA_PROTECTION
+
     def process(self, grant, path_prefix):
         flattened_grant = OrderedDict(flatten_dict(grant))
         for key, value in flattened_grant.items():
@@ -1125,6 +1158,8 @@ class NoGrantProgramme(AdditionalTest):
         "organisation does not have grant programmes this notice can be ignored."
     )
 
+    category = TestCategories.GRANTS
+
     def process(self, grant, path_prefix):
         grant_programme = grant.get("grantProgramme")
         if not grant_programme:
@@ -1159,6 +1194,8 @@ class NoBeneficiaryLocation(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.LOCATION
+
     def process(self, grant, path_prefix):
         beneficiary_location = grant.get("beneficiaryLocation")
         if not beneficiary_location:
@@ -1181,6 +1218,8 @@ class TitleDescriptionSame(AdditionalTest):
         "Users may find that the data is less useful as they are unable to discover more about the grants. "
         "Consider including a more detailed description if you have one."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         title = grant.get("title")
@@ -1205,6 +1244,8 @@ class TitleLength(AdditionalTest):
         "Titles for grant activities should be under 140 characters long so that people "
         "can quickly understand the purpose of the grant."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         title = grant.get("title", "")
@@ -1232,6 +1273,8 @@ class GrantIdUnexpectedChars(AdditionalTest):
         " <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#grant-identifier\">guidance on grant identifiers</a>"
         " for further help."
     )
+
+    category = TestCategories.GRANTS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1262,6 +1305,8 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
         " These characters break 360Giving tools including GrantNav, so the affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
         " See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> "
         " for further help.")
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1306,6 +1351,8 @@ class OrganizationIdLooksInvalid(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
+
+    category = TestCategories.ORGANISATIONS
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1352,6 +1399,8 @@ class NoLastModified(AdditionalTest):
         "users to see when changes have been made and reconcile differences between versions of your data."
     )
 
+    category = TestCategories.METADATA
+
     def process(self, grant, path_prefix):
         last_modified = grant.get("dateModified")
         if not last_modified:
@@ -1383,6 +1432,8 @@ class NoDataSource(AdditionalTest):
         "website."
     )
 
+    category = TestCategories.METADATA
+
     def process(self, grant, path_prefix):
         data_source = grant.get("dataSource")
         if not data_source:
@@ -1410,6 +1461,8 @@ class ImpossibleDates(AdditionalTest):
         "Your data contains dates that didn't, or won't, exist - such as the 31st of September, "
         "or the 29th of February in a year that's not a leap year. This error is commonly caused by typos during data entry."
     )
+
+    category = TestCategories.DATES
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1467,6 +1520,8 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1505,6 +1560,8 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1540,6 +1597,8 @@ class FarFuturePlannedDates(AdditionalTest):
         "your data describes activities that run a long time into the future, but you should check for data entry "
         "errors if this isn't expected."
     )
+
+    category = TestCategories.DATES
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1581,6 +1640,8 @@ class FarFutureActualDates(AdditionalTest):
         "if this isn't expected."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1619,6 +1680,8 @@ class FarPastDates(AdditionalTest):
         "Your data contains dates that are more than 25 years ago. You can disregard this error notice if your "
         "data is about activities far in the past, but you should check for data entry errors if this isn't expected."
     )
+
+    category = TestCategories.DATES
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1670,6 +1733,8 @@ class PostDatedAwardDates(AdditionalTest):
         "includes grants that are not yet fully committed"
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1706,6 +1771,8 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
         "individuals."
     )
 
+    category = TestCategories.GRANTS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.relevant_grant_type = RECIPIENT_INDIVIDUAL
@@ -1735,6 +1802,8 @@ class RecipientIndDEI(AdditionalTest):
         "DEI data about individuals as this can make them personally "
         "identifiable when combined with other information in the grant."
     )
+
+    category = TestCategories.DATA_PROTECTION
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1778,6 +1847,8 @@ class GeoCodePostcode(AdditionalTest):
         "grant."
     )
 
+    category = TestCategories.DATA_PROTECTION
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.relevant_grant_type = RECIPIENT_INDIVIDUAL
@@ -1816,7 +1887,6 @@ TEST_CLASSES = {
         FarFutureActualDates,
         FarPastDates,
         PostDatedAwardDates,
-        RecipientIndWithoutToIndividualsDetails,
         RecipientIndDEI,
         GeoCodePostcode,
     ],
@@ -1831,6 +1901,7 @@ TEST_CLASSES = {
         TitleLength,
         NoLastModified,
         NoDataSource,
+        RecipientIndWithoutToIndividualsDetails,
     ],
 }
 

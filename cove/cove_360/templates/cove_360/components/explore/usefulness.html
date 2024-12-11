@@ -27,6 +27,10 @@
 	    <p>Receiving this feedback does not mean the data is invalid and it can be ignored when not relevant.</p>
       <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
 	    {% endblocktrans %}
+
+      {% for category in usefulness_categories %}
+      <h4>{{category}}</h4>
+
       <table class="table">
       <thead>
         <tr>
@@ -37,8 +41,9 @@
       </thead>
       <tbody>
       {% for message, json_location, spreadsheet_location in usefulness_checks %}
+      {% if message.category == category %}
       <tr>
-          <td><i class="material-icons table--false">close</i></td>
+          <td><i class="material-icons table--false" style="color: {% if message.percentage < 0.5 %}orange {% elif message.percentage < 0.1 %}yellow{% else %}hsl(var(--red-hsl), 1){% endif %}">close</i></td>
           <td>
             <strong>{{ message.heading }}</strong><br /><br />{{ message.message }}
           </td>
@@ -67,10 +72,14 @@
           </td>
         {% endif %}
       </tr>
+      {% endif %} {# end category filter #}
       {% endfor %}
       </tbody>
       </table>
-      {% endif %}
+      {% endfor %} {# categories #}
+
+    {% endif %} {# if count #}
+
     {% for message, json_location, spreadsheet_location in usefulness_checks %}
       {% with msg=message.heading %}
         {% if file_type == 'json' %}

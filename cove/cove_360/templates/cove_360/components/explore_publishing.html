@@ -10,7 +10,7 @@
 {# Translators: JSON probably does not need a transalation: http://www.json.org/ #}
 {% trans 'JSON' as JSON %}
 {% trans 'XML' as XML %}
-<h3>{% trans "Submit your data" %}</h3>
+<h2>{% trans "Submit your data" %}</h2>
 
 {% if validation_and_closed_codelist_errors_count > 0 %}
 <div class="base-card base-card--red margin-bottom:2">
@@ -26,7 +26,7 @@
 
 {% if data_status.can_publish %}
 <p>{% trans "Submitting for: " %}<strong>{{publisher.name}}</strong></p>
-<p>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
+<p><i class="material-icons table--true">check</i>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
 <p>
   {% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %}
   <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/" >{% trans "Guidance about using the submission form." %}</a>
