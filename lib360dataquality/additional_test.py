@@ -35,6 +35,9 @@ class AdditionalTest(object):
         self.relevant_grant_type = TestRelevance.RECIPIENT_ANY
 
     def process(self, grant, path_prefix):
+        # Each test must implement this function which is called on each grant after
+        # the class is initialised.
+        # Set self.count, self.failed, self.heading and self.message
         pass
 
     def produce_message(self):

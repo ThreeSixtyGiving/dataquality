@@ -538,6 +538,15 @@ def test_oneof_validation(server_url, browser, httpserver):
         "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
         "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
     ], []),
+    ("duration_usefulness.json", [
+        "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
+    ], []),
+    ("duration_usefulness.json", [
+        "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
+    ], []),
+    ("multiple_fundiner_names_org_ids.json", [
+        "added an additional name for an existing Funding Org"
+    ], []),
 ])
 def test_quality_checks(server_url, browser, httpserver, source_filename, expected_texts, unexpected_texts):
     with open(os.path.join('cove_360', 'fixtures', source_filename), 'rb') as fp:

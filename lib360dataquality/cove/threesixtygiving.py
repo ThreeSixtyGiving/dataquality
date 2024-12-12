@@ -428,6 +428,7 @@ def common_checks_360(
             json_data,
             cell_source_map,
             TEST_CLASSES[test_class_type],
+            # Set ignore_errors to False for debugging checks otherwise all exceptions will pass
             ignore_errors=True,
             return_on_error=None,
             aggregates=context["grants_aggregates"],
@@ -1764,9 +1765,56 @@ class GeoCodePostcode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+class MultiFundingOrgIdsForName(AdditionalTest):
+    """Check for Funding org ids with multiple names."""
+
+    check_text = {
+        "heading": mark_safe("added an additional name for an existing Funding Org"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Funding Org names with differing org-ids. "
+        "Funding organisations typically only have one name and one org-id."
+    )
+
+    category = TestCategories.ORGANISATIONS
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        #  zxy-name: { names: [] }
+        self.funding_organisation_id_name = {}
+
+    def process(self, grant, path_prefix):
+        for num, organisation in enumerate(grant["fundingOrganization"]):
+            org_id = organisation["id"]
+            name = organisation["name"]
+
+            try:
+                names = self.funding_organisation_id_name[organisation["id"]]
+            except KeyError:
+                # initialise the data
+                names = [name]
+                self.funding_organisation_id_name[org_id] = names
+
+            if name not in names:
+                # We have a brand new name for this org id, suspicious.
+                names.append(name)
+                self.json_locations.append(
+                    path_prefix + "/fundingOrganization/{}/name".format(num)
+                )
+                self.count = self.count + 1
+                self.failed = True
+
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = mark_safe(self.check_text["message"][self.grants_percentage])
+
+
+
+
 # Default tests run in CoVE, these are also the base list
 # for the Quality Dashboard checks.
 TEST_CLASSES = {
+    # Quality = Accuracy tests in cove
     TestType.QUALITY_TEST_CLASS: [
         ZeroAmountTest,
         FundingOrgUnrecognisedPrefix,
@@ -1787,6 +1835,7 @@ TEST_CLASSES = {
         PostDatedAwardDates,
         RecipientIndDEI,
         GeoCodePostcode,
+        MultiFundingOrgIdsForName,
     ],
     TestType.USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
