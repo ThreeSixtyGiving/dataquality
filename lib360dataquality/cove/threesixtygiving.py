@@ -14,6 +14,8 @@ from jsonschema.exceptions import ValidationError
 from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
 from libcove.lib.tools import decimal_default
 from rangedict import RangeDict as range_dict
+from lib360dataquality.additional_test import AdditionalTest, TestType, TestCategories, TestRelevance
+from lib360dataquality.check_field_present import PlannedDurationNotPresent
 
 try:
     from django.utils.html import mark_safe
@@ -23,8 +25,6 @@ except ImportError:
     def mark_safe(string):
         return string
 
-QUALITY_TEST_CLASS = "quality_accuracy"
-USEFULNESS_TEST_CLASS = "usefulness"
 
 DATES_JSON_LOCATION = {
     "award_date": "/awardDate",
@@ -392,7 +392,7 @@ def common_checks_360(
 
     # If no particular test classes are supplied then run all defined here
     if not test_classes:
-        test_classes = [QUALITY_TEST_CLASS, USEFULNESS_TEST_CLASS]
+        test_classes = [TestType.QUALITY_TEST_CLASS, TestType.USEFULNESS_TEST_CLASS]
 
     if context["file_type"] == "xlsx":
         try:
@@ -515,110 +515,6 @@ def flatten_dict(grant, path=""):
             yield ("{}/{}".format(path, key), value)
 
 
-RECIPIENT_ANY = ""
-RECIPIENT_ORGANISATION = "recipient organisation"
-RECIPIENT_INDIVIDUAL = "recipient individual"
-
-
-class TestCategories(object):
-    GRANTS = "Grants"
-    ORGANISATIONS = "Organisations"
-    DATA_PROTECTION = "Data Protection"
-    DATES = "Dates"
-    LOCATION = "Location"
-    METADATA = "Metadata"
-
-
-class AdditionalTest:
-    category = TestCategories.GRANTS
-
-    def __init__(self, **kw):
-        self.grants = kw["grants"]
-        self.aggregates = kw["aggregates"]
-        self.grants_percentage = 0
-        self.json_locations = []
-        self.failed = False
-        self.count = 0
-        self.heading = None
-        self.message = None
-        # Default to the most common type
-        self.relevant_grant_type = RECIPIENT_ANY
-
-    def process(self, grant, path_prefix):
-        pass
-
-    def produce_message(self):
-        return {
-            "heading": self.heading,
-            "message": self.message,
-            "type": self.__class__.__name__,
-            "count": self.count,
-            "percentage": self.grants_percentage,
-            "category": self.__class__.category,
-        }
-
-    def get_heading_count(self, test_class_type):
-        # The total grants is contextual e.g. a test may fail for a recipient org-id
-        # this is only relevant to grants to organisations and not individuals
-        if self.relevant_grant_type == RECIPIENT_ANY:
-            total = self.aggregates["count"]
-        elif self.relevant_grant_type == RECIPIENT_ORGANISATION:
-            total = self.aggregates["count"] - self.aggregates["recipient_individuals_count"]
-        elif self.relevant_grant_type == RECIPIENT_INDIVIDUAL:
-            # if there are no individuals in this data then reset the count
-            if self.aggregates["recipient_individuals_count"] == 0:
-                self.count = 0
-            total = self.aggregates["recipient_individuals_count"]
-
-        # Guard against a division by 0
-        if total < 1:
-            total = 1
-
-        self.grants_percentage = self.count / total
-
-        # Return conditions
-
-        if test_class_type == QUALITY_TEST_CLASS:
-            return self.count
-
-        if self.aggregates["count"] == 1 and self.count == 1:
-            self.grants_percentage = 1.0
-            return f"1 {self.relevant_grant_type}".strip()
-
-        if self.count <= 5:
-            return f"{self.count} {self.relevant_grant_type}".strip()
-
-        return f"{round(self.grants_percentage*100)}% of {self.relevant_grant_type}".strip()
-
-    def format_heading_count(self, message, test_class_type=None, verb="have"):
-        """Build a string with count of grants plus message
-
-        The grant count phrase for the test is pluralized and
-        prepended to message, eg: 1 grant has + message,
-        2 grants have + message or 3 grants contain + message.
-        """
-        noun = "grant" if self.count == 1 else "grants"
-
-        # Positive result  - "what is working well"
-        # Avoid double negative
-        if not message.startswith("not have") and message.startswith("not") and self.count == 0:
-            message = message[len("not"):]
-        if message.startswith("not have") and self.count == 0:
-            verb = "do"
-        # End positive result flip
-
-        if verb == "have":
-            verb = "has" if self.count == 1 else verb
-        elif verb == "do":
-            verb = "does" if self.count == 1 else verb
-        else:
-            # Naively!
-            verb = verb + "s" if self.count == 1 else verb
-
-        return "{} {} {} {}".format(
-            self.get_heading_count(test_class_type), noun, verb, message
-        )
-
 class ZeroAmountTest(AdditionalTest):
     """Check if any grants have an amountAwarded of 0.
 
@@ -652,7 +548,7 @@ class ZeroAmountTest(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -684,7 +580,7 @@ class RecipientOrg360GPrefix(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -760,7 +656,7 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -783,7 +679,7 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -830,7 +726,7 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -863,7 +759,7 @@ class RecipientOrgCharityNumber(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -888,7 +784,7 @@ class RecipientOrgCharityNumber(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -922,7 +818,7 @@ class RecipientOrgCompanyNumber(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -944,7 +840,7 @@ class RecipientOrgCompanyNumber(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
@@ -973,7 +869,7 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -1026,7 +922,7 @@ class IncompleteRecipientOrg(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -1135,7 +1031,7 @@ class LooksLikeEmail(AdditionalTest):
 
         self.heading = self.format_heading_count(
             self.check_text["heading"],
-            test_class_type=QUALITY_TEST_CLASS,
+            test_class_type=TestType.QUALITY_TEST_CLASS,
             verb="contain",
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -1278,7 +1174,7 @@ class GrantIdUnexpectedChars(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ANY
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ANY
 
     def process(self, grant, path_prefix):
         if "\n" in grant.get("id"):
@@ -1287,7 +1183,7 @@ class GrantIdUnexpectedChars(AdditionalTest):
             self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1310,7 +1206,7 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         for org_type in ("fundingOrganization", "recipientOrganization"):
@@ -1327,7 +1223,7 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
                     self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1356,7 +1252,7 @@ class OrganizationIdLooksInvalid(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         for org_type in ("fundingOrganization", "recipientOrganization"):
@@ -1379,7 +1275,7 @@ class OrganizationIdLooksInvalid(AdditionalTest):
                         self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1775,7 +1671,7 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "toIndividualsDetails" not in grant:
@@ -1807,7 +1703,7 @@ class RecipientIndDEI(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "project" in grant:
@@ -1851,7 +1747,7 @@ class GeoCodePostcode(AdditionalTest):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant:
@@ -1868,8 +1764,10 @@ class GeoCodePostcode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+# Default tests run in CoVE, these are also the base list
+# for the Quality Dashboard checks.
 TEST_CLASSES = {
-    QUALITY_TEST_CLASS: [
+    TestType.QUALITY_TEST_CLASS: [
         ZeroAmountTest,
         FundingOrgUnrecognisedPrefix,
         RecipientOrgUnrecognisedPrefix,
@@ -1890,7 +1788,7 @@ TEST_CLASSES = {
         RecipientIndDEI,
         GeoCodePostcode,
     ],
-    USEFULNESS_TEST_CLASS: [
+    TestType.USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
         FundingOrg360GPrefix,
         NoRecipientOrgCompanyCharityNumber,
@@ -1902,6 +1800,7 @@ TEST_CLASSES = {
         NoLastModified,
         NoDataSource,
         RecipientIndWithoutToIndividualsDetails,
+        PlannedDurationNotPresent,
     ],
 }
 

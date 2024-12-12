@@ -207,8 +207,17 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     import pprint
     pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
 
-    context["usefulness_categories"] = set([message["category"] for message, a, b in context["usefulness_checks"]])
-    context["quality_accuracy_categories"] = set([message["category"] for message, a, b in context["quality_accuracy_checks"]])
+    try:
+        context["usefulness_categories"] = set([message["category"] for message, a, b in context["usefulness_checks"]])
+    except TypeError:
+        # if no usefulness_checks the iteration will fail
+        context["usefulness_categories"] = []
+
+    try:
+        context["quality_accuracy_categories"] = set([message["category"] for message, a, b in context["quality_accuracy_checks"]])
+    except TypeError:
+        # if no quality quality_accuracy categories the iteration will fail
+        context["quality_accuracy_categories"] = []
 
     try:
         context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])

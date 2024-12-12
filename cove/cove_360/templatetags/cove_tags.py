@@ -40,4 +40,11 @@ def cove_360_modal_list(**context):
 
 @register.filter("multiply")
 def multiply(a, b):
-    return a*b
+    """ Multiple a,b if result is less than one output 1 decimal place otherwise as a rounded int"""
+    res = a*b
+
+    if res < 1:
+        return f"{(a*b):.1f}"
+
+    return int(round(res))
+

@@ -1,4 +1,4 @@
-from lib360dataquality.cove.threesixtygiving import AdditionalTest, RECIPIENT_INDIVIDUAL
+from lib360dataquality.additional_test import AdditionalTest, TestRelevance
 from functools import wraps
 
 
@@ -109,7 +109,7 @@ class IndividualsCodeListsNotPresent(FieldNotPresentBase):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def check_field(self, grant):
         # Not relevant
