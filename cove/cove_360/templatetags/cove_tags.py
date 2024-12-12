@@ -36,3 +36,8 @@ def cove_360_modal_errors(**context):
 @register.inclusion_tag("cove_360/modal_list.html")
 def cove_360_modal_list(**context):
     return cove_modal_list(**context)
+
+
+@register.filter("multiply")
+def multiply(a, b):
+    return a*b

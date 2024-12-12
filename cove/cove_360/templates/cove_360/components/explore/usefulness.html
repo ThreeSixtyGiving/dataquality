@@ -43,7 +43,11 @@
       {% for message, json_location, spreadsheet_location in usefulness_checks %}
       {% if message.category == category %}
       <tr>
-          <td><i class="material-icons table--false" style="color: {% if message.percentage < 0.5 %}orange {% elif message.percentage < 0.1 %}yellow{% else %}hsl(var(--red-hsl), 1){% endif %}">close</i></td>
+          <td>
+            <div style="border-radius: 3px; background-color: hsl(var(--teal-dark-hsl), 1); width:100%; height:20px; min-width:90px">
+              <div style="border-radius: 3px; background-color: hsl(var(--red-hsl), 1); height: 20px; width: {{message.percentage|multiply:100}}%; min-width:5px"></div>
+            </div>
+          </td>
           <td>
             <strong>{{ message.heading }}</strong><br /><br />{{ message.message }}
           </td>
