@@ -343,7 +343,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     warning_heading = "Data conversion unsuccessful - 1 Error has been found"
 
-    conversion_title = browser.find_element(By.ID, "conversion-title")
+    conversion_title = browser.find_element(By.ID, "conversion-errors")
     conversion_title_text = conversion_title.text
 
     if iserror:
@@ -541,11 +541,11 @@ def test_oneof_validation(server_url, browser, httpserver):
     ("duration_usefulness.json", [
         "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
     ], []),
-    ("duration_usefulness.json", [
-        "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
+    ("additional_fields.json", [
+        "Additional fields which do not use 360Giving Data Standard titles were found in your data.",
     ], []),
     ("multiple_fundiner_names_org_ids.json", [
-        "added an additional name for an existing Funding Org"
+        "introduced an additional name for an existing Funding Org"
     ], []),
 ])
 def test_quality_checks(server_url, browser, httpserver, source_filename, expected_texts, unexpected_texts):

@@ -1769,7 +1769,7 @@ class MultiFundingOrgIdsForName(AdditionalTest):
     """Check for Funding org ids with multiple names."""
 
     check_text = {
-        "heading": mark_safe("added an additional name for an existing Funding Org"),
+        "heading": mark_safe("introduced an additional name for an existing Funding Org"),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
@@ -1894,10 +1894,13 @@ def create_grant_dates_dict(grant):
     grant_dates = {}
 
     award_date = grant.grant.get("awardDate")
-    planned_start_date = grant.grant.get("plannedDates", [{}])[0].get("startDate")
-    planned_end_date = grant.grant.get("plannedDates", [{}])[0].get("endDate")
-    actual_start_date = grant.grant.get("actualDates", [{}])[0].get("startDate")
-    actual_end_date = grant.grant.get("actualDates", [{}])[0].get("endDate")
+    try:
+        planned_start_date = grant.grant.get("plannedDates", [{}])[0].get("startDate")
+        planned_end_date = grant.grant.get("plannedDates", [{}])[0].get("endDate")
+        actual_start_date = grant.grant.get("actualDates", [{}])[0].get("startDate")
+        actual_end_date = grant.grant.get("actualDates", [{}])[0].get("endDate")
+    except IndexError:
+        return {}
 
     for date_type, input_date in [
         ["award_date", award_date],

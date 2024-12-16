@@ -8,6 +8,8 @@
             "title": "test",
             "currency": "GBP",
             "description": "test",
+            "AdditionalField": "2",
+            "CheckMicOne": "two",
             "recipientOrganization": [
                 {
                     "id": "GB-323242-test",

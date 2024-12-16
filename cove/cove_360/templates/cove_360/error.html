@@ -1,23 +1,14 @@
 {% extends request.current_app_base_template %}
 {% load i18n %}
 {% block content %}
+{# fixme this template isn't getting used #}
+<h2>{{ sub_title }}</h2>
 
-<div class="panel panel-warning">
-  <div class="panel-heading">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    {{ sub_title }}
-  </div>
-  <div class="panel-body">
     {{ msg | linebreaks }}
 
     {% include 'error_extra.html' %}
-  </div>
-</div>
 
-<div class="success-button">
-  <a class="btn btn-success" href="{% if link_args %}{% url link link_args %}{% else %}{% url link %}{% endif %}" role="button">{{ link_text }}</a>
-</div>
-
+  <a class="button" href="{% if link_args %}{% url link link_args %}{% else %}{% url link %}{% endif %}" role="button">{{ link_text }}</a>
 
 
 {% endblock %}

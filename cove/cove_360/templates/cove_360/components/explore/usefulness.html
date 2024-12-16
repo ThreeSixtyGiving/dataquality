@@ -4,6 +4,10 @@
 
 <h2>Usefulness Opportunities</h2>
 
+  {% if validation_errors or additional_closed_codelist_values %}
+  <p>The data provided did not pass <a href="#validity">validation</a> therefore the usefulness of the data could not be determined.</a>
+  {% else %}
+
 {% if usefulness_checks_passed %}
   <h3>What is working well</h3>
   <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> of our usefulness checks passed.</p>
@@ -99,3 +103,4 @@
   {% else %}
    <p>No usefulness opportunities detected.</p>
   {% endif %}
+{% endif %} {#  validation failed #}

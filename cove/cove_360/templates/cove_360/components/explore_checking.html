@@ -40,7 +40,13 @@
     <div class="grid__1">
       <div class="base-card base-card--yellow">
         <div class="base-card__content">
-          <h2 class="base-card__title">{{quality_accuracy_checks_count}}</h2>
+          <h2 class="base-card__title">
+            {% if validation_and_closed_codelist_errors_count %}
+            0
+            {% else %}
+            {{quality_accuracy_checks_count}}
+            {% endif %}
+          </h2>
           <p class="base-card__text">Potential accuracy issue</p>
         </div>
       </div>
@@ -49,7 +55,13 @@
     <div class="grid__1">
       <div class="base-card base-card--teal">
         <div class="base-card__content">
-          <h2 class="base-card__title">{{usefulness_checks_count }}</h2>
+          <h2 class="base-card__title">
+            {% if validation_and_closed_codelist_errors_count %}
+            0
+            {% else %}
+            {{usefulness_checks_count }}
+            {% endif %}
+          </h2>
           <p class="base-card__text">Usefulness opportunities</p>
         </div>
       </div>
@@ -86,7 +98,7 @@
         href="#accuracy"
         id="accuracy-tab-link"
       >
-        {% trans "Accuracy" %} ({{quality_accuracy_checks_count}})
+        {% trans "Accuracy" %} ({% if validation_and_closed_codelist_errors_count %}0{% else %}{{quality_accuracy_checks_count}}{% endif %})
       </a>
     </span>
 
@@ -96,8 +108,8 @@
         href="#usefulness"
         id="usefulness-tab-link"
       >
-        {% trans "Usefulness" %} ({{usefulness_checks_count}})
-      </a>
+      {% trans "Usefulness" %} ({% if validation_and_closed_codelist_errors_count %}0{% else %}{{usefulness_checks_count }}{% endif %})
+          </a>
     </span>
   </div>
 
