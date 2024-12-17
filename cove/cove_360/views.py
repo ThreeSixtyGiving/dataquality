@@ -13,7 +13,7 @@ from cove.input.models import SuppliedData
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from django.utils.html import format_html, mark_safe
+from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
 

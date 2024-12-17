@@ -47,4 +47,3 @@ def multiply(a, b):
         return f"{(a*b):.1f}"
 
     return int(round(res))
-
