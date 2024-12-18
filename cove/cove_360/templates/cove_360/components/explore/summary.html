@@ -38,7 +38,7 @@
 
       {% if conversion == 'flatten' %}
       <div class="box box--teal margin-top:1">
-        <h3 class="box__heading">File conversion successful</h3>
+        <h3 class="box__heading" id="file-conversion-success-heading">File conversion successful</h3>
         <p >We have converted your JSON data into spreadsheet format. See <a href="#download-and-share">Download and share</a> for more details.</p>
       </div>
       {% endif %}
@@ -74,6 +74,7 @@
   </ol>
 
   {% if conversion_warning_messages or conversion_error %}
+  <div id="conversion-errors-area">
   <hr class="separator-light">
   <h3 id="conversion-errors">
       {% trans "Data conversion unsuccessful - " %}
@@ -97,6 +98,7 @@
       </ul>
       <p>{% trans "Please resolve this error, as well as any others found, and test the data again." %} <a href="{% url 'index' %}">Load new file.</a> </p>
       {% endif %}
+  </div>
 {% endif %} {# / if conversion errors #}
 
 

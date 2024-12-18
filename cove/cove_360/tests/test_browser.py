@@ -342,20 +342,18 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
 
     warning_heading = "Data conversion unsuccessful - 1 Error has been found"
 
-    conversion_title = browser.find_element(By.ID, "conversion-errors")
-    conversion_title_text = conversion_title.text
-
     if iserror:
+        conversion_title_text = browser.find_element(By.ID, "conversion-errors").text
         if flatten_or_unflatten == 'flatten':
             assert warning_heading in conversion_title_text
         else:
+            # why does this repeat the above..
             assert warning_heading in conversion_title_text
-        assert warning_args[0] in browser.find_element(By.ID, "conversion-area").text
+        assert warning_args[0] in browser.find_element(By.ID, "conversion-errors-area").text
     else:
         if flatten_or_unflatten == 'flatten':
-            assert warning_heading not in conversion_title_text
-        else:
-            assert warning_heading not in conversion_title_text
+            success_title_text = browser.find_element(By.ID, "file-conversion-success-heading").text
+            assert "File conversion successful" in success_title_text
 
 
 @pytest.mark.parametrize(('source_filename'), [

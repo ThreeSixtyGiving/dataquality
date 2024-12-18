@@ -41,8 +41,8 @@
       <div class="base-card base-card--yellow">
         <div class="base-card__content">
           <h2 class="base-card__title">
-            {% if validation_and_closed_codelist_errors_count %}
-            0
+            {% if validation_and_closed_codelist_errors_count > 0 %}
+            ?
             {% else %}
             {{quality_accuracy_checks_count}}
             {% endif %}
@@ -56,8 +56,8 @@
       <div class="base-card base-card--teal">
         <div class="base-card__content">
           <h2 class="base-card__title">
-            {% if validation_and_closed_codelist_errors_count %}
-            0
+            {% if validation_and_closed_codelist_errors_count > 0 %}
+            ?
             {% else %}
             {{usefulness_checks_count }}
             {% endif %}
@@ -98,7 +98,7 @@
         href="#accuracy"
         id="accuracy-tab-link"
       >
-        {% trans "Accuracy" %} ({% if validation_and_closed_codelist_errors_count %}0{% else %}{{quality_accuracy_checks_count}}{% endif %})
+        {% trans "Accuracy" %} ({% if validation_and_closed_codelist_errors_count %}?{% else %}{{quality_accuracy_checks_count}}{% endif %})
       </a>
     </span>
 
@@ -108,7 +108,7 @@
         href="#usefulness"
         id="usefulness-tab-link"
       >
-      {% trans "Usefulness" %} ({% if validation_and_closed_codelist_errors_count %}0{% else %}{{usefulness_checks_count }}{% endif %})
+      {% trans "Usefulness" %} ({% if validation_and_closed_codelist_errors_count %}?{% else %}{{usefulness_checks_count }}{% endif %})
           </a>
     </span>
   </div>

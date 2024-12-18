@@ -4,11 +4,11 @@
 
 <h2>Usefulness Opportunities</h2>
 
-  {% if validation_errors or additional_closed_codelist_values %}
-  <p>Caution: The data provided did not pass <a href="#validity">validation</a> therefore the usefulness of the data could not be fully determined.</a>
+  {% if validation_and_closed_codelist_errors_count > 0 %}
+  <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the usefulness of the data could not be fully determined.</a>
   {% endif %}
 
-{% if usefulness_checks_passed %}
+{% if usefulness_checks_passed and validation_and_closed_codelist_errors_count == 0 %}
   <h3>What is working well</h3>
   <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> of our usefulness checks passed.</p>
   {% endif %}
@@ -17,7 +17,7 @@
 {% if usefulness_checks_count %}
     <h3>Potential opportunities</h3>
     {% if usefulness_checks_errored %}
-      <p>{% blocktrans %}Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}</p>
+      <p>{% blocktrans %}Some Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}</p>
     {% endif %}
 
     {% if usefulness_checks %}

@@ -4,19 +4,19 @@
 
   <h2>Data Accuracy</h2>
 
-  {% if validation_errors or additional_closed_codelist_values %}
-  <p>Caution: The data provided did not pass <a href="#validity">validation</a> therefore the accuracy of the data could not be fully determined.</a>
+  {% if validation_and_closed_codelist_errors_count > 0 %}
+  <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the accuracy of the data could not be fully determined.</a>
   {% endif %}
 
-  {% if quality_accuracy_checks_passed %}
+  {% if quality_accuracy_checks_passed and validation_and_closed_codelist_errors_count == 0 %}
   <h3>What is working well</h3>
   <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> of our data accuracy checks passed.</p>
   {% endif %}
 
 
   {% if quality_accuracy_errored %}
-   <p>{% blocktrans %}Quality accuracy checks failed due to an issue with the data. Fix some <a href="#validity">validation</a> errors first.{% endblocktrans %}</p>
-  {% else %}
+   <p>{% blocktrans %}Some Quality Accuracy checks failed due to an issue with the data. Fix some <a href="#validity">validation</a> errors first.{% endblocktrans %}</p>
+  {% endif %}
 
   {% if quality_accuracy_checks %}
   <h3>Potential issues</h3>
@@ -87,5 +87,3 @@
 {% endif %}
 {% endwith %}
 {% endfor %}
-
-{% endif %} {# Quality accuracy errored #}

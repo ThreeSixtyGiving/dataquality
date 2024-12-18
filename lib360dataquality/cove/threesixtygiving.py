@@ -1785,6 +1785,10 @@ class MultiFundingNamesForOrgId(AdditionalTest):
         self.funding_organisation_names = {}
 
     def process(self, grant, path_prefix):
+        # Some test data doesn't have the full valid grant
+        if "fundingOrganization" not in grant:
+            return
+
         for num, organisation in enumerate(grant["fundingOrganization"]):
             org_id = organisation["id"]
             name = organisation["name"]
@@ -1807,8 +1811,6 @@ class MultiFundingNamesForOrgId(AdditionalTest):
 
         self.heading = self.format_heading_count(self.check_text["heading"])
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
-
-
 
 
 # Default tests run in CoVE, these are also the base list
