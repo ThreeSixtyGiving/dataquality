@@ -1,0 +1,120 @@
+{% load i18n %}
+
+{% trans 'Converted from Original' as converted %}
+{% trans 'Original' as original %}
+{% trans 'Excel Spreadsheet (.xlsx)' as xlsx %}
+{% trans 'OpenDocument Spreadsheet (.ods)' as ods %}
+{% trans 'CSV Spreadsheet (.csv)' as csv %}
+{% trans 'Excel Spreadsheet (.xlsx) with titles' as xlsx_titles %}
+{% trans 'OpenDocument Spreadsheet (.ods) with titles' as ods_titles %}
+{# Translators: JSON probably does not need a transalation: http://www.json.org/ #}
+{% trans 'JSON' as JSON %}
+{% trans 'XML' as XML %}
+<h2>{% trans "Submit your data" %}</h2>
+
+{% if validation_and_closed_codelist_errors_count > 0 %}
+<div class="base-card base-card--red margin-bottom:2">
+  <div class="base-card__content">
+    <h2 class="base-card__title">
+      {{validation_and_closed_codelist_errors_count}}
+    </h2>
+    <p class="base-card__text">Validity errors to fix before submitting</p>
+  </div>
+</div>
+
+{% endif %}
+
+{% if data_status.can_publish %}
+<p>{% trans "Submitting for: " %}<strong>{{publisher.name}}</strong></p>
+<p><i class="material-icons table--true">check</i>{% trans "The data was checked and can now be submitted to the 360Giving Data Registry." %}</p>
+<p>
+  {% trans "Click the 'Submit your file' to fill out the 360Giving data file submission form. " %}
+  <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/" >{% trans "Guidance about using the submission form." %}</a>
+</p>
+<a class="button button--teal button--solid" id="sf-form-link" href="https://d24000000jfkieay.my.site.com/dda/s/?id={{data_status.supplied_data.id}}">
+  Submit your file
+</a>
+{% endif %} {# Data passed, Domain not recognised/approved #}
+{% if data_status.passed and not data_status.can_publish %}
+<p>
+  {% blocktrans %} Sorry you aren't able to submit this file because the domain
+  name of the website hosting your file ({{source_url_domain}}) is not
+  authorised for publishing 360Giving data. {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %} Please email 360Giving Helpdesk via
+  <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>
+  with the link to the file you want to submit to the Data Registry.
+  {% endblocktrans %}
+</p>
+{% endif %}
+{# Validation failed #} {% if not data_status.passed %}
+<p>
+  {% blocktrans %}Sorry you aren't able to submit this file because it is not
+  valid 360Giving data.{% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %} Follow the feedback in the Data Quality Tool to make the amendments needed to
+  your data. Once your data passes the Data Quality tool checks, upload the
+  updated file to your website and then restart the 360Giving data file
+  submission process. The data did not pass the checks and cannot be published.
+  See results below. {% endblocktrans %}
+</p>
+
+<p><a href="{% url "results" data_uuid %}?new-mode=checks">Open the file in Data Quality Tool to see validation errors.</a></p>
+{% endif %}
+
+<div class="spacer-3"></div>
+
+{% comment %} TODO no longer needed?
+
+<style scoped>
+    table {
+      width: 100%;
+    }
+
+    a[disabled] {
+      pointer-events: none;
+      opacity: 0.5! important;
+    }
+</style>
+
+
+
+<h1 id="report">Report</h1>
+{% include "cove_360/components/explore/summary.html" %}
+<hr />
+{% include "cove_360/components/explore/validity.html" %}
+<hr />
+{% include "cove_360/components/explore/accuracy.html" %}
+<hr />
+{% include "cove_360/components/explore/usefulness.html" %}
+#}
+{% endcomment %}
+
+<script>
+  window.addEventListener('load', function () {
+    const selfPublishEnabled = '{{ data_status.publisher.self_publish.enabled }}';
+    const dataPassed = '{{ data_status.passed }}';
+
+    let publisherValidation, dataValidation;
+
+    if (selfPublishEnabled === 'True') {
+      publisherValidation = 'publishing-enabled';
+    } else {
+      publisherValidation = 'publishing-disabled';
+    }
+
+    if (dataPassed === 'True') {
+      dataValidation = 'data-valid';
+    } else {
+      dataValidation = 'data-invalid';
+    }
+
+    const validation = `${publisherValidation}-${dataValidation}`;
+    const source = '{{ source_url }}';
+
+    _paq.push(['trackEvent', 'Status', validation, source]); // eslint-disable-line no-undef
+    _paq.push(['trackPageView']); // eslint-disable-line no-undef
+  });
+</script>

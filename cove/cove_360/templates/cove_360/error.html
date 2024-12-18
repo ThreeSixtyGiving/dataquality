@@ -1,0 +1,21 @@
+{% extends request.current_app_base_template %}
+{% load i18n %}
+{% block content %}
+{# fixme this template isn't getting used #}
+<h2>{{ sub_title }}</h2>
+
+    {{ msg | linebreaks }}
+
+    {% include 'error_extra.html' %}
+
+  <a class="button" href="{% if link_args %}{% url link link_args %}{% else %}{% url link %}{% endif %}" role="button">{{ link_text }}</a>
+
+
+{% endblock %}
+
+{% block extrapiwik %}
+
+{% if piwik.dimension_map.page_type %}
+_paq.push(['setCustomDimension', {{piwik.dimension_map.page_type}}, 'caught error']);
+{% endif %}
+{% endblock %}

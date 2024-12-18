@@ -61,6 +61,23 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     cached_context = cache.get(pk)
 
     if cached_context and not request.POST.get("flatten"):
+
+        if request.GET.get("new-mode"):
+            try:
+                db_data = SuppliedData.objects.get(pk=pk)
+                data_params = json.loads(db_data.parameters)
+                del data_params["self_publishing"]
+                db_data.parameters = json.dumps(data_params)
+                db_data.save()
+                data_status, dsc = SuppliedDataStatus.objects.get_or_create(
+                    supplied_data=db_data,
+                )
+                cached_context["data_status"] = data_status
+                cache.set(pk, cached_context)
+
+            except KeyError:
+                pass
+
         print("Cache hit")
         return render(request, template, cached_context)
 
@@ -82,6 +99,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             # bail out early so user doesn't have to wait for validation to complete
             return render(request, "cove_360/publisher_not_found.html", context)
         data_status._publisher = json.dumps(publisher)
+        context["submission_tool"] = True
         context["publisher"] = publisher
 
     lib_cove_config = LibCoveConfig()
@@ -163,11 +181,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                 re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
             )
 
-    # Experimental to test performance impacts
-    # Note False will currently leave the grants table in the UI empty
-    do_grants_display = True
-
-    if do_grants_display and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    if settings.GRANTS_TABLE and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}
@@ -179,6 +193,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     else:
         context['grants'] = []
         context['metadata'] = {}
+        context["json_data"] = {}
 
     context['first_render'] = not db_data.rendered
     if not db_data.rendered:
@@ -189,9 +204,51 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     data_status.passed = context['validation_errors_count'] == 0
     data_status.save()
 
-    cache.set(pk, context)
+    import pprint
+    pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
 
+    try:
+        context["usefulness_categories"] = set([message["category"] for message, a, b in context["usefulness_checks"]])
+    except TypeError:
+        # if no usefulness_checks the iteration will fail
+        context["usefulness_categories"] = []
+
+    try:
+        context["quality_accuracy_categories"] = set([message["category"] for message, a, b in context["quality_accuracy_checks"]])
+    except TypeError:
+        # if no quality quality_accuracy categories the iteration will fail
+        context["quality_accuracy_categories"] = []
+
+    try:
+        context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])
+    except Exception:
+        context["quality_accuracy_errored"] = True
+
+    try:
+        context["usefulness_checks_passed"] = create_passed_tests_context_data(context["usefulness_checks"], TEST_CLASSES["usefulness"])
+    except Exception:
+        context["usefulness_errored"] = True
+
+    cache.set(pk, context)
     return render(request, template, context)
+
+
+def create_passed_tests_context_data(failed_tests, available_tests):
+    """ Creates a list of test that have passed """
+
+    passed_tests_names = [test[0]["type"] for test in failed_tests]
+    passed_test_case_headings = []
+
+    for test in available_tests:
+        if test.__name__ in passed_tests_names:
+            continue
+        # We instantiate the test with no data to be able to utilise the heading formatting code
+        # TODO this may no longer be needed
+        # passed_test_case = test(grants=[], aggregates={"count": 0, "recipient_individuals_count": 0})
+        # passed_test_case_headings.append(mark_safe(passed_test_case.format_heading_count(test.check_text["heading"])))
+        passed_test_case_headings.append(test.__name__)
+
+    return passed_test_case_headings
 
 
 def common_errors(request):

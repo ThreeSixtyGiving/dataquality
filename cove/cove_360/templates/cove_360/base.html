@@ -1,120 +1,90 @@
-{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 
-{% block banner %}
-{% endblock banner %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta property="og:title" content="360Giving Data Quality Tool" />
+    <meta property="og:description"
+      content="360Giving Data Quality tool helps publishers to check their data conforms to the 360Giving Data Standard and submit the data for publishing." />
+    <meta name="description"
+      content="360Giving Data Quality tool helps publishers to check their data conforms to the 360Giving Data Standard and submit the data for publishing." />
 
-{% block heading %}
-  <div class="row">
-    <div class="col-md-5">
-      <a id="360_giving_logo" href="{% url 'index' %}">
-        <img src="{% static 'dataexplore/360-giving-logo.svg' %}" alt="360Giving Logo" width="270"/>
-      </a>
-    </div>
-    <div class="col-md-5">
-      <div class="title360"><a href="{% url 'index' %}">Data Quality Tool</a></div>
-      <div>Convert, Validate, Explore <a class="underline" title="Go to 360Giving home page" href="https://www.threesixtygiving.org/">360Giving</a> Data</div>
-    </div>
-  </div>
-{% endblock %}
+    <title>360Giving Data {% if submission_tool %}Submission{% else %}Quality{% endif %} Tool</title>
 
+    <link rel="shortcut icon" href="{% static 'dataexplore/images/favicon/favicon.ico' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}?v={{request.tag}}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/extra.css' %}?v={{request.tag}}">
+  </head>
 
-{% block language_select %}{% endblock %}
+  <body>
+    <div class="layout layout--single-column">
+      <div class="top-bar">
+        <nav class="top-bar__menu contextual-menu">
+          <ul>
+            <li class="contextual-menu__item">
+              <a class="contextual-menu__button" href="{% url 'index' %}">Data Quality Tool</a>
+            </li>
+            <li class="contextual-menu__item">
+              <a class="contextual-menu__button" href="{% url 'publishing' %}">Data Submission Tool</a>
+            </li>
+            <li class="contextual-menu__item">
+              <a class="contextual-menu__button" href="https://standard.threesixtygiving.org/">360 Giving Standard</a>
+            </li>
 
-{% block strapline %}{% endblock %}
+          </ul>
+        </nav>
 
-{% block bootstrap_css %}
-  <link rel="shortcut icon" href="{% static 'dataexplore/images/favicon/favicon.ico' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/main.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/fonts/tick/tick.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'dataexplore/css/bootstrap-360.css' %}">
-  <noscript>
-    <style>
-      .collapse {display: initial !important;}
-      .glyphicon-collapse-down {display: none !important;}
-    </style>
-  </noscript>
-  <style>
-    /* hack to remove footer from base.html from lib-cove-web */
-    #footer { display: none; }
-  </style>
-{% endblock %}
+        <div class="off-canvas-menu" aria-hidden>
+          <button class="off-canvas-menu__trigger"><i class="material-icons">close</i></button>
+          <nav>
+            <ul class="off-canvas-menu__contextual">
+              <li class="off-canvas-menu__item">
+                <a class="" href="/">Data Quality Tool</a>
+              </li>
+              <li class="off-canvas-menu__item">
+                <a class="" href="{% url "publishing" %}" title="Data Submission Tool">Data Submission Tool</a>
+                <a class="" href="https://standard.threesixtygiving.org/">360 Giving Standard</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
 
+      <header class="layout__header">
+        <div class="hero-section">
+          <div class="wrapper">
+            <div class="hero hero--orange">
+              <div class="hero__column hero__logo">
+                <a href="/"><img src="{% static 'dataexplore/images/360-giving-logo.svg' %}" alt="360 Giving"></a>
+              </div>
+              <div class="hero__column hero__lead">
+                <h2 class="hero__title">Data {% if submission_tool %}Submission{% else %}Quality{% endif %} Tool</h2>
+                <p class="hero__blurb">{% if submission_tool %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% else %}Convert, Validate, Explore 360 Giving Data.{% endif %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="spacer-1"></div>
+      <div class="layout__content">
+        {% block content %}
+        {% endblock %}
+      </div>
 
-{% block bottomcontent1 %}
+      {% if DEBUG or DISABLE_COOKIE_POPUP %}
+      <!-- cookie popup disabled by debug={{DEBUG}} OR DISABLE_COOKIE_POPUP={{DISABLE_COOKIE_POPUP}} -->
+      {% else %}
+      {% include "cove_360/components/cookie_consent.html" %}
+      {% endif %}
 
-<div class="panel panel-default">
-  <div class="panel-body">
-    <h2 class="heading-in-panel" ><small>{% blocktrans %}How to check your data{% endblocktrans %}</small></h2>
-    {% comment %}Translators: Paragraph that describes the application{% endcomment %}
-    <p>{% blocktrans %}Upload, paste or provide a link to data using the 360Giving Data Standard format, and this application will check whether it is valid 360Giving data, and provide feedback so that you can check for errors and see ways to improve its quality.{% endblocktrans %}</p>
-    <p>{% blocktrans %}The tool will convert between JSON, Excel and CSV formats, allowing you to download the original file, and the converted versions.{% endblocktrans %}</p>
-    <p>{% blocktrans %}This tool <strong>will</strong>: {% endblocktrans %}</p>
-    <p class="icon-indent"><span class="font-tick tick"></span>{% blocktrans %} Check your data is valid.{% endblocktrans %}</p>
-    <p>{% blocktrans %}The term ‘valid‘ means the data includes the 10 core fields and the information has all the correct data formatting that is required by 360Giving Data Standard. When it passes these checks, you will know that it is formatted for use alongside other valid 360Giving data and can be included in 360Giving tools, such as <a href="https://grantnav.threesixtygiving.org/">GrantNav</a> and <a href="https://insights.threesixtygiving.org/">360Insights</a>.{% endblocktrans %}</p>
-    <p>{% blocktrans %}It <strong>will not</strong>: {% endblocktrans %}</p>
-    <p class="icon-indent"><span class="font-tick cross"></span>{% blocktrans %} Check your data is accurate.{% endblocktrans %}</p>
-    <p class="icon-indent"><span class="font-tick cross"></span>{% blocktrans %} Check the data against your own open data policy.{% endblocktrans %}</p>
-    <p>{% blocktrans %} This means there may be further checks you need to carry out to make sure the information is accurate, and that the data does not include information that is unsuitable for publishing as open data. Read more about <a href="https://standard.threesixtygiving.org/en/latest/guidance/data-protection/">what to consider when publishing open grants data.</a>{% endblocktrans %}</p>
-    {% if request.path == "/" %}
-      <h4>{% blocktrans %}Further guidance{% endblocktrans %}</h4>
-      <p>{% blocktrans %}Read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.{% endblocktrans %}</p>
-      <p style="display: inline">{% blocktrans %}To preview how this tool works, try{% endblocktrans %}</p>
-      <form method="POST" action="" style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden" name="source_url" value="https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true">
-        <input type="submit" style="padding:0" id="load-sample-data-btn" class="btn-link" value="{% blocktrans %}loading some sample data.{% endblocktrans%}" >
-      </form>
-    {% endif %}
-    <h3><small>{% blocktrans %}Formats{% endblocktrans %}</small></h3>
-    <p>{% blocktrans %}The application accepts data in the formats set out in the {% endblocktrans %}<a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#reference">360Giving Data Standard guidance</a>.</p>
-    <p>{% blocktrans %}Acceptable files are: {% endblocktrans %}</p>
-    <ul>
-      <li>{% blocktrans %}Summary Spreadsheet - OpenDocument Spreadsheet, <a href="https://threesixtygiving-standard.readthedocs.io/en/latest/_static/summary-table/360-giving-schema-titles.xlsx">Excel</a>, <a href="https://standard.threesixtygiving.org/en/latest/technical/templates-csv/">CSV</a> (UTF-8, Windows-1252 and ISO-8859-1 encodings supported){% endblocktrans %}</li>
-      <li>{% blocktrans %}JSON built to the <a href="https://standard.threesixtygiving.org/en/latest/reference/#giving-json-schemas">360Giving JSON schema</a> (UTF-8 encoding supported){% endblocktrans %}</li>
-      <li>{% blocktrans %}<a href="https://threesixtygiving-standard.readthedocs.io/en/latest/_static/multi-table/360-giving-schema-fields.xlsx">Multi-table data package - Excel</a>{% endblocktrans %}</li>
-    </ul>
-  </div>
-</div>
+      {% include "cove_360/components/footer.html" %}
 
-<div class="panel panel-default">
-  <div class="panel-body">
-    <h2 class="heading-in-panel"><small>{% blocktrans %}How to submit your data{% endblocktrans %}</small></h2>
-    <p>{% blocktrans %}
-      Once 360Giving data has been published by an organisation, the file must be added to the 360Giving Data Registry so that the data to appear in 360Giving’s tools such as GrantNav and 360Insights.
-      {% endblocktrans %}
-    </p>
-    <p>{% blocktrans %}
-      Publishers of 360Giving data can add their valid 360Giving data files to the Data Registry using the 360Giving data file submission form.
-      {% endblocktrans %}
-    </p>
-    <p>{% blocktrans %}The submission form allows users to:{% endblocktrans %}</p>
-    <ul>
-      <li>Update an existing Data Registry entry with an updated version of an existing file</li>
-      <li>Add an entry for a new file to the Data Registry</li>
-    </ul>
-    <p>Only publishers with an authorised website domain can use this submission process.</p>
+  </body>
 
-    <h3>Authorised domains</h3>
-    <p>By default, the website domain used by existing publishers to host their 360Giving data files will be authorised.</p>
-    <p>Organisations that publish 360Giving data for the first time can also use the 360Giving data file submission process once they have registered their website domain with 360Giving. To register to your website domain prior to publishing for the first time please contact 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>.</p>
-   <p>Publishers can opt out of authorising their website domain and using the 360Giving data file submission process on request.</p>
-    <h4>Which domains are not authorised?</h4>
-    <p>Data files published on multi-user hosting platforms like open data repositories, or file sharing services Google Sheets or Dropbox, cannot be authorised for use with the 360Giving data file submission process because the domain cannot be authorised as being unique to a particular organisation.</p>
-    <p>Files published in this way can be added to the 360Giving Data Registry by emailing 360Giving Helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a>.</p>
-    <h4>Further guidance</h4>
-    <p>Read our full guidance on <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/">how to use the 360Giving data submission process</a>.</p>
-
-  </div>
-</div>
-{% endblock %}
-
-{% block bottomcontent2 %}
-
-{% if not DEBUG %}
-{% include "cove_360/cookie_consent.html" %}
-{% endif %}
-{% include "cove_360/more_info.html" %}
-{% include "cove_360/footer.html" %}
-{% endblock %}
+  <script src="{% static 'dataexplore/js/tab-switcher.js' %}?v={{request.tag}}"></script>
+  <script src="{% static 'dataexplore/js/modals.js' %}?v={{request.tag}}"></script>
+</html>

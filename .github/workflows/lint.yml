@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - name: Setup python
@@ -11,11 +11,9 @@ jobs:
       with:
         python-version: 3.8
         architecture: x64
-    - uses: actions/cache@v1
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements_dev.txt') }}-${{ matrix.python-version }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
     - run: pip install -r requirements_dev.txt
     - run: flake8
+
+    - run: npm install
+    - run: ./node_modules/eslint/bin/eslint.js --ext .js --ext .html cove/cove_360/templates/**
+    - run: ./node_modules/eslint/bin/eslint.js --ext .js --ext .html cove/cove_360/static/dataexplore/js/**

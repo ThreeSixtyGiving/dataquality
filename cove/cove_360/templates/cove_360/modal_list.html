@@ -1,0 +1,14 @@
+<div class="modal {{className}}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal__overlay modal__trigger"></div>
+  <div class="modal__window">
+    <button class="modal__close modal__trigger" aria-label="Close" title="Close"></button>
+    <div class="modal__content">
+      <h4 class="modal-title">{{ modalTitle }}</h4>
+      <ul class="list-group">
+        {% for id in itemList %}
+           <li class="list-group-item">{{ id }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>

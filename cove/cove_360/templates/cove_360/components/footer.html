@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load static %}
+
+<footer class="footer">
+  <div class="footer__row wrapper">
+    <div class="footer__column-2 footer__branding">
+      <div class="footer__logo"><img src="{% static 'dataexplore/images/360-giving-logo-white.svg' %}" alt="360Giving"></div>
+      <p class="footer__tagline">Open data for more effective grantmaking</p>
+    </div>
+    <div class="footer__column-1 footer__social">
+      <a href="https://www.linkedin.com/company/360giving/" class="linkedin-icon"><img src="{% static 'dataexplore/images/linkedin-logo.svg' %}" alt="Find us on LinkedIn"></a>
+      <a href="https://github.com/threesixtygiving/grantnav" class="github-icon"><img src="{% static 'dataexplore/images/github-logo.svg' %}" alt="Check our Github"></a>
+    </div>
+  </div>
+
+  <div class="footer__row wrapper">
+    <div class="footer__column-2 footer__section medium-up">
+      <h3 class="footer__heading">Links</h3>
+      <ul>
+          <li>
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+	        <li>
+	          <a href="{% url 'common_errors' %}">Common Errors</a>
+          </li>
+          <li>
+            <a href="https://threesixtygiving.org/">360Giving</a>
+          </li>
+      </ul>
+    </div>
+
+    <div class="footer__column-2 footer__section medium-up">
+      <h3 class="footer__heading">Other Products</h3>
+      <ul></ul>
+        <li><a href="https://standard.threesixtygiving.org" title="360 Giving Data Standard">Data Standard</a></li>
+        <li><a href="https://qualitydashboard.threesixtygiving.org/">Quality Dashboard</a></li>
+        <li><a href="https://grantnav.threesixtygiving.org/">GrantNav</a></li>
+        <li><a href="https://grantvis.threesixtygiving.org">GrantVis</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__column-3 footer__section">
+      <h3 class="footer__heading">Data Quality Tool</h3>
+      <p>The Data Quality Tool is a free tool which converts data provided using the 360Giving Data Standard format between JSON, Excel and CSV formats, checks that the data is valid and provides additional information about its usefulness or quality.</p>
+      <p>If you have questions or feedback, please <a href="https://github.com/threesixtygiving/dataquality/issues">raise an issue in Github</a>.</p>
+    </div>
+
+    <div class="footer__column-3 footer__section">
+      <h3 class="footer__heading">360Giving</h3>
+      <p>We help organisations openly publish grants data, and help people use it to improve charitable giving.</p>
+
+      <p><a href="https://threesixtygiving.org">Find out more about 360Giving</a>.</p>
+
+    </div>
+  </div>
+
+  <div class="wrapper footer__small-print">
+      <p>
+        <strong>360 Giving</strong> (Trading as <strong>360Giving</strong>) is a registered charity <a href="https://register-of-charities.charitycommission.gov.uk/charity-details/?regId=1164883&subId=0">1164883</a> and a registered company <a href="https://beta.companieshouse.gov.uk/company/09668396">09668396</a>.
+         <br>Registered address: 360 Giving, c/o Sayer Vincent, 110 Golden Lane, London, EC1Y 0TG.
+      </p>
+  </div>
+
+  <div class="footer__row wrapper footer__small-print">
+
+    <div class="footer__column-2">
+      <p>
+        © Copyright 2021 360Giving, licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+        Data Quality Tool source code is free software, licensed under the terms of the <a href="https://www.gnu.org/licenses/">GNU Affero General Public License</a>.
+        Running version <a href="https://github.com/threesixtygiving/dataquality/tree/{{ request.tag }}">{{ request.tag }}</a>.
+      </p>
+    </div>
+    <div class="footer__column-2 footer__policy-links">
+      <p><a href="https://www.threesixtygiving.org/privacy/">Privacy Notice</a> | <a href="{% url 'terms-conditions' %}">Terms & Conditions</a> | <a href="https://www.threesixtygiving.org/cookie-policy/">Cookie Policy</a> | <a href="https://www.threesixtygiving.org/take-down-policy/">Take Down Policy</a></p>
+    </div>
+  </div>
+</footer>
