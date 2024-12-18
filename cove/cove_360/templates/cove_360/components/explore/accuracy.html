@@ -81,9 +81,9 @@
 {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
 {% with msg=message.heading %}
 {% if file_type == 'json' %}
-{% cove_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
 {% else %}
-{% cove_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
 {% endif %}
 {% endwith %}
 {% endfor %}

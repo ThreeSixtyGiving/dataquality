@@ -226,9 +226,9 @@
     {% for message, json_location, spreadsheet_location in additional_checks %}
       {% with msg=message.heading %}
         {% if file_type == 'json' %}
-          {% cove_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+          {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
         {% else %}
-          {% cove_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+          {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
         {% endif %}
       {% endwith %}
     {% endfor %}
