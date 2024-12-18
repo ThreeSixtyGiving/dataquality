@@ -544,8 +544,8 @@ def test_oneof_validation(server_url, browser, httpserver):
     ("additional_fields.json", [
         "Additional fields which do not use 360Giving Data Standard titles were found in your data.",
     ], []),
-    ("multiple_fundiner_names_org_ids.json", [
-        "introduced an additional name for an existing Funding Org"
+    ("multiple_funder_names_org_ids.json", [
+        "introduced an additional Funding Org:Identifier for an existing Funding Org:Name"
     ], []),
 ])
 def test_quality_checks(server_url, browser, httpserver, source_filename, expected_texts, unexpected_texts):

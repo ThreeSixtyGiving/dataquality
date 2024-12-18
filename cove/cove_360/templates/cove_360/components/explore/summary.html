@@ -161,6 +161,8 @@
       {% blocktrans count n_recipients_individuals=grants_aggregates.recipient_individuals_count|default:0 %}<strong>{{n_recipients_individuals}} to a recipient individual </strong>{% plural %}<strong>{{n_recipients_individuals}} to recipient individuals</strong>{% endblocktrans %}.
     </li>
     <li>{% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %} The grants are made by <strong>{{n_funders}}</strong> funding organisation{% plural %} The grants are made by <strong>{{n_funders}}</strong> funding organisations{% endblocktrans %}.</li>
+
+    {% if grants_aggregates.min_award_date %}
     <li>
       {% blocktrans count n_grants=grants_aggregates.count|default:0 %}The grant was awarded {% plural %}The grants were awarded {% endblocktrans %}
       {% if grants_aggregates.min_award_date == grants_aggregates.max_award_date %}
@@ -169,6 +171,7 @@
       {% blocktrans with start_date=grants_aggregates.min_award_date end_date=grants_aggregates.max_award_date %}between <strong>{{start_date}}</strong> and <strong>{{end_date}}</strong>.{% endblocktrans %}
       {% endif %}
     </li>
+    {% endif %}
 
     {% if metadata.issued %}
     <li>
@@ -233,18 +236,26 @@
 
   <h4 id="identifiers">Identifiers</h4>
             {% trans "Unique grant identifiers" %}
-            {% if grants_aggregates.unique_ids|length %}<button class="button button--small" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">{% endif %}
+            {% if grants_aggregates.unique_ids|length %}
+            <button class="button button--small" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">
             {{ grants_aggregates.unique_ids|length}}
-            {% if grants_aggregates.unique_ids|length %}</button> .{% endif %}
+            </button>
+            {% else %} 0{% endif %}.
+
             {% trans "Unique funder organisation identifiers" %}
-            {% if grants_aggregates.distinct_funding_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">{% endif %}
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}
+            <button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">
             {{ grants_aggregates.distinct_funding_org_identifier|length}}
-            {% if grants_aggregates.distinct_funding_org_identifier|length %}</button> .
-            {% endif %}
+            </button>
+            {% else %} 0{% endif %}.
+
             {% trans "Unique recipient organisation identifiers" %}
-            {% if grants_aggregates.distinct_recipient_org_identifier|length %}<button class="button button--small" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">{% endif %}
+            {% if grants_aggregates.distinct_recipient_org_identifier|length %}
+            <button class="button button--small" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">
             {{ grants_aggregates.distinct_recipient_org_identifier|length}}
-            {% if grants_aggregates.distinct_recipient_org_identifier|length %}</button> .{% endif %}
+            </button>
+            {% else %} 0{% endif %}.
+
 
   <h4>{% blocktrans %}Do these results look correct?{% endblocktrans %}</h4>
   <ul >

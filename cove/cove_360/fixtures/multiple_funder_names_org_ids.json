@@ -47,8 +47,8 @@
             ],
             "fundingOrganization": [
                 {
-                    "id": "GB-12345-test",
-                    "name": "Example Funder"
+                    "id": "GB-54321-test",
+                    "name": "Example Funder Limited"
                 }
             ]
         }

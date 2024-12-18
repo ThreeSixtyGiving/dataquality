@@ -429,7 +429,7 @@ def common_checks_360(
             cell_source_map,
             TEST_CLASSES[test_class_type],
             # Set ignore_errors to False for debugging checks otherwise all exceptions will pass
-            ignore_errors=True,
+            ignore_errors=False,
             return_on_error=None,
             aggregates=context["grants_aggregates"],
         )
@@ -1765,11 +1765,11 @@ class GeoCodePostcode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
-class MultiFundingOrgIdsForName(AdditionalTest):
+class MultiFundingNamesForOrgId(AdditionalTest):
     """Check for Funding org ids with multiple names."""
 
     check_text = {
-        "heading": mark_safe("introduced an additional name for an existing Funding Org"),
+        "heading": mark_safe("introduced an additional Funding Org:Identifier for an existing Funding Org:Name"),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
@@ -1782,7 +1782,7 @@ class MultiFundingOrgIdsForName(AdditionalTest):
     def __init__(self, **kw):
         super().__init__(**kw)
         #  zxy-name: { names: [] }
-        self.funding_organisation_id_name = {}
+        self.funding_organisation_names = {}
 
     def process(self, grant, path_prefix):
         for num, organisation in enumerate(grant["fundingOrganization"]):
@@ -1790,17 +1790,17 @@ class MultiFundingOrgIdsForName(AdditionalTest):
             name = organisation["name"]
 
             try:
-                names = self.funding_organisation_id_name[organisation["id"]]
+                org_ids = self.funding_organisation_names[name]
             except KeyError:
                 # initialise the data
-                names = [name]
-                self.funding_organisation_id_name[org_id] = names
+                org_ids = [org_id]
+                self.funding_organisation_names[name] = org_ids
 
-            if name not in names:
-                # We have a brand new name for this org id, suspicious.
-                names.append(name)
+            if org_id not in org_ids:
+                # We have a brand new org id for this funder name, suspicious.
+                org_ids.append(org_id)
                 self.json_locations.append(
-                    path_prefix + "/fundingOrganization/{}/name".format(num)
+                    path_prefix + "/fundingOrganization/{}/identifier".format(num)
                 )
                 self.count = self.count + 1
                 self.failed = True
@@ -1835,7 +1835,7 @@ TEST_CLASSES = {
         PostDatedAwardDates,
         RecipientIndDEI,
         GeoCodePostcode,
-        MultiFundingOrgIdsForName,
+        MultiFundingNamesForOrgId,
     ],
     TestType.USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
