@@ -1,22 +1,22 @@
 <!-- Matomo -->
 <script type="text/javascript">
-  var _paq = window._paq = window._paq || [];
-  {% if piwik.site_id %}
-  var siteID = {{piwik.site_id}};
-  {% endif %}
+  const _paq = window._paq = window._paq || [];
+  // {% if piwik.site_id %} // eslint-disable-line
+  const siteID = Number('{{piwik.site_id}}');
+  // {% endif %} // eslint-disable-line
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(['requireCookieConsent']); // Don't use cookies unless we have consent
   _paq.push(['setCookieDomain', '*.threesixtygiving.org']);
-  _paq.push(['setDownloadExtensions', "json|csv|xlsx"]);
+  _paq.push(['setDownloadExtensions', 'json|csv|xlsx']);
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://analytics.threesixtygiving.org/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    if(!siteID) throw new Error("siteID not set");
+  (function () {
+    const u = 'https://analytics.threesixtygiving.org/';
+    _paq.push(['setTrackerUrl', u + 'matomo.php']);
+    if (!siteID) throw new Error('siteID not set');
     _paq.push(['setSiteId', siteID]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    const d = document; const g = d.createElement('script'); const s = d.getElementsByTagName('script')[0];
+    g.type = 'text/javascript'; g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
   })();
 </script>
 <!-- End Matomo Code -->
@@ -30,7 +30,7 @@
         }
       }
 
-function noCookieConsent () {
+function noCookieConsent () { // eslint-disable-line no-unused-vars
   document.cookie = 'noEnhancedAnalytics=1; max-age=2592000; domain=threesixtygiving.org';
 }
 

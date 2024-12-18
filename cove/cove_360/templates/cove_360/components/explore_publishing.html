@@ -94,15 +94,18 @@
 
 <script>
   window.addEventListener('load', function () {
+    const selfPublishEnabled = '{{ data_status.publisher.self_publish.enabled }}';
+    const dataPassed = '{{ data_status.passed }}';
+
     let publisherValidation, dataValidation;
 
-    if ('{{ data_status.publisher.self_publish.enabled }}' === 'True') {
+    if (selfPublishEnabled === 'True') {
       publisherValidation = 'publishing-enabled';
     } else {
       publisherValidation = 'publishing-disabled';
     }
 
-    if ('{{ data_status.passed }}' === 'True') {
+    if (dataPassed === 'True') {
       dataValidation = 'data-valid';
     } else {
       dataValidation = 'data-invalid';
@@ -111,8 +114,7 @@
     const validation = `${publisherValidation}-${dataValidation}`;
     const source = '{{ source_url }}';
 
-    _paq.push(['trackEvent', 'Status', validation, source]);
-    _paq.push(['trackPageView']);
+    _paq.push(['trackEvent', 'Status', validation, source]); // eslint-disable-line no-undef
+    _paq.push(['trackPageView']); // eslint-disable-line no-undef
   });
-
 </script>

@@ -447,7 +447,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
             "message": 'Common causes of this error notice are missing or extra digits, typos or incorrect values such as text appearing in this field. UK Company numbers are typically 8 digits, for example <span class="highlight-background-text">09876543</span> or sometimes start with a 2 letter prefix, <span class="highlight-background-text">SC123459</span>. You can check company numbers online at <a target=\"_blank\" href="https://find-and-update.company-information.service.gov.uk/">Companies House</a>. This error may also be triggered by correctly formatted non-UK company numbers, in which case this message can be ignored.',
             "type": "RecipientOrgCompanyNumber",
             "count": 1,
-            "category": TestCategories.GRANTS,
+            "category": TestCategories.ORGANISATIONS,
             "percentage": 1/TOTAL_GRANTS
         },
         ["grants/0/recipientOrganization/0/companyNumber"],
@@ -693,7 +693,7 @@ USEFULNESS_CHECKS_RESULTS = [
             "message": 'Use an external reference, such as a charity or company number, to identify a funding organisation whenever possible. Some funders do not have an official registration number that can be used. In these cases the funding organisation identifier should reuse the publisher prefix and therefore start with “360G-”. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrg360GPrefix",
             "count": 1,
-            "category": TestCategories.GRANTS,
+            "category": TestCategories.ORGANISATIONS,
             "percentage": 1/TOTAL_GRANTS,
         },
         ["grants/1/fundingOrganization/0/id"],

@@ -23,8 +23,8 @@
     const validation = publisherValidation + '-' + dataValidation;
     const source = '{{ source_url }}';
 
-    _paq.push(['trackEvent', 'Status', validation, source]);
-    _paq.push(['trackPageView']);
+    _paq.push(['trackEvent', 'Status', validation, source]); // eslint-disable-line no-undef
+    _paq.push(['trackPageView']); // eslint-disable-line no-undef
   });
 </script>
 {% endblock %}

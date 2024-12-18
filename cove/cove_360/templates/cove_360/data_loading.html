@@ -21,31 +21,27 @@
 <div class="spacer-2"></div>
 
 <script>
-
-const pollUrl = "{% url "xhr_results_ready" pk %}";
-const resultsUrl = "{% url "results" pk %}";
+const pollUrl = '{% url "xhr_results_ready" pk %}';
+const resultsUrl = '{% url "results" pk %}';
 
 // Start the results processing if it returns in time
 // If it doesn't, it will fail silently and rely on the polling mechanism
 
-(async function(){
-
-try {
-  const response = await fetch(resultsUrl);
-  if (response.ok) {
+(async function () {
+  try {
+    const response = await fetch(resultsUrl);
+    if (response.ok) {
+      window.location.href = resultsUrl;
+    } else {
+      throw Error(`Server has errored ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error fetching results:', error);
     window.location.href = resultsUrl;
-  } else {
-    throw Error(`Server has errored ${response.statusText}`);
   }
-} catch (error) {
-  console.error("Error fetching results:", error);
-  window.location.href = resultsUrl;
-}
-
 })();
 
-
-async function updateStatus() {
+async function updateStatus () {
   try {
     const response = await fetch(pollUrl);
     const data = response.json();
@@ -53,13 +49,12 @@ async function updateStatus() {
       clearInterval(poller);
       window.location.href = resultsUrl;
     }
-  } catch {
-      console.error("Error updating status:", error);
-      window.location.href = resultsUrl;
+  } catch (error) {
+    console.error('Error updating status:', error);
+    window.location.href = resultsUrl;
   }
 }
 
 const poller = setInterval(updateStatus, 5000);
-
 </script>
 {% endblock %}
