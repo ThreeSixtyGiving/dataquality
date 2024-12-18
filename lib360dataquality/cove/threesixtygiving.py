@@ -429,7 +429,7 @@ def common_checks_360(
             cell_source_map,
             TEST_CLASSES[test_class_type],
             # Set ignore_errors to False for debugging checks otherwise all exceptions will pass
-            ignore_errors=False,
+            ignore_errors=True,
             return_on_error=None,
             aggregates=context["grants_aggregates"],
         )

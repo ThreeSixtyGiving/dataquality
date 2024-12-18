@@ -5,8 +5,8 @@
   <h2>Data Accuracy</h2>
 
   {% if validation_errors or additional_closed_codelist_values %}
-  <p>The data provided did not pass <a href="#validity">validation</a> therefore the accuracy of the data could not be determined.</a>
-  {% else %}
+  <p>Caution: The data provided did not pass <a href="#validity">validation</a> therefore the accuracy of the data could not be fully determined.</a>
+  {% endif %}
 
   {% if quality_accuracy_checks_passed %}
   <h3>What is working well</h3>
@@ -89,4 +89,3 @@
 {% endfor %}
 
 {% endif %} {# Quality accuracy errored #}
-{% endif %} {# validation failed #}
