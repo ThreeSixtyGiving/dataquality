@@ -1,0 +1,19 @@
+{% if sentry_dsn %}
+
+    <h3>Identifying and being alerted to software errors</h3>
+    When an error occurs on our site, we record details about the visit that caused it. We use <a href="https://sentry.io/welcome/">Sentry</a> for this.
+
+    <p>Data we collect:<ul>
+    <li>Your IP address</li>
+    <li>User agent (information about the OS and browser that you use)</li>
+    <li>Referrer (what page you arrived at one of our web pages from)</li>
+    </ul>We do not use this data to personally identify individuals, but it is possible that it could be used to do so, particularly if combined with other datasets.</p>
+
+    <p>Data processors: {% if app != 'cove_iati' %}Open Data Services Co-operative Limited, {% endif %}Sentry (Functional Software, Inc.)</p>
+
+    {% include "terms_tracker_data_controller_international.html" %}
+
+    <p>Data is transferred to Functional Software, Inc. who are based in the USA.</p>
+    <p>The data is kept for 90 days.</p>
+
+{% endif %}

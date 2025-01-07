@@ -1,0 +1,37 @@
+
+<h2>How we use cookies</h2>
+<p>A cookie is a small file which asks permission to be placed on your computer's hard drive. Once you agree, the file is added and the cookie helps analyse web traffic or lets you know when you visit a particular site.</p>
+
+<p>Cookies allow web applications to respond to you as an individual. The web application can tailor its operations to your needs, likes and dislikes by gathering and remembering information about your preferences. A cookie in no way gives us access to your computer or any information about you, other than the data you choose to share with us.</p>
+
+<p>You can choose to accept or decline cookies. Most web browsers automatically accept cookies, but you can usually modify your browser setting to decline cookies if you prefer. This may prevent you from taking full advantage of the website.</p>
+
+<p>In this website we use cookies to:</p>
+
+<ul>
+<li>Help us analyse how our website is used.</li>
+<li>To ensure other sites can’t “forge” requests.</li>
+<li>Remember your choices within the application, for your convenience.</li>
+</ul>
+
+{% include "terms_cookies_we_use.html" %}
+
+
+<p>If you do allow cookies to be used, Matomo uses 1st party cookies, set on the domain of this website. Cookies created by Matomo start with: </p>
+<ul>
+<li>_pk_ref</li>
+<li>_pk_cvar</li>
+<li>_pk_id</li>
+<li>_pk_ses</li>
+</ul>
+
+{% include "terms_cookies_links.html" %}
+
+
+<p>The application is built using <a href="https://www.djangoproject.com/">Django</a> and we use that framework to set the following cookies:</p>
+<ul>{% comment %}Translators: csrftoken and sessionid are names of cookies and do not need translation {% endcomment %}
+<li>csrftoken - (to prevent cross site scripting attacks https://docs.djangoproject.com/en/1.8/ref/csrf/#how-it-works)</li>
+<li>sessionid - (you will get this if you interact with the application, so that we can save the things you have done, e.g. select a language)"</li>
+</ul>
+
+<p>If you choose not to accept these cookies the application may not work for you.</p>
