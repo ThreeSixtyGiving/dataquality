@@ -1,0 +1,89 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+
+  <h2>Data Accuracy</h2>
+
+  {% if validation_and_closed_codelist_errors_count > 0 %}
+  <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the accuracy of the data could not be fully determined.</a>
+  {% endif %}
+
+  {% if quality_accuracy_checks_passed and validation_and_closed_codelist_errors_count == 0 %}
+  <h3>What is working well</h3>
+  <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{quality_accuracy_checks_passed|length}}</strong> of our data accuracy checks passed.</p>
+  {% endif %}
+
+
+  {% if quality_accuracy_errored %}
+   <p>{% blocktrans %}Some Quality Accuracy checks failed due to an issue with the data. Fix some <a href="#validity">validation</a> errors first.{% endblocktrans %}</p>
+  {% endif %}
+
+  {% if quality_accuracy_checks %}
+  <h3>Potential issues</h3>
+  <p class="explanation">{% blocktrans %}These checks highlight areas where your data may be incorrect or need further attention.{% endblocktrans %}</p>
+    {% blocktrans %}
+    <p>For each check we give feedback on the issue and what steps may be taken to resolve it.</p>
+    <p>Receiving this feedback does not mean the data is invalid, and it can be ignored when not relevant.</p>
+    {% endblocktrans %}
+
+  {% for category in quality_accuracy_categories %}
+  <h4>{{category}}</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{% trans 'Passed' %}</th>
+        <th>{% trans 'Check Description' %} </th>
+        <th>{% trans 'First 3 Locations' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# using regroup here would be good if we had dictionaries #}
+      {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
+      {% if message.category == category %}
+      <tr>
+        <td><i class="material-icons table--false" style="color: {% if message.percentage < 0.5 %}orange {% elif message.percentage < 0.1 %}yellow{% else %}hsl(var(--red-hsl), 1){% endif %}">close</i></td>
+        <td>
+          <strong>{{ message.heading }}</strong><br><br>{{ message.message }}
+        </td>
+        {% if file_type == 'xlsx' or file_type == 'csv' %}
+        <td style="white-space: nowrap">
+          <ul class="list-unstyled">
+            {% for location in spreadsheet_location|slice:":3" %}
+            <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
+            {% endfor %}
+            {% if spreadsheet_location|length > 3 %}
+            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}">see all</button></li>
+            {% endif %}
+          </ul>
+        </td>
+        {% else %}
+        <td>
+          <ul class="list-unstyled">
+            {% for location in json_location|slice:":3" %}
+            <li>{{location}}</li>
+            {% endfor %}
+            {% if json_location|length > 3 %}
+            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}" >see all</button></li>
+            {% endif %}
+          </ul>
+        </td>
+        {% endif %}
+      </tr>
+      {% endif %} {# category filter #}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %} {# for each category #}
+  {% else %}
+  <p>No accuracy issues found.</p>
+  {% endif %}
+
+{% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
+{% with msg=message.heading %}
+{% if file_type == 'json' %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+{% else %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+{% endif %}
+{% endwith %}
+{% endfor %}

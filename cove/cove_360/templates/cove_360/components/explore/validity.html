@@ -1,0 +1,102 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+
+    <h2>Validation
+    {% if validation_and_closed_codelist_errors_count > 0 %}
+    Failed
+    {% else %}
+    Passed
+    {% endif %}
+    </h2>
+
+      <p>
+        {% if validation_and_closed_codelist_errors_count > 0 %}
+        {% trans "Validation failed means that the data does not meet " %}
+        {% else %}
+        {% trans "Validation passed means that the data meets " %}
+        {% endif %}
+        {% blocktrans %}the requirements of the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a>.{% endblocktrans %}
+        {% blocktrans %} Making sure your data uses the standard correctly is important. Otherwise it cannot be used alongside other valid 360Giving data and cannot be included in 360Giving tools, such as GrantNav and 360Insights.{% endblocktrans %}
+      </p>
+
+    {% if extension_metadatas %}
+    <p>{% trans "The 360Giving Data Standard was extended using these extensions:" %}</p>
+    <ol>
+      {% for extension_metadata in extension_metadatas %}
+      <li><a href="{{extension_metadata.documentationUrl}}" title="{{extension_metadata.description}}">{{extension_metadata.title}} ({{extension_metadata.id}})</a></li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+
+    {% if validation_errors or additional_closed_codelist_values %}
+    <p>{% trans "The following <strong>errors</strong> are preventing your data from being valid 360Giving data. Please use the feedback below to find and resolve the issues in your file" %}</p>
+
+    {% with validation_errors=validation_errors_grouped.required error_prefix='required-' %}
+    {% if validation_errors %}
+
+      <h3>Missing Fields</h3>
+        <p >Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
+        {% include "cove_360/validation_table.html" %}
+
+
+    {% for error_json, error_extra in validation_errors %}
+    {% with error=error_json|json_decode %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% endwith %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% with validation_errors=validation_errors_grouped.format error_prefix='format-' %}
+    {% if validation_errors %}
+
+
+        <h3>Incorrect Formats</h3>
+
+
+        <p >Some or all of your entries have incorrectly formatted data.</p>
+        {% include "cove_360/validation_table.html" %}
+
+
+    {% for error_json, error_extra in validation_errors %}
+    {% with error=error_json|json_decode %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% endwith %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% if additional_closed_codelist_values %}
+
+
+        <h3>{% trans 'Codelist Errors' %}</h3>
+
+
+
+          <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
+          <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
+
+        {% with additional_codelist_values=additional_closed_codelist_values %}
+            {% include "additional_codelist_values.html" %}
+        {% endwith %}
+
+
+    {% endif %}
+    {% endif %}
+    {% with validation_errors=validation_errors_grouped.other error_prefix='other-' %}
+    {% if validation_errors %}
+
+
+        <h3>Other</h3>
+
+
+        <p >Other validation errors.</p>
+        {% include "cove_360/validation_table.html" %}
+
+
+    {% for error_json, error_extra in validation_errors %}
+    {% with error=error_json|json_decode %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+    {% endwith %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
