@@ -9,7 +9,8 @@
     "self_publish": {
       "enabled": true,
       "authorised_domains": [
-        "test-data.360dev1.vs.mythic-beasts.com"
+        "test-data.360dev1.vs.mythic-beasts.com",
+        "www.threesixtygiving.org"
       ]
     }
   }
