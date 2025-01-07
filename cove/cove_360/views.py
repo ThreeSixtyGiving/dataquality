@@ -63,6 +63,9 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     if cached_context and not request.POST.get("flatten"):
 
         if request.GET.get("new-mode"):
+            # We're swapping into DQT mode from submission, to avoid having
+            # to re-run the checks we reset/remove the submission context data
+            # which then causes the explore template to swap back to the DQT.
             try:
                 db_data = SuppliedData.objects.get(pk=pk)
                 data_params = json.loads(db_data.parameters)
@@ -73,8 +76,8 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                     supplied_data=db_data,
                 )
                 cached_context["data_status"] = data_status
+                cached_context["submission_tool"] = False
                 cache.set(pk, cached_context)
-
             except KeyError:
                 pass
 
