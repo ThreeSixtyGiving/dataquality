@@ -204,8 +204,9 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     data_status.passed = context['validation_errors_count'] == 0
     data_status.save()
 
-    import pprint
-    pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
+    # Helpful when debugging DQT
+    # import pprint
+    # pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
 
     try:
         context["usefulness_categories"] = set([message["category"] for message, a, b in context["usefulness_checks"]])
