@@ -1,139 +1,93 @@
 {% extends request.current_app_base_template %}
-{% load bootstrap3 %}
 {% load i18n %}
 
-{# For original input.html see lib-cove-web/cove/templates/input.html #}
-
-{% block precontent %}
-<div class="row">
-  <div class="col-md-8">
-    <h2>Check your data</h2>
-    <p>Upload or provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.</p>
-  </div>
-</div>
-{% endblock %}
-
-
+{% load bootstrap3 %} {# this is needed for lib-cove-web stuff #}
 {% block content %}
-<div id="loading" style="display: none"> <h3>{% trans "Loading:" %}</h3> <img class="spinner" src="//i1.wp.com/cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" alt="spinner" width="30" height="30"> </div>
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+<style scoped>
+  .tab-content input, textarea {
+    width: 100% !important;
+  }
+</style>
+
+<h2>Check your data</h2>
+<p>Upload, provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.
+To preview how this tool works, try <a id="load-sample-data-btn" href="#" onClick="document.getElementById('sample-data-form').submit()">loading some sample data</a>.</p>
+<form method="POST" action="" style="display: none;" id="sample-data-form">
+  {% csrf_token %}
+  <input type="hidden" name="source_url" value="https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true">
+  <input type="submit">
+</form>
+
+<div class="tabs">
   {% if 'upload' in input_methods %}
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-      <h4 class="panel-title">
-        <a class="accordion-toggle">
-          <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>{% trans "Upload" %}
-        </a>
-      </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-      <div class="panel-body">
-        <form method="POST" action="." enctype="multipart/form-data">{% csrf_token %}
-            {% bootstrap_form forms.upload_form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans 'Check Data' %}
-                </button>
-            {% endbuttons %}
-        </form>
-      </div>
-    </div>
-  </div>
+  <span class="tab tab--active" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#upload" id="upload-tab-link">
+      {% trans "Upload" %}
+    </a>
+  </span>
   {% endif %}
+
   {% if 'url' in input_methods %}
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingTwo" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-      <h4 class="panel-title">
-        <a class="accordion-toggle">
-          <span class="glyphicon glyphicon-link" aria-hidden="true"></span>{% trans "Link" %}
-        </a>
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse show-open-if-noscript" role="tabpanel" aria-labelledby="headingTwo">
-      <div class="panel-body">
-        <form method="POST" action="." id="fetchURL">{% csrf_token %}
-            {% bootstrap_form forms.url_form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans 'Check Data' %}
-                </button>
-            {% endbuttons %}
-        </form>
-      </div>
-    </div>
-  </div>
+  <span class="tab" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#link" id="link-tab-link">
+      {% trans "Link" %}
+    </a>
+  </span>
   {% endif %}
+
   {% if 'text' in input_methods %}
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingThree" data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-      <h4 class="panel-title">
-        <a class="accordion-toggle">
-          <span class="glyphicon glyphicon-paste" aria-hidden="true"></span>{% trans "Paste" %}
-        </a>
-      </h4>
-    </div>
-    <div id="collapseThree" class="panel-collapse show-open-if-noscript" role="tabpanel" aria-labelledby="headingThree">
-      <div class="panel-body">
-        <form method="POST" action=".">{% csrf_token %}
-            {% bootstrap_form forms.text_form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans 'Check Data' %}
-                </button>
-            {% endbuttons %}
-        </form>
-      </div>
-    </div>
+  <span class="tab" role="tablist" aria-multiselectable="true">
+    <a class="tab__inner" href="#paste" id="paste-tab-link">
+      {% trans "Paste" %}
+    </a>
+  </span>
   {% endif %}
-  </div>
+
+  <span class="tabs-empty-bar"></span>
 </div>
-{% endblock %}
 
-{% block postcontent %}
-{% if DATA_SUBMISSION_ENABLED %}
-<div class="row">
-    <div class="col-md-8">
-      <h2 id="submit-data-for-publishing">Submit your data</h2>
-      <p>Submit your 360Giving data file to the <a href="https://data.threesixtygiving.org/">360Giving Data Registry</a>. Your file will also be checked to make sure you are submitting valid 360Giving data.</p>
+{% if 'upload' in input_methods %}
+<div id="upload-tab" class="tab-content" aria-labelledby="upload-tab-link">
+  <form method="POST" action="." class="generic-form" enctype="multipart/form-data">{% csrf_token %}
+    {% bootstrap_form forms.upload_form %}
+    {% buttons %}
 
-    </div>
-  </div>
-
-<div class="panel panel-default">
-  <div class="panel-body">
-    <form method="POST" action="." id="self-publishing-form">
-      {% csrf_token %}
-      <input type="hidden" name="self_publishing" value="true">
-      <div class="form-group">
-        <label for="source-url-input" class="control-label">Provide a link to your file:</label>
-        <input id="source-url-input" type="url" name="source_url" class="form-control">
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary" title="Submit your data" id="submit-for-publishing-btn">
-            Submit
-        </button>
-        <p>Read our guidance on <a href="https://standard.threesixtygiving.org/en/latest/guidance/submit-data/">how to submit your data</a>.</p>
-    </div>
-    </form>
-  </div>
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-upload-btn">
+      {% trans 'Check Data' %}
+    </button>
+    {% endbuttons %}
+  </form>
 </div>
 {% endif %}
-{% endblock %}
 
-{% block extrafooterscript %}
- <script>
-   //If javascript is off all pannels show.
-   //We use this to collapse pannels 2 and 3 if javascript is on.
-  $("#collapseTwo").attr('class', 'panel-collapse collapse');
-  $("#collapseThree").attr('class', 'panel-collapse collapse');
+{% if 'url' in input_methods %}
+<div id="link-tab" style="display:none" class="tab-content" aria-labelledby="link-tab-link">
+  <form method="POST" action="." class="generic-form" id="fetchURL">{% csrf_token %}
+    {% bootstrap_form forms.url_form %}
+    {% buttons %}
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-link-btn">
+      {% trans 'Check Data' %}
+    </button>
+    {% endbuttons %}
+  </form>
+</div>
+{% endif %}
 
-  $('form').submit(function() {
-      $('#loading').css({"display": "block"});
-      $('#accordion').hide();
-  });
-  $(window).unload(function() {
-    $('#loading').css({"display": "none"});
-  })
+{% if 'text' in input_methods %}
+<div id="paste-tab" style="display:none" class="tab-content" aria-labelledby="paste-tab-link">
+  <form method="POST" class="generic-form" action=".">{% csrf_token %}
+    {% bootstrap_form forms.text_form %}
+    {% buttons %}
+    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-paste-btn">
+      {% trans 'Check Data' %}
+    </button>
+    {% endbuttons %}
+  </form>
+</div>
+{% endif %}
 
-</script>
+
+<p style="text-align: center;" class="margin-bottom:3"><a href="{% url 'publishing' %}" >Or submit your data for publication.</a></p>
+
 {% endblock %}
