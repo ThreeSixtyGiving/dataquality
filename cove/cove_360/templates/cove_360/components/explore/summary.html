@@ -154,8 +154,101 @@
 
   <hr class="separator-light">
   <h3 id="contents">This file contains</h3>
-
   <p>{% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}</p>
+
+  <div class="grid grid--two-columns">
+
+    <div class="grid__1">
+      <div class="dashboard-stats-card">
+        <div class="dashboard-stats-card__head">
+          <div class="dashboard-stats-card__left-side">
+            <h3 class="dashboard-stats-card__title">Grants details</h3>
+            <p class="dashboard-stats-card__description">
+      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}There is <strong>{{n_grants}} grant</strong>{% plural %}There are <strong>{{n_grants}} grants</strong> {% endblocktrans %}
+      {% blocktrans count n_recipients=grants_aggregates.distinct_recipient_org_identifier|length|default:0 %}to <strong>{{n_recipients}} recipient organisation</strong> and {% plural %}to <strong>{{n_recipients}} recipient organisations</strong> and{% endblocktrans %}
+      {% blocktrans count n_recipients_individuals=grants_aggregates.recipient_individuals_count|default:0 %}<strong>{{n_recipients_individuals}} to a recipient individual </strong>{% plural %}<strong>{{n_recipients_individuals}} to recipient individuals</strong>{% endblocktrans %}.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="grid__1">
+      <div class="dashboard-stats-card">
+        <div class="dashboard-stats-card__head">
+          <div class="dashboard-stats-card__left-side">
+            <h3 class="dashboard-stats-card__title">Number of Funders</h3>
+            <p class="dashboard-stats-card__description">
+      {% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %} The grants are made by <strong>{{n_funders}}</strong> funding organisation{% plural %} The grants are made by <strong>{{n_funders}}</strong> funding organisations{% endblocktrans %}.
+                  </p>
+          </div>
+
+            {% if grants_aggregates.distinct_funding_org_identifier|length %}
+                  <div class="dashboard-stats-card__right-side">
+            <button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">
+              see list
+            </button>
+                  </div>
+            {% endif %}.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid__1">
+      <div class="dashboard-stats-card">
+        <div class="dashboard-stats-card__head">
+          <div class="dashboard-stats-card__left-side">
+            <h3 class="dashboard-stats-card__title">Grants awarded between</h3>
+            <p class="dashboard-stats-card__description">
+
+      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}The grant was awarded {% plural %}The grants were awarded {% endblocktrans %}
+      {% if grants_aggregates.min_award_date == grants_aggregates.max_award_date %}
+      {% blocktrans with start_date=grants_aggregates.min_award_date %}on <strong>{{start_date}}</strong>.{% endblocktrans %}
+      {% else %}
+      {% blocktrans with start_date=grants_aggregates.min_award_date end_date=grants_aggregates.max_award_date %}between <strong>{{start_date}}</strong> and <strong>{{end_date}}</strong>.{% endblocktrans %}
+      {% endif %}
+
+       </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="grid__1">
+      <div class="dashboard-stats-card">
+        <div class="dashboard-stats-card__head">
+          <div class="dashboard-stats-card__left-side">
+            <h3 class="dashboard-stats-card__title">Grants value GBP</h3>
+            <p class="dashboard-stats-card__description">
+
+      {% if currency_aggregates.count == 1 %}
+      {% if currency_aggregates.count == grants_aggregates.count %}
+      {% trans "The grant" %}
+      {% else %}
+      {% trans "<strong>1 grant</strong>" %}
+      {% endif %}
+      {% blocktrans with amount_awarded=currency_aggregates.total_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} was awarded in <strong>{{currency_code}}</strong> with a value of <strong>{{currency_symbol}}{{amount_awarded}}</strong>.{% endblocktrans %}
+      {% else %}
+      {% if currency_aggregates.count == grants_aggregates.count %}
+      {% trans "The grants" %}
+      {% else %}
+      <strong>{{currency_aggregates.count}}</strong> {% trans "<strong>grants</strong>" %}
+      {% endif %}
+      {% blocktrans with n_grants=currency_aggregates.count total_amount=currency_aggregates.total_amount|intcomma max_amount=currency_aggregates.max_amount|intcomma min_amount=currency_aggregates.min_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} were awarded in <strong>{{currency_code}}</strong> with a total value of <strong>{{currency_symbol}}{{total_amount}}</strong> and individual awards ranging from <strong>{{currency_symbol}}{{min_amount}}</strong> (lowest) to <strong>{{currency_symbol}}{{max_amount}}</strong> (highest).{% endblocktrans %}
+      {% endif %}
+            </p>
+
+       </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+{# {% comment %} #}
+
   <ul>
     <li>
       {% blocktrans count n_grants=grants_aggregates.count|default:0 %}There is <strong>{{n_grants}} grant</strong>{% plural %}There are <strong>{{n_grants}} grants</strong> {% endblocktrans %}
@@ -210,6 +303,7 @@
     </li>
     {% endif %}
   </ul>
+{#  {% endcomment %} #}
 
 {# / file contains #}
 
