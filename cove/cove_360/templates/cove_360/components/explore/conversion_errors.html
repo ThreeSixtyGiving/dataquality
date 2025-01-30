@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load humanize %}
+
+  <div id="conversion-errors-area">
+  <h2>
+      {% trans "Data conversion unsuccessful - " %}
+      {% blocktrans count n_warnings=conversion_warning_messages|length %}{{n_warnings}} Error has been found{% plural %}{{n_warnings}} Errors have been found{% endblocktrans %}
+  </h2>
+
+      <p >{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
+      {% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
+        {% blocktrans %}If a file cannot be converted to JSON it indicates that it cannot be correctly mapped to the standard and needs to be reviewed. If this is the case you should check the file and re-upload it once you’ve fixed the problem. The conversion errors below will give an indication of where the issue is.{% endblocktrans %}
+      {% if conversion_error %}
+      <p>{% blocktrans %}The JSON data could not be converted to spreadsheet due to the following error: {{conversion_error}}{% endblocktrans %}</p>
+      {% include 'error_extra.html' %}
+      {% endif %}
+
+      {% if conversion_warning_messages %}
+      <h3>{% trans "Conversion <strong>errors:</strong>" %}</h3>
+      <ul >
+        {% for warning_message in conversion_warning_messages %}
+        <li>{{warning_message}}</li>
+        {% endfor %}
+      </ul>
+      <p>{% trans "Please resolve this error, as well as any others found, and test the data again." %} </p>
+      {% endif %}
+  </div>

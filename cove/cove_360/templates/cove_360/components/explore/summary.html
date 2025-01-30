@@ -54,14 +54,8 @@
   {% trans "on " %} {{created_date}} at {{created_time}}.
   </p>
 
-  <p>Explore your data:</p>
+<!--  <h3>Explore your data</h3>
   <ol style="column-count: 3;">
-    {% if additional_fields_count %}
-    <li><a href="#additional-fields">Additional fields ({{additional_fields_count}})</a></li>
-    {% endif %}
-    {% if conversion_warning_messages %}
-    <li><a href="#conversion-errors">Conversion errors ({{conversion_warning_messages|length}})</a></li>
-    {% endif %}
 
     {% if metadata %}
     <li><a href="#metadata">Metadata</a></li>
@@ -72,35 +66,7 @@
     <li><a href="#download-and-share">Download and share</a></li>
     <li><a href="#further-help">Further help</a></li>
   </ol>
-
-  {% if conversion_warning_messages or conversion_error %}
-  <div id="conversion-errors-area">
-  <hr class="separator-light">
-  <h3 id="conversion-errors">
-      {% trans "Data conversion unsuccessful - " %}
-      {% blocktrans count n_warnings=conversion_warning_messages|length %}{{n_warnings}} Error has been found{% plural %}{{n_warnings}} Errors have been found{% endblocktrans %}
-  </h3>
-
-      <p >{% trans "Before checking your data we needed to convert it to JSON" %}{% if conversion_error or conversion_warning_messages %}{% blocktrans %} but we were not able to do this successfully{% endblocktrans %}{% endif %}.</p>
-      {% blocktrans %}This tool converts data into JSON because the 360Giving Data Standard uses a <a href="http://json-schema.org/">JSON Schema</a> to describe the standard in a technical way.{% endblocktrans %} <br/>
-        {% blocktrans %}If a file cannot be converted to JSON it indicates that it cannot be correctly mapped to the standard and needs to be reviewed. If this is the case you should check the file and re-upload it once you’ve fixed the problem. The conversion errors below will give an indication of where the issue is.{% endblocktrans %}
-      {% if conversion_error %}
-      <p>{% blocktrans %}The JSON data could not be converted to spreadsheet due to the following error: {{conversion_error}}{% endblocktrans %}</p>
-      {% include 'error_extra.html' %}
-      {% endif %}
-
-      {% if conversion_warning_messages %}
-      <p>{% trans "Conversion <strong>errors:</strong>" %}</p>
-      <ul >
-        {% for warning_message in conversion_warning_messages %}
-        <li>{{warning_message}}</li>
-        {% endfor %}
-      </ul>
-      <p>{% trans "Please resolve this error, as well as any others found, and test the data again." %} <a href="{% url 'index' %}">Load new file.</a> </p>
-      {% endif %}
-  </div>
-{% endif %} {# / if conversion errors #}
-
+-->
 
 
   {% if metadata %}
@@ -213,26 +179,7 @@
 
 {# / file contains #}
 
-  {% if additional_fields_count %}
-  <hr class="separator-light">
-      <h3 id="additional-fields">
-        {% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %} Additional fields ({{n_additional_fields}}){% endblocktrans %}
-      </h3>
-        {% if data_only %}
-          <p class="left-space"> {% blocktrans %} <strong>Additional fields</strong> which do not use 360Giving Data Standard titles were found in your data.{% endblocktrans %}</p>
-          <p class="left-space">{% blocktrans %} You are welcome to include additional fields in your data, however please check the field title(s) shown below to confirm if they are intended additions and not the result of spelling or formatting mistakes in the title. Please refer to the <a target="_blank" href="https://dataquality.threesixtygiving.org/common_errors#required">Common Errors</a> section to see the correctly formatted field titles for the required fields. {% endblocktrans %}</p>
-          {% include "additional_fields_table.html" %}
-        {% endif %}
-    {% for message, json_location, spreadsheet_location in additional_checks %}
-      {% with msg=message.heading %}
-        {% if file_type == 'json' %}
-          {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
-        {% else %}
-          {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
-        {% endif %}
-      {% endwith %}
-    {% endfor %}
-  {% endif %}
+
 
   {# / additional fields #}
 
