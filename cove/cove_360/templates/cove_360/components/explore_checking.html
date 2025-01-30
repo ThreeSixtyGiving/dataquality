@@ -82,6 +82,31 @@
       </a>
     </span>
 
+
+  {% if additional_fields_count %}
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#additional-fields"
+        id="additional-fields-tab-link"
+      >
+        {% trans "Additional Fields" %} ({{additional_fields_count}})
+      </a>
+    </span>
+  {% endif %}
+
+    {% if conversion_warning_messages %}
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#conversion-errors"
+        id="conversion-errors-tab-link"
+      >
+        {% trans "Conversion Errors" %} ({{conversion_warning_messages|length}})
+      </a>
+    </span>
+    {% endif %}
+
     <span class="tab" role="tablist" aria-multiselectable="true">
       <a
         class="tab__inner"
@@ -123,6 +148,19 @@
   <div id="summary-tab" class="tab-content">
   {% include "cove_360/components/explore/summary.html" %}
   </div>
+
+  {% if conversion_warning_messages or conversion_error %}
+  <div id="conversion-errors-tab" class="tab-content">
+  {% include "cove_360/components/explore/conversion_errors.html" %}
+  </div>
+  {% endif %}
+
+
+  {% if additional_fields_count %}
+  <div id="additional-fields-tab" class="tab-content">
+  {% include "cove_360/components/explore/additional_fields.html" %}
+  </div>
+  {% endif %}
 
   <div id="validity-tab" style="display:none" class="tab-content">
     {% include "cove_360/components/explore/validity.html" %}
