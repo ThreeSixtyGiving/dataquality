@@ -1,8 +1,11 @@
+/* The tabs which we process here, not in the list will be ignored */
 const allTabs = [
   'summary',
   'validity',
   'accuracy',
   'usefulness',
+  'additional-fields',
+  'conversion-errors',
   'upload',
   'link',
   'paste'
