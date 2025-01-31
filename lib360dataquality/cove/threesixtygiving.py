@@ -39,8 +39,6 @@ orgids_prefixes.append("360G")
 currency_html = {"GBP": "&pound;", "USD": "$", "EUR": "&euro;"}
 
 
-
-
 def oneOf_draft4(validator, oneOf, instance, schema):
     """
     oneOf_draft4 validator based on
@@ -1799,6 +1797,7 @@ class MultiFundingNamesForOrgId(AdditionalTest):
         self.heading = self.format_heading_count(self.check_text["heading"])
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
 
+
 class BeneficiaryButNotRecipientGeoData(AdditionalTest):
     """Check for grant to see if there is beneficiary geo data but not recipient geo data"""
 
@@ -1819,7 +1818,6 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
         super().__init__(**kwargs)
         self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
-
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
 
@@ -1835,7 +1833,6 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
         self.message = self.check_text["message"][self.grants_percentage]
-
 
 
 # Default tests run in CoVE, these are also the base list
