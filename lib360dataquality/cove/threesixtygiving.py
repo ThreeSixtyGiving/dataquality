@@ -13,8 +13,7 @@ from dateutil.relativedelta import relativedelta
 from jsonschema.exceptions import ValidationError
 from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
 from libcove.lib.tools import decimal_default
-from rangedict import RangeDict as range_dict
-from lib360dataquality.additional_test import AdditionalTest, TestType, TestCategories, TestRelevance
+from lib360dataquality.additional_test import AdditionalTest, TestType, TestCategories, TestRelevance, RangeDict
 from lib360dataquality.check_field_present import PlannedDurationNotPresent
 
 try:
@@ -40,18 +39,6 @@ orgids_prefixes.append("360G")
 currency_html = {"GBP": "&pound;", "USD": "$", "EUR": "&euro;"}
 
 
-class RangeDict(range_dict):
-    """
-    Override RangeDict library to work as an OrderedDict.
-    """
-
-    def __init__(self):
-        super(RangeDict, self).__init__()
-        self.ordered_dict = OrderedDict()
-
-    def __setitem__(self, r, v):
-        super(RangeDict, self).__setitem__(r, v)
-        self.ordered_dict[r] = v
 
 
 def oneOf_draft4(validator, oneOf, instance, schema):
@@ -1811,6 +1798,44 @@ class MultiFundingNamesForOrgId(AdditionalTest):
 
         self.heading = self.format_heading_count(self.check_text["heading"])
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
+
+class BeneficiaryButNotRecipientGeoData(AdditionalTest):
+    """Check for grant to see if there is beneficiary geo data but not recipient geo data"""
+
+    # FIXME I don't know the fields that need checking
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Beneficiary location data found but no Recipient location data'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains beneficiary location data but no recipient location data "
+    )
+
+    category = TestCategories.LOCATION
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
+
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        if len(beneficiary_locations) == 0:
+            return
+
+        if grant["recipientOrganization"][0] and "project" in grant:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/recipientIndividual/id"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
 
 
 # Default tests run in CoVE, these are also the base list

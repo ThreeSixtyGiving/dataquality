@@ -1,6 +1,13 @@
-from lib360dataquality.additional_test import AdditionalTest, TestRelevance
+from lib360dataquality.additional_test import AdditionalTest, TestRelevance, RangeDict
 from functools import wraps
 
+try:
+    from django.utils.html import mark_safe
+except ImportError:
+    # If we don't have django we're not using this lib in CoVE so we're not using the output
+    # in HTML and therefore do not need a SafeString object.
+    def mark_safe(string):
+        return string
 
 class FieldNotPresentBase(AdditionalTest):
     """Checks if any grants do not have a specified field"""
@@ -79,6 +86,16 @@ class BeneficiaryLocationGeoCodeNotPresent(FieldNotPresentBase):
 
 
 class PlannedDurationNotPresent(FieldNotPresentBase):
+    """ Checks for either a planned duration or start and end dates"""
+
+    check_text = {
+        "heading": mark_safe('Neither a planned duration or start and end dates found'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data does not contain either a planned duration or a start and end date."
+    )
+
     field = (
         "plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)"
     )
