@@ -2,23 +2,26 @@
 {% load humanize %}
 {% load cove_tags %}
 
-    <h2>Validation
+    <h2>Validity checks
     {% if validation_and_closed_codelist_errors_count > 0 %}
-    Failed
+    failed
     {% else %}
-    Passed
+    passed
     {% endif %}
     </h2>
 
-      <p>
-        {% if validation_and_closed_codelist_errors_count > 0 %}
-        {% trans "Validation failed means that the data does not meet " %}
-        {% else %}
-        {% trans "Validation passed means that the data meets " %}
-        {% endif %}
-        {% blocktrans %}the requirements of the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a>.{% endblocktrans %}
-        {% blocktrans %} Making sure your data uses the standard correctly is important. Otherwise it cannot be used alongside other valid 360Giving data and cannot be included in 360Giving tools, such as GrantNav and 360Insights.{% endblocktrans %}
-      </p>
+    {% if validation_and_closed_codelist_errors_count > 0 %}
+    <p>{% blocktrans %}This data is not using the <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/">360Giving Data Standard</a> correctly.{% endblocktrans %}</p>
+    <ol>
+      <li>Use the feedback below to find and correct the validity issues in your file.</li>
+      <li>Upload the updated file for a new check.</li>
+      <li>Repeat until the file passes the validity checks.</li>
+    </ol>
+    {% else %}
+    <p>
+    {% blocktrans %}This data uses the 360Giving Data Standard correctly. This means it can be used alongside other valid 360Giving data and be included in 360Giving tools, such as {% endblocktrans %}<a href="https://grantnav.threesixtygiving.org">GrantNav</a> and <a href="https://grantvis.threesixtygiving.org">GrantVis</a>.
+
+    {% endif %}
 
     {% if extension_metadatas %}
     <p>{% trans "The 360Giving Data Standard was extended using these extensions:" %}</p>

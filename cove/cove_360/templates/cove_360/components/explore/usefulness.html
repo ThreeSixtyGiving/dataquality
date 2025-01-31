@@ -8,29 +8,19 @@
   <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the usefulness of the data could not be fully determined.</a>
   {% endif %}
 
-{% if usefulness_checks_passed and validation_and_closed_codelist_errors_count == 0 %}
-  <h3>What is working well</h3>
-  <p><i class="material-icons table--true">check</i>Congratulations, <strong>{{usefulness_checks_passed|length}}</strong> of our usefulness checks passed.</p>
+  {% if usefulness_checks_errored %}
+    <p>{% blocktrans %}Some Usefulness checks failed due to an issue with the data.{% endblocktrans %}</p>
   {% endif %}
 
+  {% if usefulness_checks_count == 0 and validation_and_closed_codelist_errors_count == 0 %}
+  <p><i class="material-icons table--true">check</i>Congratulations! Your data includes {{total_usefulness_checks}} key features that make 360Giving data useful. Learn more about <a href="{% url 'additional_checks' %}">how we assess usefulness</a>.</p>
+  {% endif %}
 
-{% if usefulness_checks_count %}
-    <h3>Potential opportunities</h3>
-    {% if usefulness_checks_errored %}
-      <p>{% blocktrans %}Some Usefulness checks failed due to an issue with the data. Fix some validation errors first.{% endblocktrans %}</p>
-    {% endif %}
+  {% if usefulness_checks_count %}
 
-    {% if usefulness_checks %}
-      <p>
-      We identified {% blocktrans count n_usefulness_checks=usefulness_checks_count %} usefulness opportunity{% plural %}<strong>{{n_usefulness_checks}}</strong> usefulness opportunities{% endblocktrans %}.
-      {% blocktrans %}These usefulness checks highlight ways the data could be made more useful.{% endblocktrans %}
-      </p>
+      <p>Your data was checked for {{total_usefulness_checks}} key features that make 360Giving data useful. Learn more about <a href="{% url 'additional_checks' %}">how we assess usefulness</a>.</p>
 
-      {% blocktrans %}
-	    <p>These are the key features that make the data useful for analysis, which we recommend including in 360Giving data whenever possible.</p>
-	    <p>Receiving this feedback does not mean the data is invalid and it can be ignored when not relevant.</p>
-      <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
-	    {% endblocktrans %}
+      <p>{% blocktrans %}Use the feedback below to find and review the opportunities to improve the usefulness of the data in your file. Note that receiving this feedback does not mean the data is invalid so it may be ignored when not relevant.{% endblocktrans %}</p>
 
       {% for category in usefulness_categories %}
       <h4>{{category}}</h4>
@@ -100,7 +90,3 @@
         {% endif %}
       {% endwith %}
     {% endfor %}
-
-  {% else %}
-   <p>No usefulness opportunities detected.</p>
-  {% endif %}
