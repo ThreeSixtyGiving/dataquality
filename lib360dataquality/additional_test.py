@@ -1,5 +1,7 @@
 from rangedict import RangeDict as range_dict
 from collections import OrderedDict
+
+
 class TestType(object):
     QUALITY_TEST_CLASS = "quality_accuracy"
     USEFULNESS_TEST_CLASS = "usefulness"
@@ -112,6 +114,7 @@ class AdditionalTest(object):
         return "{} {} {} {}".format(
             self.get_heading_count(test_class_type), noun, verb, message
         )
+
 
 class RangeDict(range_dict):
     """
