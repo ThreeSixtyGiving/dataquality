@@ -223,17 +223,15 @@ def explore_360(request, pk, template='cove_360/explore.html'):
         # if no quality quality_accuracy categories the iteration will fail
         context["quality_accuracy_categories"] = []
 
-   # TODO: Check if this is needed anymore
-   #  try:
-  #      context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])
- #   except Exception:
-  #      context["quality_accuracy_errored"] = True
-
-
-#    try:
- #       context["usefulness_checks_passed"] = create_passed_tests_context_data(context["usefulness_checks"], TEST_CLASSES["usefulness"])
-  #  except Exception:
-   #     context["usefulness_errored"] = True
+    # TODO: Check if this is needed any more
+    #  try:
+    #      context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])
+    #   except Exception:
+    #      context["quality_accuracy_errored"] = True
+    #    try:
+    #       context["usefulness_checks_passed"] = create_passed_tests_context_data(context["usefulness_checks"], TEST_CLASSES["usefulness"])
+    #  except Exception:
+    #     context["usefulness_errored"] = True
 
     context["total_quality_accuracy_checks"] = len(TEST_CLASSES["quality_accuracy"])
     context["total_usefulness_checks"] = len(TEST_CLASSES["usefulness"])

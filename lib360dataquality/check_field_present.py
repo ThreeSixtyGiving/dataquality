@@ -9,6 +9,7 @@ except ImportError:
     def mark_safe(string):
         return string
 
+
 class FieldNotPresentBase(AdditionalTest):
     """Checks if any grants do not have a specified field"""
 
