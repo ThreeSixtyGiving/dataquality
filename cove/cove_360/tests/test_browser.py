@@ -343,7 +343,7 @@ def test_flattentool_warnings(server_url, browser, httpserver, monkeypatch, warn
     warning_heading = "Data conversion unsuccessful - 1 Error has been found"
 
     if iserror:
-        conversion_title_text = browser.find_element(By.ID, "conversion-errors").text
+        conversion_title_text = browser.find_element(By.ID, "conversion-errors-area").text
         if flatten_or_unflatten == 'flatten':
             assert warning_heading in conversion_title_text
         else:
