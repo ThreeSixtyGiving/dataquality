@@ -1891,7 +1891,6 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
-
 # Default tests run in CoVE, these are also the base list
 # for the Quality Dashboard checks.
 TEST_CLASSES = {
