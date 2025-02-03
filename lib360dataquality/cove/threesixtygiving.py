@@ -1799,17 +1799,15 @@ class MultiFundingNamesForOrgId(AdditionalTest):
 
 
 class BeneficiaryButNotRecipientGeoData(AdditionalTest):
-    """Check for grant to see if there is beneficiary geo data but not recipient geo data"""
-
-    # FIXME I don't know the fields that need checking
+    """Check grants to see if there is beneficiary location data but not recipient location data"""
 
     # TODO copy
     check_text = {
-        "heading": mark_safe('Beneficiary location data found but no Recipient location data'),
+        "heading": mark_safe('Beneficiary location data found but no Recipient Organisation location data'),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains beneficiary location data but no recipient location data "
+        "Your data contains Beneficiary location data but no Recipient Organisation location data."
     )
 
     category = TestCategories.LOCATION
@@ -1821,18 +1819,77 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
 
-        if len(beneficiary_locations) == 0:
-            return
-
-        if grant["recipientOrganization"][0] and "project" in grant:
+        if len(beneficiary_locations) > 0 and len(grant["recipientOrganization"][0].get("location", [])) == 0:
             self.failed = True
             self.count += 1
             self.json_locations.append(
-                path_prefix + "/recipientIndividual/id"
+                path_prefix + "/recipientOrganization/0/location"
             )
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
         self.message = self.check_text["message"][self.grants_percentage]
+
+
+class RecipientGeoDataButNoBeneficiary(AdditionalTest):
+    """Check grants to see if there is Recipient organisation location data but no Beneficiary location data"""
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Recipient Organisation location data found but no Beneficiary location data'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Recipient Organisation location data but no beneficiary location data."
+    )
+
+    category = TestCategories.LOCATION
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        if len(grant["recipientOrganization"][0].get("location", [])) > 0 and len(beneficiary_locations) == 0:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/beneficaryLocation"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+class BeneficiaryLocationNameButNoCode(AdditionalTest):
+    """Check grants beneficiary location data contains a name but no geo code data"""
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Beneficiary location name found but no beneficiary location code'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains a beneficiary location name but no location code."
+    )
+
+    category = TestCategories.LOCATION
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        for location in beneficiary_locations:
+            if location.get("name") and not location.get("geoCode"):
+                self.failed = True
+                self.count += 1
+                self.json_locations.append(
+                    path_prefix + "/beneficaryLocation/"
+                )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
 
 
 # Default tests run in CoVE, these are also the base list
@@ -1874,6 +1931,9 @@ TEST_CLASSES = {
         NoDataSource,
         RecipientIndWithoutToIndividualsDetails,
         PlannedDurationNotPresent,
+        BeneficiaryLocationNameButNoCode,
+        BeneficiaryButNotRecipientGeoData,
+        RecipientGeoDataButNoBeneficiary,
     ],
 }
 
