@@ -1,4 +1,5 @@
 {% extends request.current_app_base_template %}
+{% load static %}
 {% load i18n %}
 
 {% load bootstrap3 %} {# this is needed for lib-cove-web stuff #}
@@ -11,7 +12,7 @@
 </style>
 
 <h2>Check your data</h2>
-<p>Upload, provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.
+<p>Upload, drag and drop, provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.
 To preview how this tool works, try <a id="load-sample-data-btn" href="#" onClick="document.getElementById('sample-data-form').submit()">loading some sample data</a>.</p>
 <form method="POST" action="" style="display: none;" id="sample-data-form">
   {% csrf_token %}
@@ -49,16 +50,16 @@ To preview how this tool works, try <a id="load-sample-data-btn" href="#" onClic
 
 {% if 'upload' in input_methods %}
 <div id="upload-tab" class="tab-content" aria-labelledby="upload-tab-link">
-  <form method="POST" action="." class="generic-form" enctype="multipart/form-data">{% csrf_token %}
-    {% bootstrap_form forms.upload_form %}
-    {% buttons %}
-
-    <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-upload-btn">
-      {% trans 'Check Data' %}
-    </button>
-    {% endbuttons %}
-  </form>
+    <form method="POST" action="." class="generic-form" enctype="multipart/form-data">{% csrf_token %}
+      {% bootstrap_form forms.upload_form %}
+      {% buttons %}
+      {% endbuttons %}
+      <button type="submit" class="margin-top:2 button button--teal-dark button--solid" id="submit-upload-btn">
+        {% trans 'Check Data' %}
+      </button>
+    </form>
 </div>
+<script src="{% static 'dataexplore/js/drag-drop-upload.js' %}?v={{request.tag}}"></script>
 {% endif %}
 
 {% if 'url' in input_methods %}
