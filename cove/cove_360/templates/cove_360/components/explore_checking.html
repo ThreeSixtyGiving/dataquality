@@ -13,7 +13,7 @@
 
 
 
-<h2>Checking file <strong>&quot;{{file_name}}&quot;</strong></h2>
+<h2 style="display: inline-block;">{{file_name}}</h2><h4 class="base-card__subheading margin-left:1" style="display: inline-block;">(checked {{created_date}} at {{created_time}})</h4>
 
 <div
   class="margin-top:1 margin-bottom:2"
@@ -157,7 +157,7 @@
 
 
   {% if additional_fields_count %}
-  <div id="additional-fields-tab" class="tab-content">
+  <div id="additional-fields-tab" style="display:none" class="tab-content">
   {% include "cove_360/components/explore/additional_fields.html" %}
   </div>
   {% endif %}
