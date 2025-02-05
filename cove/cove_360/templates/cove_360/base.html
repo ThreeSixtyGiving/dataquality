@@ -76,7 +76,7 @@
       </div>
 
       {% if DEBUG or DISABLE_COOKIE_POPUP %}
-      <!-- cookie popup disabled by debug={{DEBUG}} OR DISABLE_COOKIE_POPUP={{DISABLE_COOKIE_POPUP}} -->
+      {# cookie popup disabled by env debug={{DEBUG}} OR DISABLE_COOKIE_POPUP={{DISABLE_COOKIE_POPUP}} #}
       {% else %}
       {% include "cove_360/components/cookie_consent.html" %}
       {% endif %}
