@@ -39,40 +39,18 @@
       {% if conversion == 'flatten' %}
       <div class="box box--teal margin-top:1">
         <h3 class="box__heading" id="file-conversion-success-heading">File conversion successful</h3>
-        <p >We have converted your JSON data into spreadsheet format. See <a href="#download-and-share">Download and share</a> for more details.</p>
+        <p>We have converted your JSON data into spreadsheet format. See <a href="#download">Download</a> for more details.</p>
       </div>
       {% endif %}
 
       <div class="spacer-2"></div>
-  <p>
-  The file <strong>&quot;{{file_name}}&quot;</strong> was
-  {% if source_url %}
-  {% trans "downloaded from " %} <a href="{{source_url}}">{{source_url}}</a>
-  {% else %}
-  {% trans "uploaded " %}
-  {% endif %}
-  {% trans "on " %} {{created_date}} at {{created_time}}.
-  </p>
+
 
   <h3>Review your data</h3>
   <ol>
     <li>Check if the summary below is what you were expecting to see.</li>
     <li>Review the feedback on the Validity, Accuracy and Usefulness of your data.</li>
   </ol>
-
-<!--  <h3>Explore your data</h3>
-  <ol style="column-count: 3;">
-
-    {% if metadata %}
-    <li><a href="#metadata">Metadata</a></li>
-    {% endif %}
-    <li><a href="#contents">File contents</a></li>
-    <li><a href="#identifiers">Identifiers</a></li>
-    <li><a href="#data-conversion">Data convertor</a></li>
-    <li><a href="#download-and-share">Download and share</a></li>
-    <li><a href="#further-help">Further help</a></li>
-  </ol>
--->
 
 
   {% if metadata %}
@@ -128,89 +106,58 @@
   <h3 id="contents">This file contains</h3>
 
   <p>{% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}</p>
-  <ul>
-    <li>
-      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}There is <strong>{{n_grants}} grant</strong>{% plural %}There are <strong>{{n_grants}} grants</strong> {% endblocktrans %}
-      {% blocktrans count n_recipients=grants_aggregates.distinct_recipient_org_identifier|length|default:0 %}to <strong>{{n_recipients}} recipient organisation</strong> and {% plural %}to <strong>{{n_recipients}} recipient organisations</strong> and{% endblocktrans %}
-      {% blocktrans count n_recipients_individuals=grants_aggregates.recipient_individuals_count|default:0 %}<strong>{{n_recipients_individuals}} to a recipient individual </strong>{% plural %}<strong>{{n_recipients_individuals}} to recipient individuals</strong>{% endblocktrans %}.
-    </li>
-    <li>{% blocktrans count n_funders=grants_aggregates.distinct_funding_org_identifier|length|default:0 %} The grants are made by <strong>{{n_funders}}</strong> funding organisation{% plural %} The grants are made by <strong>{{n_funders}}</strong> funding organisations{% endblocktrans %}.</li>
+
+  <div class="media-card__box_container">
+    {% include "cove_360/tokens/media_card_box.html" with metric="Total Grants" value=grants_aggregates.count identifiers=grants_aggregates.unique_ids  target_class="unique-ids" %}
+    {% include "cove_360/tokens/media_card_box.html" with metric="Funding Organisations" value=grants_aggregates.distinct_funding_org_identifier|length identifiers=grants_aggregates.distinct_funding_org_identifier  target_class="distinct-funding-org-identifier" %}
+    {% include "cove_360/tokens/media_card_box.html" with metric="Recipient Organisations" value=grants_aggregates.distinct_recipient_org_identifier|length identifiers=grants_aggregates.distinct_recipient_org_identifier target_class="distinct-recipient-org-identifier" %}
+    {% include "cove_360/tokens/media_card_box.html" with metric="Recipient Individuals" value=grants_aggregates.recipient_individuals_count %}
 
     {% if grants_aggregates.min_award_date %}
-    <li>
-      {% blocktrans count n_grants=grants_aggregates.count|default:0 %}The grant was awarded {% plural %}The grants were awarded {% endblocktrans %}
-      {% if grants_aggregates.min_award_date == grants_aggregates.max_award_date %}
-      {% blocktrans with start_date=grants_aggregates.min_award_date %}on <strong>{{start_date}}</strong>.{% endblocktrans %}
-      {% else %}
-      {% blocktrans with start_date=grants_aggregates.min_award_date end_date=grants_aggregates.max_award_date %}between <strong>{{start_date}}</strong> and <strong>{{end_date}}</strong>.{% endblocktrans %}
-      {% endif %}
-    </li>
+      {% include "cove_360/tokens/media_card_box.html" with metric="Earliest Award" value=grants_aggregates.min_award_date %}
     {% endif %}
+
+    {% if grants_aggregates.max_award_date %}
+      {% include "cove_360/tokens/media_card_box.html" with metric="Last Award" value=grants_aggregates.max_award_date %}
+    {% endif %}
+  </div>
+
+  {% cove_360_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
+  {% cove_360_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
+  {% cove_360_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}
+
+  <p>The data contains grants made in {% if grants_aggregates.currencies.items|length == 1 %}1 currency{% else %} {{ grants_aggregates.currencies.items|length }} currencies{% endif %}:</p>
+  <table class="table table--zebra">
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Total</th>
+        <th>Smallest</th>
+        <th>Largest</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for currency_code, currency_aggregates in grants_aggregates.currencies.items %}
+      <tr>
+        <td>{{currency_code}}</td>
+        <td>{{currency_aggregates.currency_symbol|safe}}{{currency_aggregates.total_amount|intcomma}}</td>
+        <td>{{currency_aggregates.currency_symbol|safe}}{{currency_aggregates.min_amount|intcomma}}</td>
+        <td>{{currency_aggregates.currency_symbol|safe}}{{currency_aggregates.max_amount|intcomma}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 
     {% if metadata.issued %}
-    <li>
+    <p>
       The file was issued on <strong> {{metadata.issued|slice:":10"}} </strong>
-    </li>
+    </p>
     {% endif %}
     {% if metadata.modified %}
-    <li>
+    <p>
       The file was modified on <strong> {{metadata.modified|slice:":10"}} </strong>
-    </li>
+    </p>
     {% endif %}
-    {% for currency_code, currency_aggregates in grants_aggregates.currencies.items %}
-    <li>
-      {% if currency_aggregates.count == 1 %}
-      {% if currency_aggregates.count == grants_aggregates.count %}
-      {% trans "The grant" %}
-      {% else %}
-      {% trans "<strong>1 grant</strong>" %}
-      {% endif %}
-      {% blocktrans with amount_awarded=currency_aggregates.total_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} was awarded in <strong>{{currency_code}}</strong> with a value of <strong>{{currency_symbol}}{{amount_awarded}}</strong>.{% endblocktrans %}
-      {% else %}
-      {% if currency_aggregates.count == grants_aggregates.count %}
-      {% trans "The grants" %}
-      {% else %}
-      <strong>{{currency_aggregates.count}}</strong> {% trans "<strong>grants</strong>" %}
-      {% endif %}
-      {% blocktrans with n_grants=currency_aggregates.count total_amount=currency_aggregates.total_amount|intcomma max_amount=currency_aggregates.max_amount|intcomma min_amount=currency_aggregates.min_amount|intcomma currency_symbol=currency_aggregates.currency_symbol|safe %} were awarded in <strong>{{currency_code}}</strong> with a total value of <strong>{{currency_symbol}}{{total_amount}}</strong> and individual awards ranging from <strong>{{currency_symbol}}{{min_amount}}</strong> (lowest) to <strong>{{currency_symbol}}{{max_amount}}</strong> (highest).{% endblocktrans %}
-      {% endif %}
-    </li>
-    {% endfor %}
-    {% if csv_encoding and csv_encoding != "utf-8-sig" %}
-    <li>
-      {% blocktrans %} This file is <strong>not 'utf-8'</strong> encoded (it is <em>{{csv_encoding}}</em> encoded).{% endblocktrans %}
-    </li>
-    {% endif %}
-  </ul>
-
-{# / file contains #}
-
-
-
-  {# / additional fields #}
-
-  <h4 id="identifiers">Identifiers</h4>
-            {% trans "Unique grant identifiers" %}
-            {% if grants_aggregates.unique_ids|length %}
-            <button class="button button--small" data-toggle="modal" data-target-class="unique-ids" title="Show all grant identifiers">
-            {{ grants_aggregates.unique_ids|length}}
-            </button>
-            {% else %} 0{% endif %}.
-
-            {% trans "Unique funder organisation identifiers" %}
-            {% if grants_aggregates.distinct_funding_org_identifier|length %}
-            <button class="button button--small" data-toggle="modal" data-target-class="distinct-funding-org-identifier" title="Show all funding organisation identifiers">
-            {{ grants_aggregates.distinct_funding_org_identifier|length}}
-            </button>
-            {% else %} 0{% endif %}.
-
-            {% trans "Unique recipient organisation identifiers" %}
-            {% if grants_aggregates.distinct_recipient_org_identifier|length %}
-            <button class="button button--small" data-toggle="modal" data-target-class="distinct-recipient-org-identifier" title="Show all recipient organisation identifiers">
-            {{ grants_aggregates.distinct_recipient_org_identifier|length}}
-            </button>
-            {% else %} 0{% endif %}.
-
 
   <h4>{% blocktrans %}Do these results look correct?{% endblocktrans %}</h4>
   <ul >
@@ -218,7 +165,16 @@
     <li>{% blocktrans %}Are the dates for the right time period?{% endblocktrans %}</li>
     <li>{% blocktrans %}Do the currency and total value figures show the correct amounts?{% endblocktrans %}</li>
   </ul>
-  <p>{% blocktrans %}If any of this information appears incorrect, the feedback below will help you to investigate what happened. {% endblocktrans %}</p>
+
+  <hr class="separator-light">
+
+  <h4>Share</h4>
+    <p>{% trans "You can share these test results with others by using the following url:" %}</p>
+        <p><a href="{{current_url}}"> {{ current_url }}</a>
+        <button class="button button--small margin-left:1" onclick="navigator.clipboard.writeText('{{current_url}}'); this.innerHTML = 'Copied!';">Copy link to Clipboard</button>
+        </p>
+        <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
+    <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
 
   <hr class="separator-light">
 
@@ -232,23 +188,7 @@
     </form>
     {% endif %}
 
-
-
-      {% cove_360_modal_list className="unique-ids" modalTitle="Unique IDs" itemList=grants_aggregates.unique_ids %}
-      {% cove_360_modal_list className="distinct-funding-org-identifier" modalTitle="Funder Organisation IDs" itemList=grants_aggregates.distinct_funding_org_identifier %}
-      {% cove_360_modal_list className="distinct-recipient-org-identifier" modalTitle="Recipient Organisation IDs" itemList=grants_aggregates.distinct_recipient_org_identifier %}
-
-      <h3 id="download-and-share" class="panel-title panel-title-explore">
-        {% trans "Download data and share these results" %}
-      </h3>
-      <h4>Share</h4>
-        <p>{% trans "You can share these test results with others by using the following url:" %}</p>
-            <p><a href="{{current_url}}"> {{ current_url }}</a>
-            <button class="button button--small margin-left:1" onclick="navigator.clipboard.writeText('{{current_url}}'); this.innerHTML = 'Copied!';">Copy link to Clipboard</button>
-            </p>
-            <p>{% trans "If your data is not suitable for sharing publicly, then you should treat this url with care. Only share it with people who have permission to access the data." %}</p>
-        <p>{% trans "After 7 days, the link will expire and the data will be deleted from our servers - so the results will no longer be available. You can revisit these results until then." %}</p>
-        <h4>Download</h4>
+        <h4 id="download">Download</h4>
         <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
         <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
 
@@ -287,4 +227,3 @@
   <h3 id="further-help">Getting further help</h3>
   <p>You can read about common data errors and what causes them in the <a href="https://dataquality.threesixtygiving.org/common_errors">Common Errors</a> section.</p>
   <p>Visit our <a href="https://qualitydashboard.threesixtygiving.org/alldata">Data Quality Dashboard</a> to see the data quality of 360Giving data as a whole and for each individual publisher. If you have already published data, you can view your own publisher page there too. It provides insights into the key features that make the data useful for analysis to help publishers to identify opportunities for their data to be improved.</p>
-
