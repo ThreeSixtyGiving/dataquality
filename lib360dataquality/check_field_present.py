@@ -103,13 +103,7 @@ class PlannedDurationNotPresent(FieldNotPresentBase):
 
     @exception_to_false
     def check_field(self, grant):
-        if not grant["plannedDates"][0].get("duration") or not (
-            grant["plannedDates"][0].get("startDate")
-            and grant["plannedDates"][0].get("endDate")
-        ):
-            return False
-
-        return True
+        return (grant["plannedDates"][0].get("duration") or (grant["plannedDates"][0].get("startDate") and grant["plannedDates"][0].get("endDate")))
 
 
 class GrantProgrammeTitleNotPresent(FieldNotPresentBase):
