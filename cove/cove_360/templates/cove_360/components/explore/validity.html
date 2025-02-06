@@ -39,68 +39,37 @@
     {% with validation_errors=validation_errors_grouped.required error_prefix='required-' %}
     {% if validation_errors %}
 
-      <h3>Missing Fields</h3>
-        <p >Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
-        {% include "cove_360/validation_table.html" %}
+    <h3>Missing Fields</h3>
+    <p >Some or all of your entries were missing fields which are required by the 360Giving Data Standard.</p>
+    {% include "cove_360/validation_table.html" %}
 
-
-    {% for error_json, error_extra in validation_errors %}
-    {% with error=error_json|json_decode %}
-    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
-    {% endwith %}
-    {% endfor %}
     {% endif %}
     {% endwith %}
     {% with validation_errors=validation_errors_grouped.format error_prefix='format-' %}
     {% if validation_errors %}
-
-
-        <h3>Incorrect Formats</h3>
-
-
-        <p >Some or all of your entries have incorrectly formatted data.</p>
-        {% include "cove_360/validation_table.html" %}
-
-
-    {% for error_json, error_extra in validation_errors %}
-    {% with error=error_json|json_decode %}
-    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
-    {% endwith %}
-    {% endfor %}
+      <h3>Incorrect Formats</h3>
+      <p >Some or all of your entries have incorrectly formatted data.</p>
+      {% include "cove_360/validation_table.html" %}
     {% endif %}
     {% endwith %}
+
     {% if additional_closed_codelist_values %}
 
+    <h3>{% trans 'Codelist Errors' %}</h3>
+    <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
+    <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
 
-        <h3>{% trans 'Codelist Errors' %}</h3>
-
-
-
-          <p>Some or all of your entries do not use the 360Giving Data Standard codelists correctly.</p>
-          <p>{% blocktrans %}The fields below use closed codelists. When using these fields, you <strong>must</strong> use one of the pre-defined codelist values. If you use a value that is not on the relevant codelist, your data will not pass structural checks.{% endblocktrans %}</p>
-
-        {% with additional_codelist_values=additional_closed_codelist_values %}
-            {% include "additional_codelist_values.html" %}
-        {% endwith %}
+    {% with additional_codelist_values=additional_closed_codelist_values %}
+        {% include "additional_codelist_values.html" %}
+    {% endwith %}
 
 
     {% endif %}
     {% endif %}
     {% with validation_errors=validation_errors_grouped.other error_prefix='other-' %}
     {% if validation_errors %}
-
-
         <h3>Other</h3>
-
-
         <p >Other validation errors.</p>
         {% include "cove_360/validation_table.html" %}
-
-
-    {% for error_json, error_extra in validation_errors %}
-    {% with error=error_json|json_decode %}
-    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
-    {% endwith %}
-    {% endfor %}
     {% endif %}
     {% endwith %}
