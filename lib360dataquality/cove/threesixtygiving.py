@@ -13,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 from jsonschema.exceptions import ValidationError
 from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
 from libcove.lib.tools import decimal_default
-from lib360dataquality.additional_test import AdditionalTest, TestType, TestCategories, TestRelevance, RangeDict
+from lib360dataquality.additional_test import AdditionalTest, TestImportance, TestType, TestCategories, TestRelevance, RangeDict
 from lib360dataquality.check_field_present import PlannedDurationNotPresent
 
 try:
@@ -519,6 +519,7 @@ class ZeroAmountTest(AdditionalTest):
     )
 
     category = TestCategories.GRANTS
+    importance = TestImportance.CRITICAL
 
     def process(self, grant, path_prefix):
         try:
@@ -952,6 +953,7 @@ class MoreThanOneFundingOrg(AdditionalTest):
     )
 
     category = TestCategories.ORGANISATIONS
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -1004,6 +1006,7 @@ class LooksLikeEmail(AdditionalTest):
     )
 
     category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
 
     def process(self, grant, path_prefix):
         flattened_grant = OrderedDict(flatten_dict(grant))
@@ -1157,6 +1160,7 @@ class GrantIdUnexpectedChars(AdditionalTest):
     )
 
     category = TestCategories.GRANTS
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1189,6 +1193,7 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
         " for further help.")
 
     category = TestCategories.ORGANISATIONS
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1345,6 +1350,7 @@ class ImpossibleDates(AdditionalTest):
     )
 
     category = TestCategories.DATES
+    importance = TestImportance.CRITICAL
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1616,6 +1622,7 @@ class PostDatedAwardDates(AdditionalTest):
     )
 
     category = TestCategories.DATES
+    importance = TestImportance.CRITICAL
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1686,6 +1693,7 @@ class RecipientIndDEI(AdditionalTest):
     )
 
     category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1730,6 +1738,7 @@ class GeoCodePostcode(AdditionalTest):
     )
 
     category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

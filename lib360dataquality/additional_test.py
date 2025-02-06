@@ -22,8 +22,14 @@ class TestCategories(object):
     METADATA = "Metadata"
 
 
+class TestImportance(object):
+    CRITICAL = 100
+    NONE = 0
+
+
 class AdditionalTest(object):
     category = TestCategories.GRANTS
+    importance = TestImportance.NONE
 
     def __init__(self, **kw):
         self.grants = kw["grants"]
@@ -51,6 +57,7 @@ class AdditionalTest(object):
             "count": self.count,
             "percentage": self.grants_percentage,
             "category": self.__class__.category,
+            "importance": self.__class__.importance,
         }
 
     def get_heading_count(self, test_class_type):
