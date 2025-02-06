@@ -31,9 +31,9 @@
   <table class="table">
     <thead>
       <tr>
-        <th>{% trans 'Passed' %}</th>
-        <th>{% trans 'Check Description' %} </th>
-        <th>{% trans 'First 3 Locations' %}</th>
+        <th>{% trans 'Status' %}</th>
+        <th>{% trans 'Issue identified' %} </th>
+        <th>{% trans 'Location' %}</th>
       </tr>
     </thead>
     <tbody>
@@ -41,41 +41,19 @@
       {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
       {% if message.category == category %}
       <tr>
-        <td><i class="material-icons table--false" style="color: {% if message.percentage < 0.5 %}orange {% elif message.percentage < 0.1 %}yellow{% else %}hsl(var(--red-hsl), 1){% endif %}">close</i></td>
+        <td title="{% if message.importance >= 100 %}Critical feedback{% endif %}"><span style="font-size: xx-large; font-weight: bold; color: {% if message.importance >= 100 %}hsl(var(--red-hsl), 1) {% else %}hsl(var(--yellow-hsl), 1){% endif %}">!</span></td>
         <td>
           <strong>{{ message.heading }}</strong><br><br>{{ message.message }}
         </td>
-        {% if file_type == 'xlsx' or file_type == 'csv' %}
-        <td style="white-space: nowrap">
-          <ul class="list-unstyled">
-            {% for location in spreadsheet_location|slice:":3" %}
-            <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
-            {% endfor %}
-            {% if spreadsheet_location|length > 3 %}
-            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}">see all</button></li>
-            {% endif %}
-          </ul>
-        </td>
-        {% else %}
         <td>
-          <ul class="list-unstyled">
-            {% for location in json_location|slice:":3" %}
-            <li>{{location}}</li>
-            {% endfor %}
-            {% if json_location|length > 3 %}
-            <li><button class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}" >see all</button></li>
-            {% endif %}
-          </ul>
+           <button title="Open dialog to see the location of the identified issue in the data." class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}">See Where</button>
         </td>
-        {% endif %}
       </tr>
       {% endif %} {# category filter #}
       {% endfor %}
     </tbody>
   </table>
   {% endfor %} {# for each category #}
-  {% else %}
-  <p>No accuracy issues found.</p>
   {% endif %}
 
 {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
