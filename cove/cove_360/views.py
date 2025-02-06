@@ -236,6 +236,9 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     context["total_quality_accuracy_checks"] = len(TEST_CLASSES["quality_accuracy"])
     context["total_usefulness_checks"] = len(TEST_CLASSES["usefulness"])
 
+    # Sort accuracy using the importance field
+    context["quality_accuracy_checks"].sort(key=lambda x: x[0]["importance"], reverse=True)
+
     cache.set(pk, context)
     return render(request, template, context)
 
