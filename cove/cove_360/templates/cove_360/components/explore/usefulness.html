@@ -29,50 +29,22 @@
       <table class="table">
       <thead>
         <tr>
-          <th>{% trans 'Failed' %}</th>
-          <th>{% trans 'Check Description' %} </th>
-          <th>{% trans 'First 3 Locations' %}</th>
+          <th>{% trans 'Status' %}</th>
+          <th>{% trans 'Issue Identified' %} </th>
+          <th>{% trans 'Location' %}</th>
         </tr>
       </thead>
       <tbody>
       {% for message, json_location, spreadsheet_location in usefulness_checks %}
       {% if message.category == category %}
       <tr>
-          <td>
-            {# graph of how many grants affected experimental #}
-            <div style="border-radius: 3px; background-color: hsl(var(--teal-dark-hsl), 1); width:100%; height:20px; min-width:90px">
-              <div style="border-radius: 3px; background-color: hsl(var(--red-hsl), 1); height: 20px; width: {{message.percentage|multiply:100}}%; min-width:5px;">
-                <span style="color: white;" class="margin-left:1">{{message.percentage|multiply:100}}%</span>
-              </div>
-            </div>
-          </td>
+          <td title="{% if message.importance >= 100 %}Critical feedback{% endif %}"><span style="font-size: xx-large; font-weight: bold; color: {% if message.importance >= 100 %}hsl(var(--red-hsl), 1) {% else %}hsl(var(--yellow-hsl), 1){% endif %}">!</span></td>
           <td>
             <strong>{{ message.heading }}</strong><br /><br />{{ message.message }}
           </td>
-          {# first 3 locations #}
-        {% if file_type == 'xlsx' or file_type == 'csv' %}
           <td>
-            <ul class="list-unstyled">
-              {% for location in spreadsheet_location|slice:":3" %}
-              <li> <b>Sheet:</b> {{location.sheet}} <b>Row:</b> {{location.row_number}} {% if location.header %} <b>Header:</b> {{location.header}} {% endif %} </li>
-              {% endfor %}
-              {% if spreadsheet_location|length > 3 %}
-                <li><button class="button button--small" data-toggle="modal" data-target-class="{{"usefulness-checks-"|concat:forloop.counter}}">see all</button></li>
-              {% endif %}
-            </ul>
+            <button title="Open dialog to see where the identified issue is in the data." class="button button--small" data-toggle="modal" data-target-class="{{"usefulness-checks-"|concat:forloop.counter}}">See Where</button>
           </td>
-        {% else %}
-          <td>
-            <ul class="list-unstyled">
-              {% for location in json_location|slice:":3" %}
-                  <li>{{location}}</li>
-              {% endfor %}
-              {% if json_location|length > 3 %}
-                <li><button class="button button--small" data-toggle="modal"  data-target-class="{{"usefulness-checks-"|concat:forloop.counter}}">see all</button></li>
-              {% endif %}
-            </ul>
-          </td>
-        {% endif %}
       </tr>
       {% endif %} {# end category filter #}
       {% endfor %}
