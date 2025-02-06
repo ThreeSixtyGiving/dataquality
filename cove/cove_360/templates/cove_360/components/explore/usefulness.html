@@ -6,15 +6,16 @@
 
   {% if validation_and_closed_codelist_errors_count > 0 %}
   <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the usefulness of the data could not be fully determined.</a>
+
+  {% elif usefulness_checks_count == 0 %}
+  <p><i class="material-icons table--true">check</i>Congratulations! Your data includes {{total_usefulness_checks}} key features that make 360Giving data useful. Learn more about <a href="{% url 'additional_checks' %}">how we assess usefulness</a>.</p>
   {% endif %}
 
   {% if usefulness_checks_errored %}
     <p>{% blocktrans %}Some Usefulness checks failed due to an issue with the data.{% endblocktrans %}</p>
   {% endif %}
 
-  {% if usefulness_checks_count == 0 and validation_and_closed_codelist_errors_count == 0 %}
-  <p><i class="material-icons table--true">check</i>Congratulations! Your data includes {{total_usefulness_checks}} key features that make 360Giving data useful. Learn more about <a href="{% url 'additional_checks' %}">how we assess usefulness</a>.</p>
-  {% endif %}
+
 
   {% if usefulness_checks_count %}
 
