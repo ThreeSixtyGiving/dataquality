@@ -6,9 +6,8 @@
 
   {% if validation_and_closed_codelist_errors_count > 0 %}
   <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the accuracy of the data could not be fully determined.</a>
-  {% endif %}
 
-  {% if quality_accuracy_checks_count == 0 %}
+  {% elif quality_accuracy_checks_count == 0 %}
   <p><i class="material-icons table--true">check</i>Congratulations! Your data passed <strong>{{total_quality_accuracy_checks}}</strong> accuracy checks.
     Learn more about <a href="{% url 'additional_checks' %}">how we check accuracy</a>.
   </p>
