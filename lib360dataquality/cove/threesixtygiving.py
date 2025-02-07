@@ -1791,17 +1791,64 @@ class MultiFundingNamesForOrgId(AdditionalTest):
             name = organisation["name"]
 
             try:
-                org_ids = self.funding_organisation_names[name]
+                found_org_id = self.funding_organisation_names[name]
             except KeyError:
                 # initialise the data
-                org_ids = [org_id]
-                self.funding_organisation_names[name] = org_ids
+                self.funding_organisation_names[name] = org_id
+                found_org_id = org_id
 
-            if org_id not in org_ids:
+            if found_org_id != org_id:
                 # We have a brand new org id for this funder name, suspicious.
-                org_ids.append(org_id)
                 self.json_locations.append(
-                    path_prefix + "/fundingOrganization/{}/identifier".format(num)
+                    path_prefix + "/fundingOrganization/{}/id".format(num)
+                )
+                self.count = self.count + 1
+                self.failed = True
+
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = mark_safe(self.check_text["message"][self.grants_percentage])
+
+
+class MultiFundingOrgIdsForName(AdditionalTest):
+    """Check for org ids with multiple names."""
+
+# TODO copy
+    check_text = {
+        "heading": mark_safe("introduced an additional Funding Org:Name for an existing Funding Org:Identifier"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Funding org-ids with differing names. "
+        "Funding organisations typically only have one name and one org-id."
+    )
+
+    category = TestCategories.ORGANISATIONS
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        #  zxy-name: { names: [] }
+        self.funding_organisation_ids = {}
+
+    def process(self, grant, path_prefix):
+        # Some test data doesn't have the full valid grant
+        if "fundingOrganization" not in grant:
+            return
+
+        for num, organisation in enumerate(grant["fundingOrganization"]):
+            org_id = organisation["id"]
+            name = organisation["name"]
+
+            try:
+                existing_name = self.funding_organisation_ids[org_id]
+            except KeyError:
+                # initialise the data
+                self.funding_organisation_ids[org_id] = name
+                existing_name = name
+
+            if existing_name != name:
+                # We have a brand new name for this org id, suspicious.
+                self.json_locations.append(
+                    path_prefix + "/fundingOrganization/{}/name".format(num)
                 )
                 self.count = self.count + 1
                 self.failed = True
@@ -1830,7 +1877,6 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
 
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
-
         if len(beneficiary_locations) > 0 and len(grant["recipientOrganization"][0].get("location", [])) == 0:
             self.failed = True
             self.count += 1
@@ -1867,7 +1913,7 @@ class RecipientGeoDataButNoBeneficiary(AdditionalTest):
             self.failed = True
             self.count += 1
             self.json_locations.append(
-                path_prefix + "/beneficaryLocation"
+                path_prefix + "/recipientOrganization/0/location"
             )
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
@@ -1891,12 +1937,12 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
 
-        for location in beneficiary_locations:
+        for num, location in enumerate(beneficiary_locations):
             if location.get("name") and not location.get("geoCode"):
                 self.failed = True
                 self.count += 1
                 self.json_locations.append(
-                    path_prefix + "/beneficaryLocation/"
+                    path_prefix + "/beneficiaryLocation/{}/geoCode".format(num)
                 )
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
@@ -1928,6 +1974,7 @@ TEST_CLASSES = {
         RecipientIndDEI,
         GeoCodePostcode,
         MultiFundingNamesForOrgId,
+        MultiFundingOrgIdsForName,
     ],
     TestType.USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
@@ -2050,4 +2097,5 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                 spreadsheet_locations,
             )
         )
+
     return results
