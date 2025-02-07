@@ -22,7 +22,7 @@ from libcove.lib.converters import convert_spreadsheet, convert_json
 from libcove.lib.exceptions import CoveInputDataError
 
 from lib360dataquality.cove.schema import Schema360, ExtensionsError
-from lib360dataquality.cove.threesixtygiving import TEST_CLASSES
+from lib360dataquality.cove.threesixtygiving import TEST_CLASSES, TestType
 from lib360dataquality.cove.threesixtygiving import common_checks_360
 
 from cove_360.models import SuppliedDataStatus
@@ -229,8 +229,8 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     #  except Exception:
     #     context["usefulness_errored"] = True
 
-    context["total_quality_accuracy_checks"] = len(TEST_CLASSES["quality_accuracy"])
-    context["total_usefulness_checks"] = len(TEST_CLASSES["usefulness"])
+    context["total_quality_accuracy_checks"] = len(TEST_CLASSES[TestType.QUALITY_TEST_CLASS])
+    context["total_usefulness_checks"] = len(TEST_CLASSES[TestType.USEFULNESS_TEST_CLASS])
 
     # Sort accuracy using the importance field
     context["quality_accuracy_checks"].sort(key=lambda x: x[0]["importance"], reverse=True)
@@ -267,16 +267,26 @@ def common_errors(request):
 
 def additional_checks(request):
     context = {}
+    check_types = []
 
-    test_classes = list(itertools.chain(*TEST_CLASSES.values()))
-    context['checks'] = [
-        {
-            'heading': check.check_text['heading'],
-            'messages': (check.check_text['message'].ordered_dict.items()),
-            'desc': check.__doc__,
-            'class_name': check.__name__
-        } for check in test_classes
-    ]
+    for check_type in vars(TestType):
+        if check_type.startswith("_"):
+            continue
+
+        test_check_cat_name = getattr(TestType, check_type)
+
+        test_classes = list(itertools.chain(TEST_CLASSES[test_check_cat_name]))
+
+        check_types.append(test_check_cat_name)
+
+        context[f"checks_{test_check_cat_name}"] = [
+                {
+                    'heading': check.check_text['heading'],
+                    'messages': (check.check_text['message'].ordered_dict.items()),
+                    'desc': check.__doc__,
+                    'class_name': check.__name__,
+                } for check in test_classes
+            ]
 
     if request.path.endswith('.csv'):
         response = HttpResponse(content_type='text/csv')
@@ -286,9 +296,10 @@ def additional_checks(request):
 
         writer = csv.writer(response)
         writer.writerow(['Class Name', 'Methodology', 'Heading', '%', 'Message'])
-        for check in context['checks']:
-            for message in check['messages']:
-                writer.writerow([check['class_name'], check['desc'], check['heading'], message[0], message[1]])
+        for check_type in check_types:
+            for check in context[f"checks_{check_type}"]:
+                for message in check['messages']:
+                    writer.writerow([check['class_name'], check['desc'], check['heading'], message[0], message[1]])
 
         return response
 
