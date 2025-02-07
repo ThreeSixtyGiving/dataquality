@@ -46,8 +46,7 @@ def exception_to_false(f):
     @wraps(f)
     def check(self, grant):
         try:
-            f(self, grant)
-            return True
+            return f(self, grant)
         except (KeyError, IndexError):
             return False
 
