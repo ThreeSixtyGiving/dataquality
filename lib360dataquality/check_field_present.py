@@ -28,7 +28,7 @@ class FieldNotPresentBase(AdditionalTest):
         if not self.field:
             raise Exception("Field to check for not set")
 
-        if self.check_field(grant) is False:
+        if not self.check_field(grant):
             self.failed = True
             self.count += 1
             self.json_locations.append(path_prefix + "/id")
