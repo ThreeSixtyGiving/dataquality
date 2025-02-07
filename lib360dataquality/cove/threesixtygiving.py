@@ -5,6 +5,7 @@ import json
 import re
 from collections import OrderedDict, defaultdict
 from decimal import Decimal
+import logging
 
 import libcove.lib.tools as tools
 import openpyxl
@@ -24,6 +25,7 @@ except ImportError:
     def mark_safe(string):
         return string
 
+logger = logging.getLogger(__name__)
 
 DATES_JSON_LOCATION = {
     "award_date": "/awardDate",
@@ -1762,6 +1764,7 @@ class GeoCodePostcode(AdditionalTest):
 class MultiFundingNamesForOrgId(AdditionalTest):
     """Check for Funding org ids with multiple names."""
 
+#TODO copy
     check_text = {
         "heading": mark_safe("introduced an additional Funding Org:Identifier for an existing Funding Org:Name"),
         "message": RangeDict(),
@@ -2038,7 +2041,8 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                     for location in test_instance.json_locations
                 ]
             except KeyError:
-                continue
+                logger.warning(f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
+                pass
         results.append(
             (
                 test_instance.produce_message(),
