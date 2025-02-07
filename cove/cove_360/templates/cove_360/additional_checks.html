@@ -5,13 +5,19 @@
   <h2>{% trans "Additional Data Quality Checks" %}</h2>
 
   <p>
-    This page details all of the Additional Checks in this instance of the Data Quality Tool.
-
-    The <label> Heading </label> is prefixed by text such as "X of your grants have..." in almost all cases, apart from when the check refers to the whole dataset (eg the multiple Funding Org check). The <label>Message</label> is displayed if the check is triggered. The <label>Method</label> describes how the check works under-the-hood.
+    This page details all of the Additional Checks carried out by the 360Giving Data Quality Tool.
+    These tests are divided between <a href="#accuracy">Accuracy</a> checks which highlight potential errors in the data, and <a href="#usefulness">Usefulness</a> checks which highlight opportunities to improve the data’s usefulness.
   </p>
 
-  <h2> Checks </h2>
-  {% for check in checks %}
+  <ul>
+    <li>Class name is the unique name for each check.</li>
+    <li>When a check is triggered the Heading is prefixed by text such as "X of your grants have...", apart from when the check refers to the whole dataset (eg the multiple Funding Org check).</li>
+    <li>The Message is displayed if the check is triggered.</li>
+    <li>The Method describes how the check itself.</li>
+  </ul>
+
+  <h2 id="accuracy">Accuracy Checks</h2>
+  {% for check in checks_quality_accuracy %}
     <div>
       <h4>
         <label>Class name:</label> {{check.class_name}}
@@ -24,4 +30,20 @@
       <label>Method:</label> {{check.desc}}
     </div>
   {% endfor %}
+
+  <h2 id="usefulness">Usefulness Checks</h2>
+  {% for check in checks_usefulness %}
+    <div>
+      <h4>
+        <label>Class name:</label> {{check.class_name}}
+      </h4>
+      <label>Heading:</label> {{check.heading}}<br/>
+      <label>Messages:</label>
+        {% for percentage_range, message in check.messages %}
+            {{message}}<br/>
+        {% endfor %}
+      <label>Method:</label> {{check.desc}}
+    </div>
+  {% endfor %}
+
 {% endblock %}
