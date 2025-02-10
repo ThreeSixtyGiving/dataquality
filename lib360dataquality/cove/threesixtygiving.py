@@ -1881,7 +1881,7 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
             self.failed = True
             self.count += 1
             self.json_locations.append(
-                path_prefix + "/recipientOrganization/0/location"
+                path_prefix + "/recipientOrganization/0/id"
             )
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
@@ -1942,7 +1942,7 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
                 self.failed = True
                 self.count += 1
                 self.json_locations.append(
-                    path_prefix + "/beneficiaryLocation/{}/geoCode".format(num)
+                    path_prefix + "/beneficiaryLocation/{}/name".format(num)
                 )
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
