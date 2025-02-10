@@ -82,6 +82,18 @@
       </a>
     </span>
 
+  {% if additional_fields_count %}
+    <span class="tab" role="tablist" aria-multiselectable="true">
+      <a
+        class="tab__inner"
+        href="#additional-fields"
+        id="additional-fields-tab-link"
+      >
+        {% trans "Additional Fields" %} ({{additional_fields_count}})
+      </a>
+    </span>
+  {% endif %}
+
 
     {% if conversion_warning_messages %}
     <span class="tab" role="tablist" aria-multiselectable="true">
@@ -104,18 +116,6 @@
         {% trans "Validity" %} ({{validation_and_closed_codelist_errors_count}})
       </a>
     </span>
-
-  {% if additional_fields_count %}
-    <span class="tab" role="tablist" aria-multiselectable="true">
-      <a
-        class="tab__inner"
-        href="#additional-fields"
-        id="additional-fields-tab-link"
-      >
-        {% trans "Additional Fields" %} ({{additional_fields_count}})
-      </a>
-    </span>
-  {% endif %}
 
     <span class="tab" role="tablist" aria-multiselectable="true">
       <a
