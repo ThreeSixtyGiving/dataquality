@@ -17,7 +17,7 @@ urlpatterns += [
     url(r'^xhr_results_ready/(.+)$', cove_360.views.results_ready, name='xhr_results_ready'),
     url(r'^common_errors', cove_360.views.common_errors, name='common_errors'),
     url(r'^additional_checks', cove_360.views.additional_checks, name='additional_checks'),
-    path("publishing/", TemplateView.as_view(template_name="cove_360/publishing.html", extra_context={"submission_tool": True}), name="publishing"),
+    path("submit/", TemplateView.as_view(template_name="cove_360/publishing.html", extra_context={"submission_tool": True}), name="publishing"),
     path("terms-conditions/", TemplateView.as_view(template_name="cove_360/terms.html"), name="terms-conditions"),
 ]
 

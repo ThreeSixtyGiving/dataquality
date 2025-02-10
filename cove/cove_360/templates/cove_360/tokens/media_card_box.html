@@ -1,10 +1,9 @@
 <div class="media-card__box">
-  <strong>{{metric}}</strong> <br>
+  <strong>{{metric}}</strong>
+  <span style="display:block">{{value}}</span>
   {% if identifiers|length %}
   <button class="button button--small margin-top:1" style="word-break: break-all" data-toggle="modal" data-target-class="{{target_class}}" title="Show identifiers">
-    {% if value == 0 or not value %}0{% else %}{{value}}{% endif %}
+    Show identifiers
   </button>
-  {% else %}
-  <p style="word-break: break-all" class="margin-top:1">{% if value == 0 or not value %}0{% else %}{{value}}{% endif %}</p>
   {% endif %}
 </div>
