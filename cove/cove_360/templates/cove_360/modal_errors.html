@@ -15,7 +15,10 @@
             {% endif %}
           {% endif %}
         </p>
-        <table class="table">
+      {% if errorList|length == 0 %}
+      <p>Location could not be determined.</p>
+      {% else %}
+      <table class="table">
           <thead>
             <tr>
               {% if full_table %}
@@ -60,6 +63,7 @@
             {% endfor %}
           </tbody>
         </table>
+        {% endif %}
       </div>
     </div>
 </div>
