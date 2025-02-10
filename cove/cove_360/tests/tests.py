@@ -874,7 +874,7 @@ USEFULNESS_CHECKS_RESULTS = [
             "percentage": 1/TOTAL_GRANTS,
             "type": "BeneficiaryLocationNameButNoCode"
         },
-        ["grants/0/beneficiaryLocation/0/geoCode"],
+        ["grants/0/beneficiaryLocation/0/name"],
         []  # FIXME No spreadsheet location?
     ),
     (
@@ -887,8 +887,10 @@ USEFULNESS_CHECKS_RESULTS = [
             "percentage": 1/TOTAL_GRANTS,
             "type": "BeneficiaryButNotRecipientGeoData"
         },
-        ["grants/2/recipientOrganization/0/location"],
-        []
+        ["grants/2/recipientOrganization/0/id"],
+        [
+            {"header": "Recipient Org:Identifier", "letter": "J", "row_number": 4, "sheet": "grants"},
+        ]
     ),  # FIXME No spreadsheet location?
     (
         {
