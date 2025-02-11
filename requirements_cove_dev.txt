@@ -8,57 +8,52 @@
     # via -r requirements_cove.in
 alabaster==0.7.13
     # via sphinx
-asgiref==3.6.0
+asgiref==3.8.1
     # via django
-async-generator==1.10
-    # via trio
-attrs==22.2.0
+attrs==25.1.0
     # via
     #   hypothesis
     #   jsonschema
     #   outcome
-    #   pytest
     #   trio
-babel==2.12.1
+babel==2.17.0
     # via sphinx
-backports-datetime-fromisoformat==2.0.0
+backports-datetime-fromisoformat==2.0.3
     # via flattentool
-black==23.1.0
+black==24.8.0
     # via -r ./requirements_cove_dev.in
-bleach==6.0.0
+bleach==6.1.0
     # via -r requirements_cove.in
-btrees==5.0
+btrees==6.1
     # via zodb
-cached-property==1.5.2
+cached-property==2.0.1
     # via -r requirements_cove.in
-certifi==2022.12.7
+certifi==2025.1.31
     # via
     #   requests
     #   sentry-sdk
     #   urllib3
-cffi==1.15.1
+cffi==1.17.1
     # via
     #   cryptography
     #   persistent
-charset-normalizer==3.1.0
+charset-normalizer==3.4.1
     # via requests
-chromedriver-autoinstaller==0.4.0
+chromedriver-autoinstaller==0.6.4
     # via -r ./requirements_cove_dev.in
-click==8.1.3
+click==8.1.8
     # via black
 commonmark==0.9.1
     # via
     #   -r requirements_cove.in
     #   recommonmark
-contextlib2==21.6.0
-    # via schema
-coverage[toml]==6.5.0
+coverage[toml]==7.6.1
     # via
     #   coveralls
     #   pytest-cov
-coveralls==3.3.1
+coveralls==4.0.1
     # via -r ./requirements_cove_dev.in
-cryptography==39.0.2
+cryptography==44.0.1
     # via
     #   pyopenssl
     #   urllib3
@@ -66,70 +61,70 @@ dealer==2.1.0
     # via -r requirements_cove.in
 defusedxml==0.7.1
     # via odfpy
-django==3.2.18
+django==3.2.25
     # via
     #   -r requirements_cove.in
     #   django-bootstrap3
     #   django-debug-toolbar
     #   django-selenium-login
     #   libcoveweb
-django-bootstrap3==22.2
+django-bootstrap3==23.6
     # via
     #   -r requirements_cove.in
     #   libcoveweb
-django-debug-toolbar==3.8.1
+django-debug-toolbar==4.3.0
     # via -r requirements_cove.in
-django-environ==0.10.0
+django-environ==0.11.2
     # via -r requirements_cove.in
 django-selenium-login==2.0.0
     # via -r ./requirements_cove_dev.in
 docopt==0.6.2
     # via coveralls
-docutils==0.18.1
+docutils==0.20.1
     # via
     #   recommonmark
     #   sphinx
     #   sphinx-rtd-theme
-et-xmlfile==1.1.0
+et-xmlfile==2.0.0
     # via openpyxl
-exceptiongroup==1.1.1
+exceptiongroup==1.2.2
     # via
     #   pytest
     #   trio
     #   trio-websocket
-execnet==1.9.0
+execnet==2.1.1
     # via pytest-xdist
-flake8==6.0.0
+flake8==7.1.1
     # via -r ./requirements_cove_dev.in
-flattentool==0.20.1
+flattentool==0.26.0
     # via
     #   -r requirements_cove.in
     #   libcove
     #   libcoveweb
-gitdb==4.0.10
+gitdb==4.0.12
     # via gitpython
-gitpython==3.1.31
+gitpython==3.1.44
     # via transifex-client
 h11==0.14.0
     # via wsproto
 hypothesis==6.13.0
     # via -r ./requirements_cove_dev.in
-idna==3.4
+idna==3.10
     # via
     #   requests
     #   trio
     #   urllib3
-ijson==3.2.0.post0
+ijson==3.3.0
     # via
     #   flattentool
     #   lib360dataquality
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==6.0.0
+importlib-metadata==8.5.0
     # via sphinx
 iniconfig==2.0.0
     # via pytest
-jinja2==3.1.2
+jinja2==3.1.5
     # via sphinx
 json-merge-patch==0.2
     # via
@@ -144,18 +139,18 @@ jsonschema==3.2.0
     #   -r requirements_cove.in
     #   lib360dataquality
     #   libcove
-libcove==0.30.0
+libcove==0.31.0
     # via
     #   -r requirements_cove.in
     #   lib360dataquality
     #   libcoveweb
 libcoveweb==0.31.1
     # via -r requirements_cove.in
-libsass==0.22.0
+libsass==0.23.0
     # via -r ./requirements_cove_dev.in
-lxml==4.9.2
+lxml==5.3.1
     # via flattentool
-markupsafe==2.1.2
+markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
@@ -165,62 +160,63 @@ mypy-extensions==1.0.0
     # via black
 odfpy==1.4.1
     # via flattentool
-openpyxl==3.1.2
+openpyxl==3.1.5
     # via
     #   -r requirements_cove.in
     #   flattentool
-outcome==1.2.0
+outcome==1.3.0.post0
     # via trio
-packaging==23.0
+packaging==24.2
     # via
     #   black
+    #   chromedriver-autoinstaller
     #   pytest
     #   sphinx
-pathspec==0.11.1
+pathspec==0.12.1
     # via black
-persistent==5.0
+persistent==6.1
     # via
     #   btrees
     #   zodb
-platformdirs==3.1.1
+platformdirs==4.3.6
     # via black
-pluggy==1.0.0
+pluggy==1.5.0
     # via pytest
-pycodestyle==2.10.0
+pycodestyle==2.12.1
     # via flake8
-pycparser==2.21
+pycparser==2.22
     # via cffi
-pyflakes==3.0.1
+pyflakes==3.2.0
     # via flake8
-pygments==2.14.0
+pygments==2.19.1
     # via sphinx
-pyopenssl==23.0.0
+pyopenssl==25.0.0
     # via urllib3
-pyrsistent==0.19.3
+pyrsistent==0.20.0
     # via jsonschema
 pysocks==1.7.1
     # via urllib3
-pytest==7.2.2
+pytest==8.3.4
     # via
     #   -r ./requirements_cove_dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-xdist
-pytest-cov==4.0.0
+pytest-cov==5.0.0
     # via -r ./requirements_cove_dev.in
-pytest-django==4.5.2
+pytest-django==4.10.0
     # via -r ./requirements_cove_dev.in
-pytest-localserver==0.7.1
+pytest-localserver==0.9.0.post0
     # via -r ./requirements_cove_dev.in
-pytest-xdist==3.2.1
+pytest-xdist==3.6.1
     # via -r ./requirements_cove_dev.in
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements_cove.in
     #   lib360dataquality
 python-slugify==4.0.1
     # via transifex-client
-pytz==2022.7.1
+pytz==2025.1
     # via
     #   babel
     #   django
@@ -231,7 +227,7 @@ rangedict==0.1.7
     #   lib360dataquality
 recommonmark==0.7.1
     # via -r ./requirements_cove_dev.in
-requests==2.28.2
+requests==2.32.3
     # via
     #   -r requirements_cove.in
     #   coveralls
@@ -245,23 +241,22 @@ rfc3987==1.3.8
     # via
     #   -r requirements_cove.in
     #   libcove
-schema==0.7.5
+schema==0.7.7
     # via flattentool
 selenium==4.2.0
     # via -r ./requirements_cove_dev.in
-sentry-sdk==1.16.0
+sentry-sdk==2.20.0
     # via -r requirements_cove.in
-six==1.16.0
+six==1.17.0
     # via
     #   bleach
     #   jsonschema
     #   python-dateutil
     #   rfc3339-validator
     #   transifex-client
-    #   zodb
-smmap==5.0.0
+smmap==5.0.2
     # via gitdb
-sniffio==1.3.0
+sniffio==1.3.1
     # via trio
 snowballstemmer==2.2.0
     # via sphinx
@@ -269,13 +264,13 @@ sortedcontainers==2.4.0
     # via
     #   hypothesis
     #   trio
-sphinx==6.1.3
+sphinx==7.1.2
     # via
     #   -r ./requirements_cove_dev.in
     #   recommonmark
     #   sphinx-rtd-theme
     #   sphinxcontrib-jquery
-sphinx-rtd-theme==1.2.0
+sphinx-rtd-theme==3.0.2
     # via -r ./requirements_cove_dev.in
 sphinxcontrib-applehelp==1.0.4
     # via sphinx
@@ -291,7 +286,7 @@ sphinxcontrib-qthelp==1.0.3
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
-sqlparse==0.4.3
+sqlparse==0.5.3
     # via
     #   django
     #   django-debug-toolbar
@@ -299,24 +294,27 @@ strict-rfc3339==0.7
     # via -r requirements_cove.in
 text-unidecode==1.3
     # via python-slugify
-tomli==2.0.1
+tomli==2.2.1
     # via
     #   black
     #   coverage
     #   pytest
-transaction==3.0.1
+transaction==5.0
     # via zodb
 transifex-client==0.14.4
     # via -r ./requirements_cove_dev.in
-trio==0.22.0
+trio==0.27.0
     # via
     #   selenium
     #   trio-websocket
-trio-websocket==0.10.0
+trio-websocket==0.11.1
     # via selenium
-typing-extensions==4.5.0
-    # via black
-urllib3[secure,socks]==1.26.15
+typing-extensions==4.12.2
+    # via
+    #   asgiref
+    #   black
+    #   pyopenssl
+urllib3[secure,socks]==1.26.20
     # via
     #   requests
     #   selenium
@@ -326,15 +324,15 @@ urllib3-secure-extra==0.1.0
     # via urllib3
 webencodings==0.5.1
     # via bleach
-werkzeug==2.2.3
+werkzeug==3.0.6
     # via
     #   libcoveweb
     #   pytest-localserver
-whitenoise==6.4.0
+whitenoise==6.7.0
     # via -r requirements_cove.in
 wsproto==1.2.0
     # via trio-websocket
-xmltodict==0.13.0
+xmltodict==0.14.2
     # via
     #   -r requirements_cove.in
     #   flattentool
@@ -342,23 +340,28 @@ zc-lockfile==3.0.post1
     # via zodb
 zc-zlibstorage==1.2.0
     # via flattentool
-zconfig==3.6.1
+zconfig==4.1
     # via zodb
-zipp==3.15.0
+zipp==3.20.2
     # via importlib-metadata
-zodb==5.8.0
+zodb==6.0
     # via
     #   flattentool
     #   zc-zlibstorage
-zodbpickle==2.6
+zodbpickle==4.1.1
     # via zodb
-zope-interface==5.5.2
+zope-deferredimport==5.0
+    # via persistent
+zope-interface==7.2
     # via
     #   btrees
     #   persistent
     #   transaction
     #   zc-zlibstorage
     #   zodb
+    #   zope-proxy
+zope-proxy==6.1
+    # via zope-deferredimport
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
