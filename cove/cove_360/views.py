@@ -22,7 +22,7 @@ from libcove.lib.converters import convert_spreadsheet, convert_json
 from libcove.lib.exceptions import CoveInputDataError
 
 from lib360dataquality.cove.schema import Schema360, ExtensionsError
-from lib360dataquality.cove.threesixtygiving import TEST_CLASSES
+from lib360dataquality.cove.threesixtygiving import TEST_CLASSES, TestType
 from lib360dataquality.cove.threesixtygiving import common_checks_360
 
 from cove_360.models import SuppliedDataStatus
@@ -61,6 +61,26 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     cached_context = cache.get(pk)
 
     if cached_context and not request.POST.get("flatten"):
+
+        if request.GET.get("new-mode"):
+            # We're swapping into DQT mode from submission, to avoid having
+            # to re-run the checks we reset/remove the submission context data
+            # which then causes the explore template to swap back to the DQT.
+            try:
+                db_data = SuppliedData.objects.get(pk=pk)
+                data_params = json.loads(db_data.parameters)
+                del data_params["self_publishing"]
+                db_data.parameters = json.dumps(data_params)
+                db_data.save()
+                data_status, dsc = SuppliedDataStatus.objects.get_or_create(
+                    supplied_data=db_data,
+                )
+                cached_context["data_status"] = data_status
+                cached_context["submission_tool"] = False
+                cache.set(pk, cached_context)
+            except KeyError:
+                pass
+
         print("Cache hit")
         return render(request, template, cached_context)
 
@@ -82,6 +102,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             # bail out early so user doesn't have to wait for validation to complete
             return render(request, "cove_360/publisher_not_found.html", context)
         data_status._publisher = json.dumps(publisher)
+        context["submission_tool"] = True
         context["publisher"] = publisher
 
     lib_cove_config = LibCoveConfig()
@@ -163,11 +184,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                 re.sub(r'([A-Z])', r'-\1', codelist_info['codelist'].split('.')[0]).lower()
             )
 
-    # Experimental to test performance impacts
-    # Note False will currently leave the grants table in the UI empty
-    do_grants_display = True
-
-    if do_grants_display and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
+    if settings.GRANTS_TABLE and hasattr(json_data, 'get') and hasattr(json_data.get('grants'), '__iter__'):
         context['grants'] = json_data['grants']
 
         context['metadata'] = {}
@@ -179,6 +196,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     else:
         context['grants'] = []
         context['metadata'] = {}
+        context["json_data"] = {}
 
     context['first_render'] = not db_data.rendered
     if not db_data.rendered:
@@ -189,9 +207,62 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     data_status.passed = context['validation_errors_count'] == 0
     data_status.save()
 
-    cache.set(pk, context)
+    try:
+        context["usefulness_categories"] = set([message["category"] for message, a, b in context["usefulness_checks"]])
+    except TypeError:
+        # if no usefulness_checks the iteration will fail
+        context["usefulness_categories"] = []
 
+    try:
+        context["quality_accuracy_categories"] = set([message["category"] for message, a, b in context["quality_accuracy_checks"]])
+    except TypeError:
+        # if no quality quality_accuracy categories the iteration will fail
+        context["quality_accuracy_categories"] = []
+
+    # TODO: Check if this is needed any more
+    #  try:
+    #      context["quality_accuracy_checks_passed"] = create_passed_tests_context_data(context["quality_accuracy_checks"], TEST_CLASSES["quality_accuracy"])
+    #   except Exception:
+    #      context["quality_accuracy_errored"] = True
+    #    try:
+    #       context["usefulness_checks_passed"] = create_passed_tests_context_data(context["usefulness_checks"], TEST_CLASSES["usefulness"])
+    #  except Exception:
+    #     context["usefulness_errored"] = True
+
+    context["total_quality_accuracy_checks"] = len(TEST_CLASSES[TestType.QUALITY_TEST_CLASS])
+    context["total_usefulness_checks"] = len(TEST_CLASSES[TestType.USEFULNESS_TEST_CLASS])
+
+    # Sort accuracy using the importance field
+    if context["quality_accuracy_checks"]:
+        context["quality_accuracy_checks"].sort(key=lambda x: x[0]["importance"], reverse=True)
+
+    if settings.DEBUG:
+        cache.clear()
+    else:
+        cache.set(pk, context)
+
+    # Helpful when debugging DQT
+    # import pprint
+    # pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
     return render(request, template, context)
+
+
+def create_passed_tests_context_data(failed_tests, available_tests):
+    """ Creates a list of test that have passed """
+
+    passed_tests_names = [test[0]["type"] for test in failed_tests]
+    passed_test_case_headings = []
+
+    for test in available_tests:
+        if test.__name__ in passed_tests_names:
+            continue
+        # We instantiate the test with no data to be able to utilise the heading formatting code
+        # TODO this may no longer be needed
+        # passed_test_case = test(grants=[], aggregates={"count": 0, "recipient_individuals_count": 0})
+        # passed_test_case_headings.append(mark_safe(passed_test_case.format_heading_count(test.check_text["heading"])))
+        passed_test_case_headings.append(test.__name__)
+
+    return passed_test_case_headings
 
 
 def common_errors(request):
@@ -200,16 +271,26 @@ def common_errors(request):
 
 def additional_checks(request):
     context = {}
+    check_types = []
 
-    test_classes = list(itertools.chain(*TEST_CLASSES.values()))
-    context['checks'] = [
-        {
-            'heading': check.check_text['heading'],
-            'messages': (check.check_text['message'].ordered_dict.items()),
-            'desc': check.__doc__,
-            'class_name': check.__name__
-        } for check in test_classes
-    ]
+    for check_type in vars(TestType):
+        if check_type.startswith("_"):
+            continue
+
+        test_check_cat_name = getattr(TestType, check_type)
+
+        test_classes = list(itertools.chain(TEST_CLASSES[test_check_cat_name]))
+
+        check_types.append(test_check_cat_name)
+
+        context[f"checks_{test_check_cat_name}"] = [
+                {
+                    'heading': check.check_text['heading'],
+                    'messages': (check.check_text['message'].ordered_dict.items()),
+                    'desc': check.__doc__,
+                    'class_name': check.__name__,
+                } for check in test_classes
+            ]
 
     if request.path.endswith('.csv'):
         response = HttpResponse(content_type='text/csv')
@@ -219,9 +300,10 @@ def additional_checks(request):
 
         writer = csv.writer(response)
         writer.writerow(['Class Name', 'Methodology', 'Heading', '%', 'Message'])
-        for check in context['checks']:
-            for message in check['messages']:
-                writer.writerow([check['class_name'], check['desc'], check['heading'], message[0], message[1]])
+        for check_type in check_types:
+            for check in context[f"checks_{check_type}"]:
+                for message in check['messages']:
+                    writer.writerow([check['class_name'], check['desc'], check['heading'], message[0], message[1]])
 
         return response
 

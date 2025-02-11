@@ -1,0 +1,68 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+
+  <h2>Accuracy</h2>
+
+  {% if validation_and_closed_codelist_errors_count > 0 %}
+  <p><strong>Caution:</strong> The data provided did <a href="#validity">not pass validation</a>, therefore the accuracy of the data could not be fully determined.</a>
+
+  {% elif quality_accuracy_checks_count == 0 %}
+  <p><i class="material-icons table--true">check</i>Congratulations! Your data passed <strong>{{total_quality_accuracy_checks}}</strong> accuracy checks.
+    Learn more about <a href="{% url 'additional_checks' %}">how we check accuracy</a>.
+  </p>
+  {% endif %}
+
+  {% if quality_accuracy_errored %}
+   <p>{% blocktrans %}Some Quality Accuracy checks failed due to an issue with the data. Fix some <a href="#validity">validation</a> errors first.{% endblocktrans %}</p>
+  {% endif %}
+
+  {% if quality_accuracy_checks %}
+  <p>{% blocktrans %}Your data has been checked for {{total_quality_accuracy_checks}} common accuracy issues. Learn more about {% endblocktrans %} <a href="{% url 'additional_checks' %}">{% blocktrans %} how we check accuracy{% endblocktrans %}</a>.</p>
+  <ol>{% blocktrans %}
+    <li>Use the feedback below to find and correct <strong>potential accuracy issues</strong>, especially if your file contains any <strong>critical issues</strong>.</li>
+    <li>Upload the updated file for a new check.</li>
+    {% endblocktrans %}
+  </ol>
+  <p>{% blocktrans %}Note that receiving this feedback does not mean the data is invalid. There may be cases where the data is correct and the feedback can be ignored.{% endblocktrans %}</p>
+
+  {% for category in quality_accuracy_categories %}
+  <h4>{{category}}</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{% trans 'Status' %}</th>
+        <th>{% trans 'Issue Identified' %} </th>
+        <th>{% trans 'Location' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# using regroup here would be good if we had dictionaries #}
+      {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
+      {% if message.category == category %}
+      <tr>
+        <td title="{% if message.importance >= 100 %}Critical feedback{% endif %}"><span style="font-size: xx-large; font-weight: bold; color: {% if message.importance >= 100 %}hsl(var(--red-hsl), 1) {% else %}hsl(var(--yellow-hsl), 1){% endif %}">!</span></td>
+        <td>
+          <!-- {{message.type}} -->
+          <strong>{{ message.heading }}</strong><br><br>{{ message.message }}
+        </td>
+        <td>
+           <button title="Open dialog to see where the identified issue is in the data." class="button button--small" data-toggle="modal" data-target-class="{{"quality_accuracy-checks-"|concat:forloop.counter}}">See Where</button>
+        </td>
+      </tr>
+      {% endif %} {# category filter #}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %} {# for each category #}
+  {% endif %}
+
+{% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
+{% with msg=message.heading %}
+{% if file_type == 'json' %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+{% else %}
+{% cove_360_modal_errors className="quality_accuracy-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+{% endif %}
+{% endwith %}
+{% endfor %}

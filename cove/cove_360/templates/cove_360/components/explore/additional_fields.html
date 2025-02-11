@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load humanize %}
+{% load cove_tags %}
+<h2>
+{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %} Additional fields{% endblocktrans %}
+</h2>
+{% if data_only %}
+<p>
+{{additional_fields_count}}
+{% blocktrans count n_additional_fields=additional_fields_count %} Additional fields{% plural %} Additional fields{% endblocktrans %}</strong> which do not use 360Giving Data Standard titles were found in your data.
+</p>
+<p class="left-space">{% blocktrans %} You are welcome to include additional fields in your data, however please check the field title(s) shown below to confirm if they are intended additions and not the result of spelling or formatting mistakes in the title. Please refer to the {% endblocktrans %}<a target="_blank" href="{% url 'common_errors' %}#required">{% blocktrans %}Common Errors</a> section to see the correctly formatted field titles for the required fields. {% endblocktrans %}</p>
+{% include "additional_fields_table.html" %}
+{% endif %}
+
+{% for message, json_location, spreadsheet_location in additional_checks %}
+  {% with msg=message.heading %}
+  {% if file_type == 'json' %}
+   {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=json_location file_type=file_type full_table=False %}
+  {% else %}
+   {% cove_360_modal_errors className="additional-checks-"|concat:forloop.counter modalTitle=msg errorList=spreadsheet_location file_type=file_type full_table=False %}
+  {% endif %}
+  {% endwith %}
+{% endfor %}

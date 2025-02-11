@@ -1,5 +1,13 @@
-from lib360dataquality.cove.threesixtygiving import AdditionalTest, RECIPIENT_INDIVIDUAL
+from lib360dataquality.additional_test import AdditionalTest, TestRelevance, RangeDict
 from functools import wraps
+
+try:
+    from django.utils.html import mark_safe
+except ImportError:
+    # If we don't have django we're not using this lib in CoVE so we're not using the output
+    # in HTML and therefore do not need a SafeString object.
+    def mark_safe(string):
+        return string
 
 
 class FieldNotPresentBase(AdditionalTest):
@@ -20,7 +28,7 @@ class FieldNotPresentBase(AdditionalTest):
         if not self.field:
             raise Exception("Field to check for not set")
 
-        if self.check_field(grant) is False:
+        if not self.check_field(grant):
             self.failed = True
             self.count += 1
             self.json_locations.append(path_prefix + "/id")
@@ -38,8 +46,7 @@ def exception_to_false(f):
     @wraps(f)
     def check(self, grant):
         try:
-            f(self, grant)
-            return True
+            return f(self, grant)
         except (KeyError, IndexError):
             return False
 
@@ -79,19 +86,23 @@ class BeneficiaryLocationGeoCodeNotPresent(FieldNotPresentBase):
 
 
 class PlannedDurationNotPresent(FieldNotPresentBase):
+    """ Checks for either a planned duration or start and end dates"""
+
+    check_text = {
+        "heading": mark_safe('Neither a planned duration or start and end dates found'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data does not contain either a planned duration or a start and end date."
+    )
+
     field = (
         "plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)"
     )
 
     @exception_to_false
     def check_field(self, grant):
-        if not grant["plannedDates"][0].get("duration") or not (
-            grant["plannedDates"][0].get("startDate")
-            and grant["plannedDates"][0].get("endDate")
-        ):
-            return False
-
-        return True
+        return (grant["plannedDates"][0].get("duration") or (grant["plannedDates"][0].get("startDate") and grant["plannedDates"][0].get("endDate")))
 
 
 class GrantProgrammeTitleNotPresent(FieldNotPresentBase):
@@ -109,7 +120,7 @@ class IndividualsCodeListsNotPresent(FieldNotPresentBase):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def check_field(self, grant):
         # Not relevant

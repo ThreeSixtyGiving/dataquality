@@ -5,6 +5,7 @@ import json
 import re
 from collections import OrderedDict, defaultdict
 from decimal import Decimal
+import logging
 
 import libcove.lib.tools as tools
 import openpyxl
@@ -13,7 +14,8 @@ from dateutil.relativedelta import relativedelta
 from jsonschema.exceptions import ValidationError
 from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
 from libcove.lib.tools import decimal_default
-from rangedict import RangeDict as range_dict
+from lib360dataquality.additional_test import AdditionalTest, TestImportance, TestType, TestCategories, TestRelevance, RangeDict
+from lib360dataquality.check_field_present import PlannedDurationNotPresent
 
 try:
     from django.utils.html import mark_safe
@@ -23,8 +25,7 @@ except ImportError:
     def mark_safe(string):
         return string
 
-QUALITY_TEST_CLASS = "quality_accuracy"
-USEFULNESS_TEST_CLASS = "usefulness"
+logger = logging.getLogger(__name__)
 
 DATES_JSON_LOCATION = {
     "award_date": "/awardDate",
@@ -38,20 +39,6 @@ orgids_prefixes = get_orgids_prefixes()
 orgids_prefixes.append("360G")
 
 currency_html = {"GBP": "&pound;", "USD": "$", "EUR": "&euro;"}
-
-
-class RangeDict(range_dict):
-    """
-    Override RangeDict library to work as an OrderedDict.
-    """
-
-    def __init__(self):
-        super(RangeDict, self).__init__()
-        self.ordered_dict = OrderedDict()
-
-    def __setitem__(self, r, v):
-        super(RangeDict, self).__setitem__(r, v)
-        self.ordered_dict[r] = v
 
 
 def oneOf_draft4(validator, oneOf, instance, schema):
@@ -392,7 +379,7 @@ def common_checks_360(
 
     # If no particular test classes are supplied then run all defined here
     if not test_classes:
-        test_classes = [QUALITY_TEST_CLASS, USEFULNESS_TEST_CLASS]
+        test_classes = [TestType.QUALITY_TEST_CLASS, TestType.USEFULNESS_TEST_CLASS]
 
     if context["file_type"] == "xlsx":
         try:
@@ -428,6 +415,7 @@ def common_checks_360(
             json_data,
             cell_source_map,
             TEST_CLASSES[test_class_type],
+            # Set ignore_errors to False for debugging checks otherwise all exceptions will pass
             ignore_errors=True,
             return_on_error=None,
             aggregates=context["grants_aggregates"],
@@ -515,89 +503,6 @@ def flatten_dict(grant, path=""):
             yield ("{}/{}".format(path, key), value)
 
 
-RECIPIENT_ANY = ""
-RECIPIENT_ORGANISATION = "recipient organisation"
-RECIPIENT_INDIVIDUAL = "recipient individual"
-
-
-class AdditionalTest:
-    def __init__(self, **kw):
-        self.grants = kw["grants"]
-        self.aggregates = kw["aggregates"]
-        self.grants_percentage = 0
-        self.json_locations = []
-        self.failed = False
-        self.count = 0
-        self.heading = None
-        self.message = None
-        # Default to the most common type
-        self.relevant_grant_type = RECIPIENT_ANY
-
-    def process(self, grant, path_prefix):
-        pass
-
-    def produce_message(self):
-        return {
-            "heading": self.heading,
-            "message": self.message,
-            "type": self.__class__.__name__,
-            "count": self.count,
-            "percentage": self.grants_percentage,
-        }
-
-    def get_heading_count(self, test_class_type):
-        # The total grants is contextual e.g. a test may fail for a recipient org-id
-        # this is only relevant to grants to organisations and not individuals
-        if self.relevant_grant_type == RECIPIENT_ANY:
-            total = self.aggregates["count"]
-        elif self.relevant_grant_type == RECIPIENT_ORGANISATION:
-            total = self.aggregates["count"] - self.aggregates["recipient_individuals_count"]
-        elif self.relevant_grant_type == RECIPIENT_INDIVIDUAL:
-            # if there are no individuals in this data then reset the count
-            if self.aggregates["recipient_individuals_count"] == 0:
-                self.count = 0
-            total = self.aggregates["recipient_individuals_count"]
-
-        # Guard against a division by 0
-        if total < 1:
-            total = 1
-
-        self.grants_percentage = self.count / total
-
-        # Return conditions
-
-        if test_class_type == QUALITY_TEST_CLASS:
-            return self.count
-
-        if self.aggregates["count"] == 1 and self.count == 1:
-            self.grants_percentage = 1.0
-            return f"1 {self.relevant_grant_type}".strip()
-
-        if self.count <= 5:
-            return f"{self.count} {self.relevant_grant_type}".strip()
-
-        return f"{round(self.grants_percentage*100)}% of {self.relevant_grant_type}".strip()
-
-    def format_heading_count(self, message, test_class_type=None, verb="have"):
-        """Build a string with count of grants plus message
-
-        The grant count phrase for the test is pluralized and
-        prepended to message, eg: 1 grant has + message,
-        2 grants have + message or 3 grants contain + message.
-        """
-        noun = "grant" if self.count == 1 else "grants"
-        if verb == "have":
-            verb = "has" if self.count == 1 else verb
-        elif verb == "do":
-            verb = "does" if self.count == 1 else verb
-        else:
-            # Naively!
-            verb = verb + "s" if self.count == 1 else verb
-        return "{} {} {} {}".format(
-            self.get_heading_count(test_class_type), noun, verb, message
-        )
-
-
 class ZeroAmountTest(AdditionalTest):
     """Check if any grants have an amountAwarded of 0.
 
@@ -615,6 +520,9 @@ class ZeroAmountTest(AdditionalTest):
         "using the data to understand how to interpret the information."
     )
 
+    category = TestCategories.GRANTS
+    importance = TestImportance.CRITICAL
+
     def process(self, grant, path_prefix):
         try:
             # check for == 0 explicitly, as other falsey values will be caught
@@ -629,7 +537,7 @@ class ZeroAmountTest(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -657,9 +565,11 @@ class RecipientOrg360GPrefix(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -695,6 +605,8 @@ class FundingOrg360GPrefix(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def process(self, grant, path_prefix):
         try:
             for num, organization in enumerate(grant["fundingOrganization"]):
@@ -729,9 +641,11 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -754,7 +668,7 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -778,6 +692,8 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def process(self, grant, path_prefix):
         try:
             count_failure = False
@@ -799,7 +715,7 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -828,9 +744,11 @@ class RecipientOrgCharityNumber(AdditionalTest):
         "ignored."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -855,7 +773,7 @@ class RecipientOrgCharityNumber(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -885,9 +803,11 @@ class RecipientOrgCompanyNumber(AdditionalTest):
         "in which case this message can be ignored."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -909,7 +829,7 @@ class RecipientOrgCompanyNumber(AdditionalTest):
 
         self.heading = mark_safe(
             self.format_heading_count(
-                self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+                self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
             )
         )
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
@@ -934,9 +854,11 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
         "ignore this notice."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -985,9 +907,11 @@ class IncompleteRecipientOrg(AdditionalTest):
         "for further help. "
     )
 
+    category = TestCategories.LOCATION
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         try:
@@ -1029,6 +953,9 @@ class MoreThanOneFundingOrg(AdditionalTest):
         "If you are expecting to be publishing data for multiple funders and the number "
         "of funders is correct, then you can ignore this error notice."
     )
+
+    category = TestCategories.ORGANISATIONS
+    importance = TestImportance.CRITICAL
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -1080,6 +1007,9 @@ class LooksLikeEmail(AdditionalTest):
         "refers."
     )
 
+    category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
+
     def process(self, grant, path_prefix):
         flattened_grant = OrderedDict(flatten_dict(grant))
         for key, value in flattened_grant.items():
@@ -1092,7 +1022,7 @@ class LooksLikeEmail(AdditionalTest):
 
         self.heading = self.format_heading_count(
             self.check_text["heading"],
-            test_class_type=QUALITY_TEST_CLASS,
+            test_class_type=TestType.QUALITY_TEST_CLASS,
             verb="contain",
         )
         self.message = self.check_text["message"][self.grants_percentage]
@@ -1114,6 +1044,8 @@ class NoGrantProgramme(AdditionalTest):
         "sectors, issues or places that are the focus of the programme. If your "
         "organisation does not have grant programmes this notice can be ignored."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         grant_programme = grant.get("grantProgramme")
@@ -1149,6 +1081,8 @@ class NoBeneficiaryLocation(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.LOCATION
+
     def process(self, grant, path_prefix):
         beneficiary_location = grant.get("beneficiaryLocation")
         if not beneficiary_location:
@@ -1171,6 +1105,8 @@ class TitleDescriptionSame(AdditionalTest):
         "Users may find that the data is less useful as they are unable to discover more about the grants. "
         "Consider including a more detailed description if you have one."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         title = grant.get("title")
@@ -1195,6 +1131,8 @@ class TitleLength(AdditionalTest):
         "Titles for grant activities should be under 140 characters long so that people "
         "can quickly understand the purpose of the grant."
     )
+
+    category = TestCategories.GRANTS
 
     def process(self, grant, path_prefix):
         title = grant.get("title", "")
@@ -1223,9 +1161,12 @@ class GrantIdUnexpectedChars(AdditionalTest):
         " for further help."
     )
 
+    category = TestCategories.GRANTS
+    importance = TestImportance.CRITICAL
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ANY
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ANY
 
     def process(self, grant, path_prefix):
         if "\n" in grant.get("id"):
@@ -1234,7 +1175,7 @@ class GrantIdUnexpectedChars(AdditionalTest):
             self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1253,9 +1194,12 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
         " See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> "
         " for further help.")
 
+    category = TestCategories.ORGANISATIONS
+    importance = TestImportance.CRITICAL
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         for org_type in ("fundingOrganization", "recipientOrganization"):
@@ -1272,7 +1216,7 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
                     self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1297,9 +1241,11 @@ class OrganizationIdLooksInvalid(AdditionalTest):
         "for further help."
     )
 
+    category = TestCategories.ORGANISATIONS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_ORGANISATION
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
         for org_type in ("fundingOrganization", "recipientOrganization"):
@@ -1322,7 +1268,7 @@ class OrganizationIdLooksInvalid(AdditionalTest):
                         self.count += 1
 
         self.heading = self.format_heading_count(
-            self.check_text["heading"], test_class_type=QUALITY_TEST_CLASS
+            self.check_text["heading"], test_class_type=TestType.QUALITY_TEST_CLASS
         )
         self.message = self.check_text["message"][self.grants_percentage]
 
@@ -1341,6 +1287,8 @@ class NoLastModified(AdditionalTest):
         "information about a grant was last updated in your file. Including this information allows data "
         "users to see when changes have been made and reconcile differences between versions of your data."
     )
+
+    category = TestCategories.METADATA
 
     def process(self, grant, path_prefix):
         last_modified = grant.get("dateModified")
@@ -1373,6 +1321,8 @@ class NoDataSource(AdditionalTest):
         "website."
     )
 
+    category = TestCategories.METADATA
+
     def process(self, grant, path_prefix):
         data_source = grant.get("dataSource")
         if not data_source:
@@ -1400,6 +1350,9 @@ class ImpossibleDates(AdditionalTest):
         "Your data contains dates that didn't, or won't, exist - such as the 31st of September, "
         "or the 29th of February in a year that's not a leap year. This error is commonly caused by typos during data entry."
     )
+
+    category = TestCategories.DATES
+    importance = TestImportance.CRITICAL
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1457,6 +1410,8 @@ class PlannedStartDateBeforeEndDate(AdditionalTest):
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1495,6 +1450,8 @@ class ActualStartDateBeforeEndDate(AdditionalTest):
         "This can also be caused by inconsistent date formatting when data was prepared using spreadsheet software."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1530,6 +1487,8 @@ class FarFuturePlannedDates(AdditionalTest):
         "your data describes activities that run a long time into the future, but you should check for data entry "
         "errors if this isn't expected."
     )
+
+    category = TestCategories.DATES
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1571,6 +1530,8 @@ class FarFutureActualDates(AdditionalTest):
         "if this isn't expected."
     )
 
+    category = TestCategories.DATES
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1609,6 +1570,8 @@ class FarPastDates(AdditionalTest):
         "Your data contains dates that are more than 25 years ago. You can disregard this error notice if your "
         "data is about activities far in the past, but you should check for data entry errors if this isn't expected."
     )
+
+    category = TestCategories.DATES
 
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
@@ -1660,6 +1623,9 @@ class PostDatedAwardDates(AdditionalTest):
         "includes grants that are not yet fully committed"
     )
 
+    category = TestCategories.DATES
+    importance = TestImportance.CRITICAL
+
     def process(self, grant, path_prefix):
         grant_dates = create_grant_dates_dict(Grant(grant))
 
@@ -1696,9 +1662,11 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
         "individuals."
     )
 
+    category = TestCategories.GRANTS
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "toIndividualsDetails" not in grant:
@@ -1726,9 +1694,12 @@ class RecipientIndDEI(AdditionalTest):
         "identifiable when combined with other information in the grant."
     )
 
+    category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant and "project" in grant:
@@ -1768,9 +1739,12 @@ class GeoCodePostcode(AdditionalTest):
         "grant."
     )
 
+    category = TestCategories.DATA_PROTECTION
+    importance = TestImportance.CRITICAL
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.relevant_grant_type = RECIPIENT_INDIVIDUAL
+        self.relevant_grant_type = TestRelevance.RECIPIENT_INDIVIDUAL
 
     def process(self, grant, path_prefix):
         if "recipientIndividual" in grant:
@@ -1787,8 +1761,199 @@ class GeoCodePostcode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+class MultiFundingNamesForOrgId(AdditionalTest):
+    """Check for Funding org ids with multiple names."""
+
+#TODO copy
+    check_text = {
+        "heading": mark_safe("introduced an additional Funding Org:Identifier for an existing Funding Org:Name"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Funding Org names with differing org-ids. "
+        "Funding organisations typically only have one name and one org-id."
+    )
+
+    category = TestCategories.ORGANISATIONS
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        #  zxy-name: { names: [] }
+        self.funding_organisation_names = {}
+
+    def process(self, grant, path_prefix):
+        # Some test data doesn't have the full valid grant
+        if "fundingOrganization" not in grant:
+            return
+
+        for num, organisation in enumerate(grant["fundingOrganization"]):
+            org_id = organisation["id"]
+            name = organisation["name"]
+
+            try:
+                found_org_id = self.funding_organisation_names[name]
+            except KeyError:
+                # initialise the data
+                self.funding_organisation_names[name] = org_id
+                found_org_id = org_id
+
+            if found_org_id != org_id:
+                # We have a brand new org id for this funder name, suspicious.
+                self.json_locations.append(
+                    path_prefix + "/fundingOrganization/{}/id".format(num)
+                )
+                self.count = self.count + 1
+                self.failed = True
+
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = mark_safe(self.check_text["message"][self.grants_percentage])
+
+
+class MultiFundingOrgIdsForName(AdditionalTest):
+    """Check for org ids with multiple names."""
+
+# TODO copy
+    check_text = {
+        "heading": mark_safe("introduced an additional Funding Org:Name for an existing Funding Org:Identifier"),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Funding org-ids with differing names. "
+        "Funding organisations typically only have one name and one org-id."
+    )
+
+    category = TestCategories.ORGANISATIONS
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        #  zxy-name: { names: [] }
+        self.funding_organisation_ids = {}
+
+    def process(self, grant, path_prefix):
+        # Some test data doesn't have the full valid grant
+        if "fundingOrganization" not in grant:
+            return
+
+        for num, organisation in enumerate(grant["fundingOrganization"]):
+            org_id = organisation["id"]
+            name = organisation["name"]
+
+            try:
+                existing_name = self.funding_organisation_ids[org_id]
+            except KeyError:
+                # initialise the data
+                self.funding_organisation_ids[org_id] = name
+                existing_name = name
+
+            if existing_name != name:
+                # We have a brand new name for this org id, suspicious.
+                self.json_locations.append(
+                    path_prefix + "/fundingOrganization/{}/name".format(num)
+                )
+                self.count = self.count + 1
+                self.failed = True
+
+        self.heading = self.format_heading_count(self.check_text["heading"])
+        self.message = mark_safe(self.check_text["message"][self.grants_percentage])
+
+
+class BeneficiaryButNotRecipientGeoData(AdditionalTest):
+    """Check grants to see if there is beneficiary location data but not recipient location data"""
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Beneficiary location data found but no Recipient Organisation location data'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Beneficiary location data but no Recipient Organisation location data."
+    )
+
+    category = TestCategories.LOCATION
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+        if len(beneficiary_locations) > 0 and len(grant["recipientOrganization"][0].get("location", [])) == 0:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/recipientOrganization/0/id"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+class RecipientGeoDataButNoBeneficiary(AdditionalTest):
+    """Check grants to see if there is Recipient organisation location data but no Beneficiary location data"""
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Recipient Organisation location data found but no Beneficiary location data'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains Recipient Organisation location data but no beneficiary location data."
+    )
+
+    category = TestCategories.LOCATION
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        if len(grant["recipientOrganization"][0].get("location", [])) > 0 and len(beneficiary_locations) == 0:
+            self.failed = True
+            self.count += 1
+            self.json_locations.append(
+                path_prefix + "/recipientOrganization/0/location"
+            )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+class BeneficiaryLocationNameButNoCode(AdditionalTest):
+    """Check grants beneficiary location data contains a name but no geo code data"""
+
+    # TODO copy
+    check_text = {
+        "heading": mark_safe('Beneficiary location name found but no beneficiary location code'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Your data contains a beneficiary location name but no location code."
+    )
+
+    category = TestCategories.LOCATION
+
+    def process(self, grant, path_prefix):
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        for num, location in enumerate(beneficiary_locations):
+            if location.get("name") and not location.get("geoCode"):
+                self.failed = True
+                self.count += 1
+                self.json_locations.append(
+                    path_prefix + "/beneficiaryLocation/{}/name".format(num)
+                )
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
+# Default tests run in CoVE, these are also the base list
+# for the Quality Dashboard checks.
 TEST_CLASSES = {
-    QUALITY_TEST_CLASS: [
+    # Quality = Accuracy tests in cove
+    TestType.QUALITY_TEST_CLASS: [
         ZeroAmountTest,
         FundingOrgUnrecognisedPrefix,
         RecipientOrgUnrecognisedPrefix,
@@ -1806,11 +1971,12 @@ TEST_CLASSES = {
         FarFutureActualDates,
         FarPastDates,
         PostDatedAwardDates,
-        RecipientIndWithoutToIndividualsDetails,
         RecipientIndDEI,
         GeoCodePostcode,
+        MultiFundingNamesForOrgId,
+        MultiFundingOrgIdsForName,
     ],
-    USEFULNESS_TEST_CLASS: [
+    TestType.USEFULNESS_TEST_CLASS: [
         RecipientOrg360GPrefix,
         FundingOrg360GPrefix,
         NoRecipientOrgCompanyCharityNumber,
@@ -1821,6 +1987,11 @@ TEST_CLASSES = {
         TitleLength,
         NoLastModified,
         NoDataSource,
+        RecipientIndWithoutToIndividualsDetails,
+        PlannedDurationNotPresent,
+        BeneficiaryLocationNameButNoCode,
+        BeneficiaryButNotRecipientGeoData,
+        RecipientGeoDataButNoBeneficiary,
     ],
 }
 
@@ -1865,10 +2036,13 @@ def create_grant_dates_dict(grant):
     grant_dates = {}
 
     award_date = grant.grant.get("awardDate")
-    planned_start_date = grant.grant.get("plannedDates", [{}])[0].get("startDate")
-    planned_end_date = grant.grant.get("plannedDates", [{}])[0].get("endDate")
-    actual_start_date = grant.grant.get("actualDates", [{}])[0].get("startDate")
-    actual_end_date = grant.grant.get("actualDates", [{}])[0].get("endDate")
+    try:
+        planned_start_date = grant.grant.get("plannedDates", [{}])[0].get("startDate")
+        planned_end_date = grant.grant.get("plannedDates", [{}])[0].get("endDate")
+        actual_start_date = grant.grant.get("actualDates", [{}])[0].get("startDate")
+        actual_end_date = grant.grant.get("actualDates", [{}])[0].get("endDate")
+    except IndexError:
+        return {}
 
     for date_type, input_date in [
         ["award_date", award_date],
@@ -1914,7 +2088,8 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                     for location in test_instance.json_locations
                 ]
             except KeyError:
-                continue
+                logger.warning(f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
+                pass
         results.append(
             (
                 test_instance.produce_message(),
@@ -1922,4 +2097,5 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                 spreadsheet_locations,
             )
         )
+
     return results

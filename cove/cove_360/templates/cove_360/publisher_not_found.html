@@ -1,30 +1,30 @@
-{% extends "explore.html" %}
+{% extends request.current_app_base_template %}
 {% load i18n %}
+
+{% block hero_title %}Data submission tool{% endblock %}
+{% block hero_blurb %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% endblock %}
+
 {% block content %}
- <div class="panel panel-default">
-    <div class="panel-heading" >
-      <h3 class="panel-title panel-title-explore">
-        {% if data_status.can_publish %}
-          <span class="font-tick tick" aria-hidden="true"></span>
-        {% endif %}
-        {% trans "Submit your data" %}</h3>
-        </div>
-      <div class="panel-body" id="publisher-not-found-message">
-        <p>{% blocktrans %}Sorry you aren't able to submit this file because the domain name of the website hosting your file ({{source_url_domain}}) is not authorised for publishing 360Giving data.{% endblocktrans %}</p>
-        <p>{% blocktrans %}Please email 360Giving helpdesk via <a href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a> with the link to the file you want to submit to the Data Registry.{% endblocktrans %}</p>
-    </div>
-  </div>
+<h3>Problem submitting your data</h3>
+<div id="publisher-not-found-message">
+  <p>{% blocktrans %}Sorry you aren't able to submit this file because the domain name of the website hosting your file
+    ({{source_url_domain}}) is not authorised for publishing 360Giving data.{% endblocktrans %}</p>
+  <p>{% blocktrans %}Please email 360Giving helpdesk via <a
+      href="mailto:support@threesixtygiving.org">support@threesixtygiving.org</a> with the link to the file you want to
+    submit to the Data Registry.{% endblocktrans %}</p>
+  <p><a href="{% url "publishing" %}">Try a new file</a></p>
+</div>
+<div class="spacer-3"></div>
 
-  <script>
-    window.addEventListener('load', function() {
+<script>
+  window.addEventListener('load', function () {
+    const publisherValidation = 'domain-invalid';
+    const dataValidation = 'data-unchecked';
+    const validation = publisherValidation + '-' + dataValidation;
+    const source = '{{ source_url }}';
 
-      let publisherValidation = 'domain-invalid'
-      let dataValidation = 'data-unchecked'
-      let validation = publisherValidation + '-' + dataValidation;
-      source = '{{ source_url }}'
-
-      _paq.push(['trackEvent', 'Status', validation, source]);
-      _paq.push(['trackPageView']);
-    })
-  </script>
+    _paq.push(['trackEvent', 'Status', validation, source]); // eslint-disable-line no-undef
+    _paq.push(['trackPageView']); // eslint-disable-line no-undef
+  });
+</script>
 {% endblock %}

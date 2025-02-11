@@ -20,3 +20,5 @@ cove/lib/org-ids.json
 cove/lib/org-ids.json.lock
 chromedriver/
 src/
+node_modules/
+untracked/

@@ -1,16 +1,22 @@
 {% load i18n %}
 {% load cove_tags %}
 
-<table class="table table-condensed">
-<thead> 
-  <tr> 
-    <th>{% trans 'Error Description' %}</th> 
-    <th>{% trans 'Error Count' %}</th> 
-    <th>{% trans 'First 3 Examples' %}</th> 
+{% for error_json, error_extra in validation_errors %}
+  {% with error=error_json|json_decode %}
+    {% cove_360_modal_errors className="validation-errors-"|concat:error_prefix|concat:forloop.counter modalTitle=error.message errorList=error_extra.values file_type=file_type full_table=True %}
+  {% endwith %}
+{% endfor %}
+
+<table class="table">
+<thead>
+  <tr>
+    <th>{% trans 'Error Description' %}</th>
+    <th>{% trans 'Error Count' %}</th>
+    <th>{% trans 'First 3 Examples' %}</th>
     {% if file_type != 'xlsx' and file_type != 'csv' %}
-      <th>{% trans 'Location of first 3 errors' %}</th> 
+      <th>{% trans 'Location of first 3 errors' %}</th>
     {% endif %}
-  </tr> 
+  </tr>
 </thead>
 <tbody>
 {% for error_json, error_extra in validation_errors %}
@@ -30,17 +36,16 @@
     </div>
     {% endif %}
   </td>
-  <td class="text-center">
+  <td style="text-align: center">
+    {{error_extra.values|length}} <br />
     {% if error_extra.values|length > 3 %}
       {% if error_prefix %}
-      <a data-toggle="modal" data-target=".{{"validation-errors-"|concat:error_prefix|concat:forloop.counter}}">
+      <button class="button button--small" data-toggle="modal" data-target-class="{{"validation-errors-"|concat:error_prefix|concat:forloop.counter}}">
       {% else %}
-      <a data-toggle="modal" data-target=".{{"validation-errors-"|concat:forloop.counter}}">
+      <button class="button button--small" data-toggle="modal" data-target-class="{{"validation-errors-"|concat:forloop.counter}}">
       {% endif %}
-        {{error_extra.values|length}}
-      </a>
-    {% else %}
-        {{error_extra.values|length}}
+      Show All
+      </button>
     {% endif %}
   </td>
   {% if error_extra.spreadsheet_style_errors_table %}
@@ -48,7 +53,7 @@
       {% for sheet, table in error_extra.spreadsheet_style_errors_table.items %}
         {% if sheet %}
           Sheet: {{sheet}}
-          <table class="table table-bordered">
+          <table class="table">
             {% for row in table %}
               {% with rowcounter=forloop.counter %}
                 <tr>
@@ -57,9 +62,9 @@
                       <th>{{cell}}</th>
                     {% else %}
                       {% if cell.type == 'example' %}
-                        <td style="background-color: #f8d7da; color: #721c24">{{cell.value}}</td>
+                        <td style="background-color: #f8d7da; color: #721c24">&quot;{{cell.value}}&quot;</td>
                       {% else %}
-                        <td>{{cell.value}}</td>
+                        <td>&quot;{{cell.value}}&quot;</td>
                       {% endif %}
                     {% endif %}
                   {% endfor %}
@@ -75,7 +80,7 @@
       <td>
         <ul class="list-unstyled">
           {% for value in values|slice:":3" %}
-            <li> {{value.value}} </li>
+            <li> &quot;{{value.value}}&quot;</li>
           {% endfor %}
         </ul>
       </td>
