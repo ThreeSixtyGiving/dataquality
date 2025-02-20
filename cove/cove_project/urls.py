@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path
+from django.views.generic import RedirectView
 
 from cove.urls import urlpatterns, handler500  # noqa: F401
 
@@ -15,7 +16,9 @@ urlpatterns += [
     path("api/results/<uuid:id>", cove_360.api.ResultsApiView.as_view(), name="api-results"),
     url(r'^xhr_results_ready/(.+)$', cove_360.views.results_ready, name='xhr_results_ready'),
     url(r'^common_errors', cove_360.views.common_errors, name='common_errors'),
-    url(r'^additional_checks', cove_360.views.additional_checks, name='additional_checks')
+    url(r'^additional_checks', cove_360.views.additional_checks, name='additional_checks'),
+    # In preperation for new DQT version forward compatibility
+    url(r'^submit', RedirectView.as_view(url="/#submit-data-for-publishing", permanent=False), name='submit-temp-tional_checks'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
