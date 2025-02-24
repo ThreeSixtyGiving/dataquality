@@ -18,7 +18,7 @@ urlpatterns += [
     url(r'^common_errors', cove_360.views.common_errors, name='common_errors'),
     url(r'^additional_checks', cove_360.views.additional_checks, name='additional_checks'),
     # In preperation for new DQT version forward compatibility
-    url(r'^submit', RedirectView.as_view(url="/#submit-data-for-publishing", permanent=False), name='submit-temp-tional_checks'),
+    url(r'^submit', RedirectView.as_view(url="/#submit-data-for-publishing", permanent=False), name='submit-temp'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
