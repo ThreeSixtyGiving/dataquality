@@ -513,11 +513,10 @@ class ZeroAmountTest(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "It’s worth taking a look at these grants and deciding if they should be "
-        "included in your data. It’s unusual to have grants of £0, but there may be a "
-        "reasonable explanation. If £0 value grants are to be published in your data "
-        "consider adding an explanation to the description of the grant to help anyone "
-        "using the data to understand how to interpret the information."
+        "Please review these grants and decide if they should be included in your data. "
+        "It's unusual to have grants of £0, but there may be a reasonable explanation. "
+        "If you intend to publish £0 value grants consider adding an explanation "
+        "to the grant description to help users to interpret the information correctly."
     )
 
     category = TestCategories.GRANTS
