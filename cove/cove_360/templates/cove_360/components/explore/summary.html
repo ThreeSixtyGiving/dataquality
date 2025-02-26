@@ -105,8 +105,6 @@
   <hr class="separator-light">
   <h3 id="contents">This file contains</h3>
 
-  <p>{% trans "Use this section to get an overview of the data and check if this was what you were expecting to see." %}</p>
-
   <div class="media-card__box_container">
     {% include "cove_360/tokens/media_card_box.html" with metric="Total Grants" value=grants_aggregates.count identifiers=grants_aggregates.unique_ids  target_class="unique-ids" %}
     {% include "cove_360/tokens/media_card_box.html" with metric="Funding Organisations" value=grants_aggregates.distinct_funding_org_identifier|length identifiers=grants_aggregates.distinct_funding_org_identifier  target_class="distinct-funding-org-identifier" %}
