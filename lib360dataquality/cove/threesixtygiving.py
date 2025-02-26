@@ -1877,7 +1877,11 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
 
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
-        if len(beneficiary_locations) > 0 and len(grant["recipientOrganization"][0].get("location", [])) == 0:
+        if (
+            len(beneficiary_locations) > 0
+            and not grant["recipientOrganization"][0].get("postalCode")
+            and len(grant["recipientOrganization"][0].get("location", [])) == 0
+        ):
             self.failed = True
             self.count += 1
             self.json_locations.append(
