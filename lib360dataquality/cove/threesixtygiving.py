@@ -513,11 +513,10 @@ class ZeroAmountTest(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "It’s worth taking a look at these grants and deciding if they should be "
-        "included in your data. It’s unusual to have grants of £0, but there may be a "
-        "reasonable explanation. If £0 value grants are to be published in your data "
-        "consider adding an explanation to the description of the grant to help anyone "
-        "using the data to understand how to interpret the information."
+        "Please review these grants and decide if they should be included in your data. "
+        "It's unusual to have grants of £0, but there may be a reasonable explanation. "
+        "If you intend to publish £0 value grants consider adding an explanation "
+        "to the grant description to help users to interpret the information correctly."
     )
 
     category = TestCategories.GRANTS
@@ -553,14 +552,14 @@ class RecipientOrg360GPrefix(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Use an external reference, such as a charity or company number, to identify an "
-        "organisation whenever possible. Doing so makes it possible to see when "
-        "recipients have received grants from multiple funders, and allows grants data "
-        "to be linked or combined with information from official registers. Some "
-        "organisations, such as small unregistered groups, do not have an official "
-        "registration number that can be used. In these cases the organisation "
+        "If a recipient has a charity or company number, or another official reference, "
+        "this should be used to identify the organisation. Doing so makes it possible to "
+        "see when funders give grants to the same recipient and allows grants data to be "
+        "linked to official sources of organisation data. However some organisations, "
+        "such as small unregistered groups, do not have an official "
+        "reference number that can be used. In these cases the recipient organisation "
         "identifier should start ‘360G-‘ and use an identifier taken from the "
-        "publisher’s internal systems. See our "
+        "your internal systems. See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
@@ -597,10 +596,10 @@ class FundingOrg360GPrefix(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Use an external reference, such as a charity or company number, to identify a "
-        "funding organisation whenever possible. Some funders do not have an official "
-        "registration number that can be used. In these cases the funding organisation "
-        "identifier should reuse the publisher prefix and therefore start with “360G-”. See our "
+        "Use an official reference, such as a charity or company number, to identify your "
+        "funding organisation whenever possible. However, some funders do not have an official "
+        "reference number that can be used. In these cases your funding organisation "
+        "identifier should reuse your publisher prefix and therefore start with “360G-”. See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
@@ -634,10 +633,8 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "In the 360Giving Data Standard, organisation identifiers have two parts: an "
-        "identifier and a prefix which describes the list the identifier is taken from. "
         "This error notice is caused by the prefix in an organisation identifier not "
-        'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
+        'being taken from a recognised register on the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
@@ -685,10 +682,8 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "In the 360Giving Data Standard, organisation identifiers have two parts: an "
-        "identifier and a prefix which describes the list the identifier is taken from. "
         "This error notice is caused by the prefix in an organisation identifier not "
-        'being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
+        'being taken from a recognised register on the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our '
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.'
     )
 
@@ -887,8 +882,7 @@ class NoRecipientOrgCompanyCharityNumber(AdditionalTest):
 
 class IncompleteRecipientOrg(AdditionalTest):
     """
-    Checks if any grants lack one of either Recipient Org:Postal Code or both of Recipient Org:Location:Geographic Code
-    and Recipient Org:Location:Geographic Code Type
+    Checks if any grants lack one of either Recipient Org:Postal Code or Recipient Org:Location:Geographic Code
     """
 
     check_text = {
@@ -947,10 +941,10 @@ class MoreThanOneFundingOrg(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "If you are only publishing for a single funder then you should review your "
-        '<span class="highlight-background-text">Funding Organisation identifier</span> field '
+        "If you are only publishing for a single funder please review your "
+        '<span class="highlight-background-text">Funding Org:Identifier</span> field '
         "to see where multiple IDs have occurred. "
-        "If you are expecting to be publishing data for multiple funders and the number "
+        "If you are publishing data about multiple funders and the number "
         "of funders is correct, then you can ignore this error notice."
     )
 
@@ -998,8 +992,8 @@ class LooksLikeEmail(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data may contain an email address (or something that looks like "
-        "one), which can constitute personal data if it is the email of an "
+        "Your data contains an email address (or something that looks like "
+        "one), which could constitute personal data if it is the email of an "
         "individual. The use and distribution of personal data is restricted by "
         "the Data Protection Act. You should ensure that any personal data is "
         "removed from your data prior to publishing it, or that it is only "
@@ -1042,7 +1036,7 @@ class NoGrantProgramme(AdditionalTest):
         "funding and priorities, and see how their grants vary across and within these. "
         "This information is especially useful when it refers to the communities, "
         "sectors, issues or places that are the focus of the programme. If your "
-        "organisation does not have grant programmes this notice can be ignored."
+        "organisation does not have grant programmes you can ignore this notice."
     )
 
     category = TestCategories.GRANTS
@@ -1068,15 +1062,12 @@ class NoBeneficiaryLocation(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Beneficiary location data in the form of place names and geocodes allow users "
-        "to understand which places funding is reaching. This data can be more accurate "
+        "Including beneficiary location data in the form of place names and geocodes helps users "
+        "to understand which places your funding reaches. This data can be more accurate "
         "in showing where grants are going geographically, especially in cases where the "
         "recipient location is in a different place from the activity being funded. "
-        "Beneficiary location codes can be used to produce maps, such as the ones in "
-        '<a target="_blank" href="https://insights.threesixtygiving.org/">360Insights</a>, '
-        "showing the geographical distribution of funding and allows grants "
-        "data to be looked at alongside official statistics, such as the Indices of "
-        "multiple deprivation. See our "
+        "Beneficiary location geocodes enable grants data to be used by 360Giving tools, "
+        "visualised in maps and linked to official statistics. See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>'
         "for further help."
     )
@@ -1150,13 +1141,13 @@ class GrantIdUnexpectedChars(AdditionalTest):
     """
 
     check_text = {
-        "heading": mark_safe("a Grant Identifier contains unexpected characters. This grant will not appear in GrantNav."),
+        "heading": mark_safe("a Grant Identifier that contains unexpected characters. If published this grant will not appear in GrantNav."),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
 
-        "The Grant Identifier contains unexpected characters such as line breaks. These characters break 360Giving tools including GrantNav,"
-        " so the affected grants will not appear in 360Giving's tools unless the unexpected characters are removed. See our"
+        "The grant identifier contains line breaks which cause 360Giving tools to break. "
+        "The affected grants will not appear in 360Giving's tools unless the unexpected characters are removed. See our"
         " <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#grant-identifier\">guidance on grant identifiers</a>"
         " for further help."
     )
@@ -1186,11 +1177,13 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
     """
 
     check_text = {
-        "heading": mark_safe("a Funding or Recipient Organisation identifier contains unexpected characters. This grant will not appear in GrantNav."),
+        "heading": mark_safe("a Funding or Recipient Organisation identifier that contains unexpected characters. If published this grant will not appear in GrantNav."),
         "message": RangeDict(),
     }
-    check_text["message"][(0, 100)] = mark_safe("The org-id contains unexpected characters such as line breaks."
-        " These characters break 360Giving tools including GrantNav, so the affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
+    check_text["message"][(0, 100)] = mark_safe(
+
+        "The organisation identifier contains line breaks which cause 360Giving tools to break. "
+        "The affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
         " See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> "
         " for further help.")
 
@@ -1233,10 +1226,11 @@ class OrganizationIdLooksInvalid(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "The identifiers might not be valid for the recognised register that they refer "
-        "to - for example, an identifier with the prefix 'GB-CHC' that contains an "
-        "invalid charity number. Common causes of this are missing or extra digits, "
-        "typos or incorrect values such as text appearing in this field. See our "
+        "This error notice is caused by organisation identifiers that are not valid "
+        "for the register that they refer to in their prefix. For example, an "
+        "identifier with the prefix 'GB-CHC' that contains an invalid charity number. "
+        "Common causes are missing or extra digits, typos or incorrect values "
+        "such as text appearing in this field. See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> '
         "for further help."
     )
@@ -1620,7 +1614,7 @@ class PostDatedAwardDates(AdditionalTest):
     check_text["message"][(0, 100)] = mark_safe(
         "Your data contains grant Award Dates in the future. This date is when the decision to award the grant "
         "was made so it would normally be in the past. This error can happen when there is a typo in the date, or the data "
-        "includes grants that are not yet fully committed"
+        "includes grants that are not yet fully committed."
     )
 
     category = TestCategories.DATES
@@ -1648,18 +1642,19 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            '<span class="highlight-background-text">Recipient Ind</span> but no '
+            '<span class="highlight-background-text">Recipient individual</span> grant with no '
             '<span class="highlight-background-text">To Individuals Details:Grant Purpose</span> or '
             '<span class="highlight-background-text">To Individuals Details:Primary Grant Reason</span>'
         ),
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains grants to individuals, but without the grant "
-        "purpose or grant reason codes. This can make it difficult to use data "
-        "on grants to individuals, as much of the information is anonymised, so "
-        "it is recommended that you share these codes for all grants to "
-        "individuals."
+        "Your data contains grants to individuals, but does not include grant "
+        "purpose or grant reason codes. Including this information will make "
+        "your data more useful and contribute to analysis of collective impact "
+        "and trends over time. See our "
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/individuals/publisher-guidance/#grants-to-individuals-codelists">guidance on grants to individuals codelists</a> '
+        "for further help."
     )
 
     category = TestCategories.GRANTS
@@ -1770,8 +1765,9 @@ class MultiFundingNamesForOrgId(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains Funding Org names with differing org-ids. "
-        "Funding organisations typically only have one name and one org-id."
+        "Your data contains a single funder name with more than one organisation identifier. "
+        "Funding organisations are expected to have a consistent name with a corresponding "
+        "identifier so please check your data to see why multiple identifiers have occurred."
     )
 
     category = TestCategories.ORGANISATIONS
@@ -1818,8 +1814,9 @@ class MultiFundingOrgIdsForName(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains Funding org-ids with differing names. "
-        "Funding organisations typically only have one name and one org-id."
+        "Your data contains an organisation identifier with more than one funder name. "
+        "Funding organisations are expected to have one name with a corresponding identifier, "
+        "so please check your data to see why multiple funder names have occurred."
     )
 
     category = TestCategories.ORGANISATIONS
@@ -1866,7 +1863,13 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains Beneficiary location data but no Recipient Organisation location data."
+        "Your data contains useful Beneficiary location data, which helps users understand "
+        "which places your funding reaches. If available please consider also including Recipient "
+        "Organisation location data, which helps users to understand where grant recipients are based. "
+        "See our "
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        "for further help."
+
     )
 
     category = TestCategories.LOCATION
@@ -1901,7 +1904,13 @@ class RecipientGeoDataButNoBeneficiary(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains Recipient Organisation location data but no beneficiary location data."
+        "Your data contains useful Recipient Organisation location data which helps users to "
+        "understand where grants recipients are based. If available, please consider also including "
+        "beneficiary location data to provide further context about the places your funding reaches. "
+        "See our "
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        "for further help."
+
     )
 
     category = TestCategories.LOCATION
@@ -1933,7 +1942,13 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data contains a beneficiary location name but no location code."
+        "Including geocodes that correspond with the beneficiary location names increases the "
+        "usability of the data by providing a consistent way to identify these places. Beneficiary location "
+        "geocodes enable grants data to be used in 360Giving tools, visualised in maps and linked to "
+        "official statistics. See our "
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        "for further help."
+
     )
 
     category = TestCategories.LOCATION
