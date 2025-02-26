@@ -236,10 +236,8 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     if context["quality_accuracy_checks"]:
         context["quality_accuracy_checks"].sort(key=lambda x: x[0]["importance"], reverse=True)
 
-    if settings.DEBUG:
-        cache.clear()
-    else:
-        cache.set(pk, context)
+    # Note if cache is not working the path from submission page to dqt results (new-mode) will not work
+    cache.set(pk, context)
 
     # Helpful when debugging DQT
     # import pprint
