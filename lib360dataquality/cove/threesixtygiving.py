@@ -919,7 +919,7 @@ class IncompleteRecipientOrg(AdditionalTest):
             for num, organization in enumerate(grant["recipientOrganization"]):
                 has_postal_code = organization.get("postalCode")
                 has_location_data = organization.get("location") and any(
-                    location.get("geoCode") and location.get("geoCodeType")
+                    location.get("geoCode")
                     for location in organization.get("location")
                 )
 
