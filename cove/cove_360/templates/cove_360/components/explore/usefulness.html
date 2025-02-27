@@ -29,8 +29,8 @@
       <table class="table">
       <thead>
         <tr>
-          <th>{% trans 'Status' %}</th>
-          <th>{% trans 'Issue Identified' %} </th>
+          <th>{% trans 'Issue' %}</th>
+          <th>{% trans 'Description' %} </th>
           <th>{% trans 'Location' %}</th>
         </tr>
       </thead>
@@ -44,7 +44,7 @@
             <strong>{{ message.heading }}</strong><br /><br />{{ message.message }}
           </td>
           <td>
-            <button title="Open dialog to see where the identified issue is in the data." class="button button--small" data-toggle="modal" data-target-class="{{"usefulness-checks-"|concat:forloop.counter}}">See Where</button>
+            <button title="Open dialog to see where the identified issue is in the data." class="button button--small" data-toggle="modal" data-target-class="{{"usefulness-checks-"|concat:forloop.counter}}">See where</button>
           </td>
       </tr>
       {% endif %} {# end category filter #}
