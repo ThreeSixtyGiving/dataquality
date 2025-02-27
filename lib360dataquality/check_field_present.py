@@ -93,7 +93,9 @@ class PlannedDurationNotPresent(FieldNotPresentBase):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        "Your data does not contain either a planned duration or a start and end date."
+        "Including both Planned Dates:Start Date and Planned Dates:End Date or Planned Dates:Duration (months) "
+        "show the duration of the project or funding. Including this data allows users to distinguish "
+        "between short and longer-term grants and more accurately analyse trends over time."
     )
 
     field = (
