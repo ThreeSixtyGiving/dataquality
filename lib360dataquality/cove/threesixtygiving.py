@@ -1181,7 +1181,7 @@ class OrganizationIdUnexpectedChars(AdditionalTest):
         "message": RangeDict(),
     }
     check_text["message"][(0, 100)] = mark_safe(
-        
+
         "The organisation identifier contains line breaks which cause 360Giving tools to break. "
         "The affected grants will not appear in 360Giving's tools unless the unexpected characters are removed."
         " See our <a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier\">guidance on organisation identifiers</a> "
@@ -1866,7 +1866,7 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
         "Your data contains useful Beneficiary location data, which helps users understand "
         "which places your funding reaches. If available please consider also including Recipient "
         "Organisation location data, which helps users to understand where grant recipients are based. "
-        "See our " 
+        "See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
         "for further help."
 
@@ -1945,7 +1945,7 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
         "Including geocodes that correspond with the beneficiary location names increases the "
         "usability of the data by providing a consistent way to identify these places. Beneficiary location "
         "geocodes enable grants data to be used in 360Giving tools, visualised in maps and linked to "
-        "official statistics. See our " 
+        "official statistics. See our "
         '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
         "for further help."
 
