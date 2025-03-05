@@ -26,6 +26,13 @@
       </div>
       {% endif %}
 
+      {% if csv_encoding and csv_encoding != "utf-8-sig" %}
+      <div class="box box--orange margin-top:1">
+        <h3 class="box__heading">{% blocktrans %} This file is <strong>not 'utf-8'</strong> encoded (it is <em>{{csv_encoding}}</em> encoded).{% endblocktrans %}</h3>
+        <p>Non UTF-8 encoded files may not be able to be read correctly. Use UTF-8 encoding when saving files.</p>
+      </div>
+      {% endif %}
+
       {% if conversion_warning_messages or conversion_error %}
       <div class="box box--red margin-top:1">
         <h3 class="box__heading">This data could not be converted ({% blocktrans count n_warnings=conversion_warning_messages|length %}<a href="#conversion-errors">{{n_warnings}} Error)</a> {% plural %}<a href="#conversion-errors">{{n_warnings}} Errors)</a>{% endblocktrans %}
