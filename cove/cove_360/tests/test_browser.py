@@ -64,8 +64,9 @@ def server_url(request, live_server):
 
 
 @pytest.mark.parametrize(('source_filename', 'expected_text', 'conversion_successful'), [
-    ('fundingproviders-grants_fixed_2_grants.json', ['There are 4 grants to 2 recipient organisations and 0 to recipient individuals',
-                                                  'The grants were awarded in GBP with a total value of £662,990 and individual awards ranging from £152,505 (lowest) to £178,990 (highest)',
+    ('fundingproviders-grants_fixed_2_grants.json', ["Total Grants\n4",
+                                                     "Recipient Individuals\n0",
+                                                  'GBP £662,990 £152,505 £178,990',  # Total amount, smallest , largest
                                                   'Convert to Spreadsheet',
                                                   'data does not use the 360Giving Data Standard correctly',
                                                   '15 Errors',
@@ -73,25 +74,24 @@ def server_url(request, live_server):
                                                   'Incorrect Formats',
                                                   'Non-unique id values',
                                                   '4 grants do not contain any beneficiary location fields',
-                                                  'Unique grant identifiers 2',
-                                                  'Unique funder organisation identifiers 1',
+                                                  "Funding Organisations\n1",
                                                   '360G-fundingproviders-000002/X/00/X'], True),
     ('fundingproviders-grants_broken_grants.json', ['data does not use the 360Giving Data Standard correctly',
                                                     '15 Errors',
-                                                 'Unique funder organisation identifiers 2',
-                                                 'Unique recipient organisation identifiers 2',
+                                                 "Funding Organisations\n2",
+                                                 "Recipient Organisations\n2",
                                                  '360G-fundingproviders-000002/X/00/X'], True),
-    ('fundingproviders-grants_2_grants.xlsx', ['1 funding organisation',
-                                            'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
-                                            'The grants were awarded in GBP with a total value of £331,495',
+    ('fundingproviders-grants_2_grants.xlsx', ["Funding Organisations\n1",
+                                            "Total Grants\n2",
+                                            "Recipient Organisations\n1",
+                                            "Recipient Individuals\n0",
+                                            'GBP £331,495',
                                             # check that there's no errors after the heading
                                             'data does not use the 360Giving Data Standard correctly',
                                             '7 Errors',
                                             'description is missing but required',
-                                            'Sheet: grants Row: 2',
-                                            'Unique funder organisation identifiers 1',
-                                            'Unique recipient organisation identifiers 1',
-                                            '360G-fundingproviders-000002/X/00/X'], True),
+                                            "Funding Organisations\n1",
+                                            "Recipient Organisations\n1"], True),
     # Test conversion warnings are shown
     ('tenders_releases_2_releases.xlsx', ['Data conversion unsuccessful - 5 Errors have been found',
                                           'data does not use the 360Giving Data Standard correctly',
@@ -102,24 +102,26 @@ def server_url(request, live_server):
     # (See @check_url_input_result_page).
     ('fundingproviders-grants_2_grants_titleswithoutrollup.xlsx', [], True),
     # Test a 360 csv in cp1252 encoding
-    ('fundingproviders-grants_2_grants_cp1252.csv', ['1 funding organisation',
-                                                  'There are 2 grants to 1 recipient organisation and 0 to recipient individuals',
-                                                  'The grants were awarded in GBP with a total value of £331,495',
+    ('fundingproviders-grants_2_grants_cp1252.csv', ["Funding Organisations\n1",
+                                                     "Total Grants\n2",
+                                                     "Recipient Organisations\n1",
+                                                     "Recipient Individuals\n0",
+                                                     'GBP £331,495',
                                                   'This file is not \'utf-8\' encoded (it is cp1252 encoded)'], True),
     # Test a non-valid file.
     ('fundingtrust-grants_dc.txt', 'We can only process json, csv, ods and xlsx files', False),
     # Test a unconvertable spreadsheet (blank file)
     ('bad.xlsx', 'We think you tried to supply a spreadsheet, but we failed to convert it.', False),
     # Check that a file with a UTF-8 BOM converts correctly
-    ('bom.csv', 'Unique grant identifiers 1', True),
+    ('bom.csv', "Total Grants\n1", True),
     ('nulls.json', [
         'is not a JSON array',
         'Date is not in the correct format',
         'is not a number',
         'is not a string',
     ], True),
-    ('decimal_amounts.csv', 'The grants were awarded in GBP with a total value of £7,000.7 and individual awards ranging from £1,000.1 (lowest) to £1,000.1 (highest).', True),
-    ('decimal_amounts.json', 'The grants were awarded in GBP with a total value of £7,000.7 and individual awards ranging from £1,000.1 (lowest) to £1,000.1 (highest).', True),
+    ('decimal_amounts.csv', 'GBP £7,000.7 £1,000.1 £1,000.1', True),  # £ Total, £min £max
+    ('decimal_amounts.json', 'GBP £7,000.7 £1,000.1 £1,000.1', True),
     ('validation_errors-3.json', 'Something went wrong', False),
     ('badfile_all_validation_errors.json', [
         'description is missing but required (more info about this error)',
@@ -177,9 +179,10 @@ def server_url(request, live_server):
         "do not use the 360Giving Data Standard codelists correctly.",
     ], True),
     ("ids-unexpected-chars.xlsx", [
-        "2 grants have a Funding or Recipient Organisation identifier contains unexpected characters",
-        "1 grant has a Grant Identifier contains unexpected characters",
+        "2 grants have a Funding or Recipient Organisation identifier that contains unexpected characters. If published this grant will not appear in GrantNav.",
+        "1 grant has a Grant Identifier that contains unexpected characters. If published this grant will not appear in GrantNav."
     ], True),
+    # TODO new tests here orgid-<>name
 ])
 @pytest.mark.parametrize('authed', [True, False])
 def test_explore_360_url_input(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
@@ -221,12 +224,15 @@ def test_explore_360_url_input(server_url, browser, httpserver, source_filename,
 
 def check_url_input_result_page(server_url, browser, httpserver, source_filename, expected_text, conversion_successful, authed):
     body_text = browser.find_element(By.TAG_NAME, 'body').text
-    body_text += browser.page_source
+#    body_text += browser.page_source
 
     if isinstance(expected_text, str):
         expected_text = [expected_text]
 
     for text in expected_text:
+        # print(f"looking for {text}")
+        # print(f"in {body_text}")
+        # input("continue?")
         assert text in body_text
 
     if source_filename == 'validation_errors-3.json':
