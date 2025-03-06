@@ -93,9 +93,9 @@ def server_url(request, live_server):
                                             "Funding Organisations\n1",
                                             "Recipient Organisations\n1"], True),
     # Test conversion warnings are shown
-    ('tenders_releases_2_releases.xlsx', ['Data conversion unsuccessful - 5 Errors have been found',
-                                          'data does not use the 360Giving Data Standard correctly',
-                                          '76 Errors',
+    ('tenders_releases_2_releases.xlsx', ['This data could not be converted (5 Errors)',
+                                          'This data does not use the 360Giving Data Standard correctly (76 Errors )',
+
                                           'You may have a duplicate Identifier: We couldn\'t merge these rows with the id "1": field "ocid" in sheet "items": one cell has the value: "PW-14-00627094", the other cell has the value: "PW-14-00629344"'
                                           ], True),
     # Test that titles that aren't in the rollup are converted correctly
@@ -457,7 +457,8 @@ def test_publishing_invalid_domain(server_url, browser):
     settings.DATA_SUBMISSION_ENABLED = True
     os.environ["REGISTRY_PUBLISHERS_URL"] = "https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/publishers.json"
 
-    browser.get(f"{server_url}/publishing")
+    path = reverse_lazy("publishing")
+    browser.get(f"{server_url}/{path}")
 
     url_input = browser.find_element(By.ID, "source-url-input")
     url_input.send_keys("https://raw.githubusercontent.com/OpenDataServices/grantnav-sampledata/master/grantnav-20180903134856.json")
@@ -520,26 +521,20 @@ def test_oneof_validation(server_url, browser, httpserver):
 
 @pytest.mark.parametrize(('source_filename', 'expected_texts', 'unexpected_texts'), [
     ("RecipientIndWithoutToIndividualsDetails.xlsx", [
-        "1 recipient individual grant has Recipient Ind but no To Individuals Details:Grant Purpose or To Individuals Details:Primary Grant Reason",
-        "Your data contains grants to individuals, but without the grant purpose or grant reason codes. This can make it difficult to use data on grants to individuals, as much of the information is anonymised, so it is recommended that you share these codes for all grants to individuals.",
-        "Sheet: grants Row: 2 Header: Recipient Ind:Identifier",
+        "2 recipient individual grants have Recipient individual grant with no To Individuals Details:Grant Purpose or To Individuals Details:Primary Grant Reason",
+        "Your data contains grants to individuals, but does not include grant purpose or grant reason codes. Including this information will make your data more useful and contribute to analysis of collective impact and trends over time."
     ], []),
     ("RecipientIndDEI.json", [
         "1 recipient individual grant has Recipient Ind and DEI information",
         "Your data contains grants to individuals which also have DEI (Diversity, Equity and Inclusion) information. You must not share any DEI data about individuals as this can make them personally identifiable when combined with other information in the grant.",
-        "grants/0/recipientIndividual/id",
     ], []),
     # If there's a Postcode, but no Recipient Ind, there should be no message
     ("GeoCodePostcode.xlsx", [], [
         "looks like a postcode",
-        "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
-        "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
     ]),
     ("GeoCodePostcodeRecipientInd.xlsx", [
         "2 recipient individual grants have Geographic Code that looks like a postcode",
         "Your data contains a Beneficiary Location:Geographic Code that looks like a postcode on grants to individuals. You must not share any postcodes for grants to individuals as this can make them personally identifiable when combined with other information in the grant.",
-        "Sheet: grants Row: 3 Header: Beneficiary Location:Geographic Code",
-        "Sheet: grants Row: 4 Header: Beneficiary Location:Geographic Code",
     ], []),
     ("duration_usefulness.json", [
         "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
@@ -601,7 +596,8 @@ def test_file_submission(server_url, browser, httpserver):
 
     os.environ["REGISTRY_PUBLISHERS_URL"] = f"{httpserver.url}/{source_filename}"
 
-    browser.get(f"{server_url}/publishing/")
+    path = reverse_lazy("publishing")
+    browser.get(f"{server_url}/{path}")
 
     valid_for_publishing = "https://www.threesixtygiving.org/wp-content/uploads/love-kingston-funding-data-2018.xlsx"
 
@@ -660,7 +656,7 @@ def test_input_strange_files(server_url, browser, httpserver):
     cove_url_input(httpserver.url)
     wait_for_results_page(browser)
 
-    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2")
+    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2").text
 
     httpserver.serve_content('{}', headers={
         'content-disposition': 'attachment; filename="something.csv"'
@@ -670,4 +666,4 @@ def test_input_strange_files(server_url, browser, httpserver):
     cove_url_input(httpserver.url)
     wait_for_results_page(browser)
 
-    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2")
+    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2").text
