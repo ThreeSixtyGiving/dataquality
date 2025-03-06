@@ -364,11 +364,12 @@ SOURCE_MAP = {
 
 TOTAL_GRANTS = len(GRANTS["grants"])
 
+
 QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "1 grant has a value of £0",
-            "message": "It’s worth taking a look at these grants and deciding if they should be included in your data. It’s unusual to have grants of £0, but there may be a reasonable explanation. If £0 value grants are to be published in your data consider adding an explanation to the description of the grant to help anyone using the data to understand how to interpret the information.",
+            "message": "Please review these grants and decide if they should be included in your data. It's unusual to have grants of £0, but there may be a reasonable explanation. If you intend to publish £0 value grants consider adding an explanation to the grant description to help users to interpret the information correctly.",
             "type": "ZeroAmountTest",
             "count": 1,
             "importance": TestImportance.CRITICAL,
@@ -388,12 +389,12 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a <span class="highlight-background-text">Funding Org:Identifier</span> that does not draw from a recognised register',
-            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register on the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrgUnrecognisedPrefix",
             "count": 1,
             "importance": 0,
             "percentage": 1 / TOTAL_GRANTS,
-            "category": TestCategories.ORGANISATIONS,
+            "category": TestCategories.ORGANISATIONS
         },
         ["grants/0/fundingOrganization/0/id"],
         [
@@ -408,12 +409,12 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": '1 grant has a <span class="highlight-background-text">Recipient Org:Identifier</span> that does not draw from a recognised register',
-            "message": 'In the 360Giving Data Standard, organisation identifiers have two parts: an identifier and a prefix which describes the list the identifier is taken from. This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register from the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'This error notice is caused by the prefix in an organisation identifier not being taken from a recognised register on the <a target="_blank" href="https://org-id.guide/">org-id list locator</a>. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrgUnrecognisedPrefix",
             "count": 1,
             "importance": 0,
-            "category": TestCategories.ORGANISATIONS,
             "percentage": 1 / TOTAL_GRANTS,
+            "category": TestCategories.ORGANISATIONS
         },
         ["grants/1/recipientOrganization/0/id"],
         [
@@ -468,7 +469,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "2 grants have a Funding or Recipient Organisation identifier that might not be valid",
-            "message": 'The identifiers might not be valid for the recognised register that they refer to - for example, an identifier with the prefix \'GB-CHC\' that contains an invalid charity number. Common causes of this are missing or extra digits, typos or incorrect values such as text appearing in this field. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'This error notice is caused by organisation identifiers that are not valid for the register that they refer to in their prefix. For example, an identifier with the prefix \'GB-CHC\' that contains an invalid charity number. Common causes are missing or extra digits, typos or incorrect values such as text appearing in this field. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "OrganizationIdLooksInvalid",
             "count": 2,
             "importance": 0,
@@ -494,7 +495,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "3 different funding organisation identifiers listed",
-            "message": 'If you are only publishing for a single funder then you should review your <span class="highlight-background-text">Funding Organisation identifier</span> field to see where multiple IDs have occurred. If you are expecting to be publishing data for multiple funders and the number of funders is correct, then you can ignore this error notice.',
+            "message": 'If you are only publishing for a single funder please review your <span class="highlight-background-text">Funding Org:Identifier</span> field to see where multiple IDs have occurred. If you are publishing data about multiple funders and the number of funders is correct, then you can ignore this error notice.',
             "type": "MoreThanOneFundingOrg",
             "count": 0,
             "importance": TestImportance.CRITICAL,
@@ -530,7 +531,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "2 grants contain text that looks like an email address",
-            "message": "Your data may contain an email address (or something that looks like one), which can constitute personal data if it is the email of an individual. The use and distribution of personal data is restricted by the Data Protection Act. You should ensure that any personal data is removed from your data prior to publishing it, or that it is only included with the knowledge and consent of the person to whom it refers.",
+            "message": "Your data contains an email address (or something that looks like one), which could constitute personal data if it is the email of an individual. The use and distribution of personal data is restricted by the Data Protection Act. You should ensure that any personal data is removed from your data prior to publishing it, or that it is only included with the knowledge and consent of the person to whom it refers.",
             "type": "LooksLikeEmail",
             "count": 2,
             "importance": TestImportance.CRITICAL,
@@ -666,7 +667,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     (
         {
             "heading": "2 grants have Award Dates that are in the future",
-            "message": "Your data contains grant Award Dates in the future. This date is when the decision to award the grant was made so it would normally be in the past. This error can happen when there is a typo in the date, or the data includes grants that are not yet fully committed",
+            "message": "Your data contains grant Award Dates in the future. This date is when the decision to award the grant was made so it would normally be in the past. This error can happen when there is a typo in the date, or the data includes grants that are not yet fully committed.",
             "type": "PostDatedAwardDates",
             "importance": TestImportance.CRITICAL,
             "count": 2,
@@ -681,21 +682,29 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "category": "Organisations",
+            "heading": "2 grants have introduced an additional Funding Org:Identifier for an existing Funding Org:Name",
+            "message": "Your data contains a single funder name with more than one organisation identifier. Funding organisations are expected to have a consistent name with a corresponding identifier so please check your data to see why multiple identifiers have occurred.",
+            "type": "MultiFundingNamesForOrgId",
             "count": 2,
-            "heading": "2 grants have introduced an additional Funding Org:Identifier "
-            "for an existing Funding Org:Name",
+            "category": TestCategories.ORGANISATIONS,
             "importance": 0,
-            "message": "Your data contains Funding Org names with differing org-ids. "
-            "Funding organisations typically only have one name and one "
-            "org-id.",
             "percentage": 2 / TOTAL_GRANTS,
             "type": "MultiFundingNamesForOrgId",
         },
         ["grants/1/fundingOrganization/0/id", "grants/2/fundingOrganization/0/id"],
         [
-            {"header": "Funding Org:Identifier", "letter": "V", "row_number": 3, "sheet": "grants"},
-            {"header": "Funding Org:Identifier", "letter": "V", "row_number": 4, "sheet": "grants"},
+            {
+                "sheet": "grants",
+                "letter": "V",
+                "row_number": 3,
+                "header": "Funding Org:Identifier",
+            },
+            {
+                "sheet": "grants",
+                "letter": "V",
+                "row_number": 4,
+                "header": "Funding Org:Identifier",
+            },
         ],
     ),
 ]
@@ -705,7 +714,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "1 recipient organisation grant has a <span class=\"highlight-background-text\">Recipient Org:Identifier</span> that starts '360G-'",
-            "message": 'Use an external reference, such as a charity or company number, to identify an organisation whenever possible. Doing so makes it possible to see when recipients have received grants from multiple funders, and allows grants data to be linked or combined with information from official registers. Some organisations, such as small unregistered groups, do not have an official registration number that can be used. In these cases the organisation identifier should start ‘360G-‘ and use an identifier taken from the publisher’s internal systems. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'If a recipient has a charity or company number, or another official reference, this should be used to identify the organisation. Doing so makes it possible to see when funders give grants to the same recipient and allows grants data to be linked to official sources of organisation data. However some organisations, such as small unregistered groups, do not have an official reference number that can be used. In these cases the recipient organisation identifier should start ‘360G-‘ and use an identifier taken from the your internal systems. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "RecipientOrg360GPrefix",
             "count": 1,
             "importance": 0,
@@ -725,7 +734,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "1 grant has a <span class=\"highlight-background-text\">Funding Org:Identifier</span> that starts '360G-'",
-            "message": 'Use an external reference, such as a charity or company number, to identify a funding organisation whenever possible. Some funders do not have an official registration number that can be used. In these cases the funding organisation identifier should reuse the publisher prefix and therefore start with “360G-”. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
+            "message": 'Use an official reference, such as a charity or company number, to identify your funding organisation whenever possible. However, some funders do not have an official reference number that can be used. In these cases your funding organisation identifier should reuse your publisher prefix and therefore start with “360G-”. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/technical/identifiers/#organisation-identifier">guidance on organisation identifiers</a> for further help.',
             "type": "FundingOrg360GPrefix",
             "count": 1,
             "importance": 0,
@@ -764,29 +773,8 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "1 recipient organisation grant does not have recipient organisation location information",
-            "message": 'Recipient location data in the form of postcodes or geocodes provides a consistent way to describe a location. This data can be used to produce maps, such as the maps in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help. ',
-            "type": "IncompleteRecipientOrg",
-            "count": 1,
-            "importance": 0,
-            "category": TestCategories.LOCATION,
-            "percentage": 1/TOTAL_GRANTS,
-
-        },
-        ["grants/0/recipientOrganization/0/id"],
-        [
-            {
-                "sheet": "grants",
-                "letter": "J",
-                "row_number": 2,
-                "header": "Recipient Org:Identifier",
-            }
-        ],
-    ),
-    (
-        {
             "heading": '1 grant does not contain any <span class="highlight-background-text">Grant Programme</span> fields',
-            "message": "Grant programme names help users to understand a funder’s different types of funding and priorities, and see how their grants vary across and within these. This information is especially useful when it refers to the communities, sectors, issues or places that are the focus of the programme. If your organisation does not have grant programmes this notice can be ignored.",
+            "message": "Grant programme names help users to understand a funder’s different types of funding and priorities, and see how their grants vary across and within these. This information is especially useful when it refers to the communities, sectors, issues or places that are the focus of the programme. If your organisation does not have grant programmes you can ignore this notice.",
             "type": "NoGrantProgramme",
             "importance": 0,
             "count": 1,
@@ -799,7 +787,7 @@ USEFULNESS_CHECKS_RESULTS = [
     (
         {
             "heading": "1 grant does not contain any beneficiary location fields",
-            "message": 'Beneficiary location data in the form of place names and geocodes allow users to understand which places funding is reaching. This data can be more accurate in showing where grants are going geographically, especially in cases where the recipient location is in a different place from the activity being funded. Beneficiary location codes can be used to produce maps, such as the ones in <a target=\"_blank\" href="https://insights.threesixtygiving.org/">360Insights</a>, showing the geographical distribution of funding and allows grants data to be looked at alongside official statistics, such as the Indices of multiple deprivation. See our <a target=\"_blank\" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>for further help.',
+            "message": 'Including beneficiary location data in the form of place names and geocodes helps users to understand which places your funding reaches. This data can be more accurate in showing where grants are going geographically, especially in cases where the recipient location is in a different place from the activity being funded. Beneficiary location geocodes enable grants data to be used by 360Giving tools, visualised in maps and linked to official statistics. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data </a>for further help.',
             "type": "NoBeneficiaryLocation",
             "count": 1,
             "importance": 0,
@@ -866,44 +854,29 @@ USEFULNESS_CHECKS_RESULTS = [
     ),
     (
         {
-            "category": "Location",
-            "count": 1,
             "heading": "1 grant has Beneficiary location name found but no beneficiary location code",
-            "importance": 0,
-            "message": "Your data contains a beneficiary location name but no location code.",
+            "message": 'Including geocodes that correspond with the beneficiary location names increases the usability of the data by providing a consistent way to identify these places. Beneficiary location geocodes enable grants data to be used in 360Giving tools, visualised in maps and linked to official statistics. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help.',
+            "type": "BeneficiaryLocationNameButNoCode",
+            "count": 1,
             "percentage": 1/TOTAL_GRANTS,
-            "type": "BeneficiaryLocationNameButNoCode"
+            "category": "Location",
+            "importance": 0,
         },
         ["grants/0/beneficiaryLocation/0/name"],
-        []  # FIXME No spreadsheet location?
+        [],
     ),
     (
         {
-            "category": "Location",
-            "count": 1,
-            "heading": "1 recipient organisation grant has Beneficiary location data found but no Recipient Organisation location data",
-            "importance": 0,
-            "message": "Your data contains Beneficiary location data but no Recipient Organisation location data.",
-            "percentage": 1/TOTAL_GRANTS,
-            "type": "BeneficiaryButNotRecipientGeoData"
-        },
-        ["grants/2/recipientOrganization/0/id"],
-        [
-            {"header": "Recipient Org:Identifier", "letter": "J", "row_number": 4, "sheet": "grants"},
-        ]
-    ),  # FIXME No spreadsheet location?
-    (
-        {
-            "category": "Location",
-            "count": 1,
             "heading": "1 recipient organisation grant has Recipient Organisation location data found but no Beneficiary location data",
-            "importance": 0,
-            "message": "Your data contains Recipient Organisation location data but no beneficiary location data.",
+            "message": 'Your data contains useful Recipient Organisation location data which helps users to understand where grants recipients are based. If available, please consider also including beneficiary location data to provide further context about the places your funding reaches. See our <a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> for further help.',
+            "type": "RecipientGeoDataButNoBeneficiary",
+            "count": 1,
             "percentage": 1/TOTAL_GRANTS,
-            "type": "RecipientGeoDataButNoBeneficiary"
+            "category": "Location",
+            "importance": 0,
         },
         ["grants/1/recipientOrganization/0/location"],
-        []  # FIXME No spreadsheet location?
+        [],
     ),
 ]
 

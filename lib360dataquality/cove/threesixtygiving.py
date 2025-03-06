@@ -1642,9 +1642,9 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
 
     check_text = {
         "heading": mark_safe(
-            '<span class="highlight-background-text">Recipient individual</span> grant with no '
-            '<span class="highlight-background-text">To Individuals Details:Grant Purpose</span> or '
-            '<span class="highlight-background-text">To Individuals Details:Primary Grant Reason</span>'
+            "<span class=\"highlight-background-text\">Recipient individual</span> grant with no "
+            "<span class=\"highlight-background-text\">To Individuals Details:Grant Purpose</span> or "
+            "<span class=\"highlight-background-text\">To Individuals Details:Primary Grant Reason</span>"
         ),
         "message": RangeDict(),
     }
@@ -1653,7 +1653,7 @@ class RecipientIndWithoutToIndividualsDetails(AdditionalTest):
         "purpose or grant reason codes. Including this information will make "
         "your data more useful and contribute to analysis of collective impact "
         "and trends over time. See our "
-        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/individuals/publisher-guidance/#grants-to-individuals-codelists">guidance on grants to individuals codelists</a> '
+        "<a target=\"_blank\" href=\"https://standard.threesixtygiving.org/en/latest/individuals/publisher-guidance/#grants-to-individuals-codelists\">guidance on grants to individuals codelists</a> "
         "for further help."
     )
 
@@ -1921,6 +1921,9 @@ class RecipientGeoDataButNoBeneficiary(AdditionalTest):
 
     def process(self, grant, path_prefix):
         beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        if grant.get("recipientIndividual"):
+            return
 
         if len(grant["recipientOrganization"][0].get("location", [])) > 0 and len(beneficiary_locations) == 0:
             self.failed = True
