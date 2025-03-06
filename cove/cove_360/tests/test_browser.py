@@ -624,3 +624,50 @@ def test_cookie_popup(server_url, browser, httpserver):
     browser.get(server_url)
 
     assert "Allow analytics" in browser.find_element(By.ID, "cookie-dialog-title").text
+
+
+@pytest.mark.parametrize(("location", "expected_texts"), [
+    ("http://localhost:2134", "Sorry we got a ConnectionError whilst trying to download that file"),
+    ("https://wrong.host.badssl.com", "misconfigured SSL certificates"),
+    ("http://www.google.com/cove", "404 Client Error: Not Found for url"),
+    ("http://example.org/", "Sorry, we can't process that data")
+])
+def test_input_http_errors(server_url, browser, httpserver, location, expected_texts):
+    browser.get(server_url)
+
+    browser.find_element(By.ID, "link-tab-link").click()
+    browser.find_element(By.ID, "id_source_url").send_keys(location)
+    browser.find_element(By.ID, "submit-link-btn").click()
+
+    time.sleep(1)
+
+    content_text = browser.find_element(By.CLASS_NAME, "layout__content").text
+
+    assert expected_texts in content_text
+
+
+def test_input_strange_files(server_url, browser, httpserver):
+    def cove_url_input(url):
+        browser.find_element(By.ID, "link-tab-link").click()
+        browser.find_element(By.ID, "id_source_url").send_keys(url)
+        browser.find_element(By.ID, "submit-link-btn").click()
+
+    httpserver.serve_content('{}', headers={
+        'content-type': 'text/csv'
+    })
+
+    browser.get(server_url)
+    cove_url_input(httpserver.url)
+    wait_for_results_page(browser)
+
+    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2")
+
+    httpserver.serve_content('{}', headers={
+        'content-disposition': 'attachment; filename="something.csv"'
+    })
+
+    browser.get(server_url)
+    cove_url_input(httpserver.url)
+    wait_for_results_page(browser)
+
+    assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2")
