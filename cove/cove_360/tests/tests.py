@@ -67,7 +67,11 @@ GRANTS = {
 
                 'description': 'Description for project A',
                 'fundingOrganization': [{'id': '360G-CHC-000001',
-                                         'name': 'Funding Providers UK'}],
+                                         'name': 'Funding Providers UK'},
+                                        {'id': 'GB-CHC-111111',
+                                         'name': 'Funding Providers Name1'},
+                                        {'id': 'GB-CHC-111111',
+                                         'name': 'Funding Providers Name2'}],
                 'grantProgramme': [{'code': 'AAC',
                                     'title': 'Awards Funding Committee'}],
                 'id': '360G-fundingproviders-000002/X/00/X',
@@ -494,7 +498,7 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-            "heading": "3 different funding organisation identifiers listed",
+            "heading": "4 different funding organisation identifiers listed",
             "message": 'If you are only publishing for a single funder please review your <span class="highlight-background-text">Funding Org:Identifier</span> field to see where multiple IDs have occurred. If you are publishing data about multiple funders and the number of funders is correct, then you can ignore this error notice.',
             "type": "MoreThanOneFundingOrg",
             "count": 0,
@@ -505,28 +509,10 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
         [
             "grants/0/fundingOrganization/0/id",
             "grants/1/fundingOrganization/0/id",
+            "grants/1/fundingOrganization/1/id",
             "grants/2/fundingOrganization/0/id",
         ],
-        [
-            {
-                "sheet": "grants",
-                "letter": "V",
-                "row_number": 2,
-                "header": "Funding Org:Identifier",
-            },
-            {
-                "sheet": "grants",
-                "letter": "V",
-                "row_number": 3,
-                "header": "Funding Org:Identifier",
-            },
-            {
-                "sheet": "grants",
-                "letter": "V",
-                "row_number": 4,
-                "header": "Funding Org:Identifier",
-            },
-        ],
+        [],
     ),
     (
         {
@@ -682,14 +668,26 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
+             "category": TestCategories.ORGANISATIONS,
+             "count": 1,
+             "heading": "1 grant has introduced an additional Funding Org:Name for an existing Funding Org:Identifier",
+             "importance": 0,
+             "message": "Your data contains an organisation identifier with more than one funder name. Funding organisations are expected to have one name with a corresponding identifier, so please check your data to see why multiple funder names have occurred.",
+             "percentage": 1 / TOTAL_GRANTS,
+             "type": "MultiFundingNamesForOrgId",
+        },
+        ["grants/1/fundingOrganization/2/name"],
+        [],
+    ),
+    (
+        {
             "heading": "2 grants have introduced an additional Funding Org:Identifier for an existing Funding Org:Name",
             "message": "Your data contains a single funder name with more than one organisation identifier. Funding organisations are expected to have a consistent name with a corresponding identifier so please check your data to see why multiple identifiers have occurred.",
-            "type": "MultiFundingNamesForOrgId",
             "count": 2,
             "category": TestCategories.ORGANISATIONS,
             "importance": 0,
             "percentage": 2 / TOTAL_GRANTS,
-            "type": "MultiFundingNamesForOrgId",
+            "type": "MultiFundingOrgIdsForName",
         },
         ["grants/1/fundingOrganization/0/id", "grants/2/fundingOrganization/0/id"],
         [
