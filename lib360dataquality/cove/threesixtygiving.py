@@ -1756,10 +1756,9 @@ class GeoCodePostcode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
-class MultiFundingNamesForOrgId(AdditionalTest):
-    """Check for Funding org ids with multiple names."""
+class MultiFundingOrgIdsForName(AdditionalTest):
+    """Check for multiple org ids with same funding organisation name."""
 
-#TODO copy
     check_text = {
         "heading": mark_safe("introduced an additional Funding Org:Identifier for an existing Funding Org:Name"),
         "message": RangeDict(),
@@ -1805,10 +1804,9 @@ class MultiFundingNamesForOrgId(AdditionalTest):
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
 
 
-class MultiFundingOrgIdsForName(AdditionalTest):
-    """Check for org ids with multiple names."""
+class MultiFundingNamesForOrgId(AdditionalTest):
+    """Check for org ids with multiple funding organisation names."""
 
-# TODO copy
     check_text = {
         "heading": mark_safe("introduced an additional Funding Org:Name for an existing Funding Org:Identifier"),
         "message": RangeDict(),
@@ -1857,7 +1855,6 @@ class MultiFundingOrgIdsForName(AdditionalTest):
 class BeneficiaryButNotRecipientGeoData(AdditionalTest):
     """Check grants to see if there is beneficiary location data but not recipient location data"""
 
-    # TODO copy
     check_text = {
         "heading": mark_safe('Beneficiary location data found but no Recipient Organisation location data'),
         "message": RangeDict(),
@@ -1898,7 +1895,6 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
 class RecipientGeoDataButNoBeneficiary(AdditionalTest):
     """Check grants to see if there is Recipient organisation location data but no Beneficiary location data"""
 
-    # TODO copy
     check_text = {
         "heading": mark_safe('Recipient Organisation location data found but no Beneficiary location data'),
         "message": RangeDict(),
@@ -1939,7 +1935,6 @@ class RecipientGeoDataButNoBeneficiary(AdditionalTest):
 class BeneficiaryLocationNameButNoCode(AdditionalTest):
     """Check grants beneficiary location data contains a name but no geo code data"""
 
-    # TODO copy
     check_text = {
         "heading": mark_safe('Beneficiary location name found but no beneficiary location code'),
         "message": RangeDict(),
