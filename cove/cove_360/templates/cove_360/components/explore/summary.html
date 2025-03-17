@@ -188,7 +188,7 @@
 
         <h4 id="download">Download</h4>
         <p>{% trans "This application converts data in Excel and CSV format into JSON format, allowing you download the converted version." %}</p>
-        <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the summary section to create an Excel version of the file." %}</p>
+        <p>{% trans "If your file is originally in JSON format select ‘Convert to Spreadsheet’ in the" %} <a href="#data-conversion">{% trans "Data conversion" %}</a> {% trans "section to create an Excel version of the file." %}</p>
 
         {% if not conversion_error and conversion != 'flattenable' %}
           <p>{% trans "We provide the following formats to download:" %}</p>
@@ -207,7 +207,7 @@
             {% endif %}
           </ul>
         {% else %}
-          <p>(No downloads available as the conversion hasn't happened, or has errored).</p>
+        <!-- (No downloads available as the conversion hasn't happened, or has errored). -->
         {% endif %}
         {% if user.is_authenticated %}
             <h3 class="box__heading">Original file download for admin users</h2>
