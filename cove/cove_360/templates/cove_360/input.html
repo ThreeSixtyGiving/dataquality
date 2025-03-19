@@ -12,13 +12,7 @@
 </style>
 
 <h2>Check your data</h2>
-<p>Upload, provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.
-To preview how this tool works, try <a id="load-sample-data-btn" href="#" onClick="document.getElementById('sample-data-form').submit()">loading some sample data</a>.</p>
-<form method="POST" action="" style="display: none;" id="sample-data-form">
-  {% csrf_token %}
-  <input type="hidden" name="source_url" value="https://github.com/ThreeSixtyGiving/sample-data/blob/master/ExampleTrust-grants-fixed.xlsx?raw=true">
-  <input type="submit">
-</form>
+<p>Upload, provide a link to a file, or paste JSON to check and convert your data and get feedback on whether it is valid 360Giving data.</p>
 
 <div class="tabs">
   {% if 'upload' in input_methods %}
