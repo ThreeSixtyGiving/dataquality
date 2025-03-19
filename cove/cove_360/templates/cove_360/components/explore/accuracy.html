@@ -41,7 +41,7 @@
       {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
       {% if message.category == category %}
       <tr>
-        <td title="{% if message.importance >= 100 %}Critical feedback{% endif %}"><span style="font-size: xx-large; font-weight: bold; color: {% if message.importance >= 100 %}hsl(var(--red-hsl), 1) {% else %}hsl(var(--yellow-hsl), 1){% endif %}">!</span></td>
+        <td title="{% if message.importance >= 100 %}Critical issue{% else %}Issue{% endif %}"><span style="font-size: xx-large; font-weight: bold; color: {% if message.importance >= 100 %}hsl(var(--red-hsl), 1) {% else %}hsl(var(--yellow-hsl), 1){% endif %}">!</span></td>
         <td>
           <!-- {{message.type}} -->
           <strong>{{ message.heading }}</strong><br><br>{{ message.message }}
