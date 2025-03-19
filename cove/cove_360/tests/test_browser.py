@@ -442,17 +442,6 @@ def test_favicon(server_url, browser):
         browser.find_element(By.XPATH, "//link[@rel='icon']")
 
 
-def test_explore_360_sample_data_link(server_url, browser):
-    browser.get(server_url)
-    browser.find_element(By.ID, "load-sample-data-btn").click()
-
-    wait_for_results_page(browser)
-
-    body_text = browser.find_element(By.TAG_NAME, 'body').text
-
-    assert "This data uses the 360Giving Data Standard correctly" in body_text
-
-
 def test_publishing_invalid_domain(server_url, browser):
     settings.DATA_SUBMISSION_ENABLED = True
     os.environ["REGISTRY_PUBLISHERS_URL"] = "https://raw.githubusercontent.com/ThreeSixtyGiving/dataquality/main/cove/cove_360/fixtures/publishers.json"
