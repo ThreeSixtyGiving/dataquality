@@ -19,30 +19,32 @@
   <h2 id="accuracy">Accuracy Checks</h2>
   {% for check in checks_quality_accuracy %}
     <div>
-      <h4>
-        <label>Class name:</label> {{check.class_name}}
+      <h4 id="{{check.class_name}}">
+        <strong>Class name:</strong> {{check.class_name}}
       </h4>
-      <label>Heading:</label> {{check.heading}}<br/>
-      <label>Messages:</label>
+      <p>
+      <strong>Heading:</strong> {{check.heading|safe}}</p>
+      <strong>Messages:</strong>
         {% for percentage_range, message in check.messages %}
-            {{message}}<br/>
+        <p>{{message|safe}}</p>
         {% endfor %}
-      <label>Method:</label> {{check.desc}}
+      <p><strong>Method:</strong> {{check.desc|safe}}</p>
     </div>
   {% endfor %}
 
   <h2 id="usefulness">Usefulness Checks</h2>
   {% for check in checks_usefulness %}
     <div>
-      <h4>
-        <label>Class name:</label> {{check.class_name}}
+      <h4 id="{{check.class_name}}">
+        <strong>Class name:</strong> {{check.class_name}}
       </h4>
-      <label>Heading:</label> {{check.heading}}<br/>
-      <label>Messages:</label>
+      <p>
+      <strong>Heading:</strong> {{check.heading|safe}}</p>
+      <strong>Messages:</strong>
         {% for percentage_range, message in check.messages %}
-            {{message}}<br/>
+        <p>{{message|safe}}</p>
         {% endfor %}
-      <label>Method:</label> {{check.desc}}
+      <p><strong>Method:</strong> {{check.desc|safe}}</p>
     </div>
   {% endfor %}
 
