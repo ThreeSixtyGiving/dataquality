@@ -526,7 +526,8 @@ def test_oneof_validation(server_url, browser, httpserver):
         "Your data contains a Beneficiary Location:Geographic Code that looks like a postcode on grants to individuals. You must not share any postcodes for grants to individuals as this can make them personally identifiable when combined with other information in the grant.",
     ], []),
     ("duration_usefulness.json", [
-        "1 grant does not contain plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)",
+        "1 grant has neither a planned duration or start and end dates found",
+        "Including both Planned Dates:Start Date and Planned Dates:End Date or Planned Dates:Duration (months) show the duration of the project or funding."
     ], []),
     ("additional_fields.json", [
         "Additional fields which do not use 360Giving Data Standard titles were found in your data.",
