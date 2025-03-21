@@ -18,11 +18,14 @@ class FieldNotPresentBase(AdditionalTest):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.check_text = {
-            "heading": "not contain %s field" % self.field,
-            "message": "Providing %s field helps people to understand the grant information."
-            % self.field,
-        }
+        # Provide a default check_text implementation. By convention of other tests
+        # this is usually set at the class level.
+        if not hasattr(self, "check_text"):
+            self.check_text = {
+                "heading": "not contain %s field" % self.field,
+                "message": "Providing %s field helps people to understand the grant information."
+                % self.field,
+            }
 
     def process(self, grant, path_prefix):
         if not self.field:
@@ -88,18 +91,16 @@ class BeneficiaryLocationGeoCodeNotPresent(FieldNotPresentBase):
 class PlannedDurationNotPresent(FieldNotPresentBase):
     """ Checks for either a planned duration or start and end dates"""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.check_text = {
-            "heading": mark_safe('neither a planned duration or start and end dates found'),
-            "message": RangeDict(),
-        }
+    check_text = {
+        "heading": mark_safe('neither a planned duration or start and end dates found'),
+        "message": RangeDict(),
+    }
 
-        self.check_text["message"][(0, 100)] = mark_safe(
-            "Including both Planned Dates:Start Date and Planned Dates:End Date or Planned Dates:Duration (months) "
-            "show the duration of the project or funding. Including this data allows users to distinguish "
-            "between short and longer-term grants and more accurately analyse trends over time."
-        )
+    check_text["message"][(0, 100)] = mark_safe(
+        "Including both Planned Dates:Start Date and Planned Dates:End Date or Planned Dates:Duration (months) "
+        "show the duration of the project or funding. Including this data allows users to distinguish "
+        "between short and longer-term grants and more accurately analyse trends over time."
+    )
 
     field = (
         "plannedDates/0/duration or (plannedDates/startDate and plannedDates/endDate)"
