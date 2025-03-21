@@ -657,3 +657,10 @@ def test_input_strange_files(server_url, browser, httpserver):
     wait_for_results_page(browser)
 
     assert "file.csv" in browser.find_element(By.CSS_SELECTOR, ".layout__content h2").text
+
+
+def test_additional_checks_docs_page(server_url, browser, httpserver):
+    path = reverse_lazy("additional_checks")
+    browser.get(f"{server_url}{path}")
+
+    assert "Class name: ZeroAmountTest" in browser.find_element(By.ID, "ZeroAmountTest").text
