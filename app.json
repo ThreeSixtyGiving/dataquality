@@ -1,7 +1,0 @@
-{
-  "scripts": {
-    "dokku": {
-      "predeploy": "python cove/manage.py migrate"
-    }
-  }
-}
