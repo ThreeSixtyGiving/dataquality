@@ -8,6 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(  # set default values and casting
     DB_NAME=(str, os.path.join(BASE_DIR, 'db.sqlite3')),
     SENTRY_DSN=(str, ''),
+    MEDIA_ROOT=(str, os.path.join(BASE_DIR, 'media')),
 )
 
 # We use the setting to choose whether to show the section about Sentry in the
@@ -32,7 +33,7 @@ PIWIK = settings.PIWIK
 # We can't take MEDIA_ROOT and MEDIA_URL from cove settings,
 # ... otherwise the files appear under the BASE_DIR that is the Cove library install.
 # That could get messy. We want them to appear in our directory.
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = env('MEDIA_ROOT')
 MEDIA_URL = '/media/'
 
 SECRET_KEY = settings.SECRET_KEY

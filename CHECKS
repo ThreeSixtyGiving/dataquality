@@ -1,0 +1,12 @@
+# Dokku checks
+# Require that the app is up (URL returns 200) before migrating traffic.
+#
+# Wait 10 seconds between checks
+WAIT=10
+# Timeout after a minute
+TIMEOUT=6
+# Attempt checks 10 times
+ATTEMPTS=10
+
+# Check root URL
+/
