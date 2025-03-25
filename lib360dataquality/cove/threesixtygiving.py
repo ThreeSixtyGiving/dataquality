@@ -481,7 +481,7 @@ def check_charity_number(charity_number):
     return False
 
 
-company_pattern_re = re.compile("^\w{8}$")
+company_pattern_re = re.compile(r"^\w{8}$")
 
 
 def check_company_number(company_number):
@@ -977,7 +977,7 @@ class MoreThanOneFundingOrg(AdditionalTest):
         self.message = mark_safe(self.check_text["message"][self.grants_percentage])
 
 
-compiled_email_re = re.compile("[\w.-]+@[\w.-]+\.[\w.-]+")
+compiled_email_re = re.compile(r"[\w.-]+@[\w.-]+\.[\w.-]+")
 
 
 class LooksLikeEmail(AdditionalTest):
@@ -1713,7 +1713,7 @@ class RecipientIndDEI(AdditionalTest):
 # This is a simple regex, for something that "looks roughly like a postcode",
 # which is all we need here.
 # Modified to match when there are accidental leading and trailing spaces.
-postcode_re = re.compile("^\s*[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}\s*$", re.IGNORECASE)
+postcode_re = re.compile(r"^\s*[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}\s*$", re.IGNORECASE)
 
 
 # Note that we ignore Geographic Code Type here because people putting in
