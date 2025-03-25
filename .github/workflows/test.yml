@@ -9,16 +9,13 @@ jobs:
       REGISTRY_PUBLISHERS_URL: ${{secrets.REGISTRY_PUBLISHERS_URL}}
       REGISTRY_PUBLISHERS_USER: ${{secrets.REGISTRY_PUBLISHERS_USER}}
       REGISTRY_PUBLISHERS_PASS: ${{secrets.REGISTRY_PUBLISHERS_PASS}}
-    strategy:
-      matrix:
-        # Python 3.8 is used by the live cove and datastore servers
-        python-version: [ '3.12']
     steps:
     - uses: actions/checkout@v2
     - name: Setup python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        # Python 3.12 is used by the live
+        python-version: 3.12
         architecture: x64
     - name: Install requirements_cove_dev.txt
       run: pip install -r requirements_cove_dev.txt
@@ -26,9 +23,12 @@ jobs:
       run: sudo apt install gettext
     - name: Test 360
 
-      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings_test py.test -vv -n 2 --cov-append --cov --cov-report=
+      run: cd cove; DJANGO_SETTINGS_MODULE=cove_project.settings_test coverage run -m pytest -vv -n 2
 
     - name: Migrate Database
       run: DJANGO_SETTINGS_MODULE=cove_project.settings_test python ./cove/manage.py migrate
     - name: Compile Messages
       run: DJANGO_SETTINGS_MODULE=cove_project.settings_test python ./cove/manage.py compilemessages
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: cd cove; coveralls --service=github
