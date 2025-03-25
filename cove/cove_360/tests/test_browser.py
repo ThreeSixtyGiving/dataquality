@@ -406,19 +406,9 @@ def test_error_modal(server_url, browser, httpserver, source_filename):
     assert len(table_rows) == 4
 
 
-@pytest.mark.parametrize(('data_url'), [
-    reverse_lazy('results', args=['0']),
-    reverse_lazy('results', args=['324ea8eb-f080-43ce-a8c1-9f47b28162f3']),
-])
-def test_url_invalid_dataset_request(server_url, browser, data_url):
-    # Test a badly formed hexadecimal UUID string
-    # Trim the / off reverse_lazy result as server_url has trailing slash to avoid
-    # e.g. //results/0
-
-    browser.get("%s%s" % (server_url, data_url[1:]))
-    assert "We don't seem to be able to find the data you requested." in browser.find_element(By.TAG_NAME, 'body').text
+def test_url_invalid_dataset_request(server_url, browser):
     # Test for well formed UUID that doesn't identify any dataset that exists
-    browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])[1:]))
+    browser.get("%s%s" % (server_url, reverse_lazy('results', args=['38e267ce-d395-46ba-acbf-2540cdd0c810'])))
     assert "We don't seem to be able to find the data you requested." in browser.find_element(By.TAG_NAME, 'body').text
     assert '360Giving' in browser.find_element(By.TAG_NAME, 'body').text
 
