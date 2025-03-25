@@ -430,9 +430,13 @@ def test_500_error(server_url, browser):
 
 
 def test_common_errors_page(server_url, browser):
-    browser.get(server_url + 'common_errors/')
-    assert "Common Errors" in browser.find_element(By.TAG_NAME, 'body').text
-    assert '360Giving' in browser.find_element(By.TAG_NAME, 'body').text
+    path = reverse_lazy("common_errors")
+    browser.get(f"{server_url}/{path}")
+    content = browser.find_element(By.CLASS_NAME, "layout__content").text
+    # Make sure the expected page has loaded
+    assert "Common Errors" in content
+    # Make sure it is the 360Giving version
+    assert "360Giving" in content
 
 
 def test_favicon(server_url, browser):
