@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       DATA_SUBMISSION_ENABLED: "true"
       REGISTRY_PUBLISHERS_URL: ${{secrets.REGISTRY_PUBLISHERS_URL}}
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # Python 3.8 is used by the live cove and datastore servers
-        python-version: [ '3.8']
+        python-version: [ '3.12']
     steps:
     - uses: actions/checkout@v2
     - name: Setup python
