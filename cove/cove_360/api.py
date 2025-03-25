@@ -7,7 +7,7 @@ from cove_360.models import SuppliedDataStatus
 
 class ResultsApiView(View):
     def get(self, *args, **kwargs):
-        results = get_object_or_404(SuppliedDataStatus, supplied_data=kwargs["id"])
+        results = get_object_or_404(SuppliedDataStatus, supplied_data=kwargs["pk"])
 
         return JsonResponse(
             {
