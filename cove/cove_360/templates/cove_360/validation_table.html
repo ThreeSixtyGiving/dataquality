@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load cove_tags %}
+{% load cove_360_tags %}
 
 {% for error_json, error_extra in validation_errors %}
   {% with error=error_json|json_decode %}
