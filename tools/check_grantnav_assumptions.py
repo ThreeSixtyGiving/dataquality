@@ -9,13 +9,13 @@ from decimal import Decimal
 # We assmue that there are no one-to-many relationships besides location
 def one_to_one_assumption(loc):
     for x in loc:
-        if type(x) == list:
+        if type(x) is list:
             if len(x) == 2 and x[0] == x[1]:
                 print("WARNING, Duplicate lines")
             else:
                 assert len(x) <= 1
             one_to_one_assumption(x)
-        elif type(x) == dict:
+        elif type(x) is dict:
             one_to_one_assumption(x.values())
         else:
             # Check we've not got the wrong types above

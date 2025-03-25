@@ -44,6 +44,6 @@ def multiply(a, b):
     res = a*b
 
     if res < 1:
-        return f"{(a*b):.1f}"
+        return f"{(a*b): .1f}"
 
     return int(round(res))
