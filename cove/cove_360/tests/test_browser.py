@@ -40,13 +40,13 @@ def wait_for_results_page(browser):
 def browser(request):
     if BROWSER == 'Chrome':
         chrome_options = Options()
-        browser = webdriver.Chrome(chrome_options=chrome_options)
+        browser = webdriver.Chrome(options=chrome_options)
     elif BROWSER == 'ChromeHeadless':
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         # uncomment this if "DevToolsActivePort" error
         # chrome_options.add_argument("--remote-debugging-port=9222")
-        browser = webdriver.Chrome(chrome_options=chrome_options)
+        browser = webdriver.Chrome(options=chrome_options)
     else:
         browser = getattr(webdriver, BROWSER)()
 
