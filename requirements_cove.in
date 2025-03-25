@@ -1,5 +1,5 @@
 -e file:./
-Django>3.2,<3.3
+Django<5
 flattentool>=0.17.0
 libcove>=0.30.0
 libcoveweb==0.31.1
