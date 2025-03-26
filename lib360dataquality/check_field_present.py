@@ -114,7 +114,6 @@ class PlannedDurationNotPresent(FieldNotPresentBase):
         super().process(grant, path_prefix)
 
         self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
-        print(self.check_text)
         self.message = self.check_text["message"][self.grants_percentage]
 
 
