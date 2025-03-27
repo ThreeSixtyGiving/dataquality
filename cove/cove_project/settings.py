@@ -10,6 +10,8 @@ env = environ.Env(  # set default values and casting
     SENTRY_DSN=(str, ''),
     MEDIA_ROOT=(str, os.path.join(BASE_DIR, "media")),
     MEDIA_URL=(str, "/media/"),
+    STATIC_ROOT=(str, os.path.join(BASE_DIR, "static")),
+    STATIC_URL=(str, "/static/"),
 )
 
 # We use the setting to choose whether to show the section about Sentry in the
@@ -67,8 +69,8 @@ USE_I18N = settings.USE_I18N
 USE_L10N = settings.USE_L10N
 USE_TZ = settings.USE_TZ
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = env("STATIC_URL")
+STATIC_ROOT = env("STATIC_ROOT")
 
 LANGUAGES = settings.LANGUAGES
 LOCALE_PATHS = settings.LOCALE_PATHS
