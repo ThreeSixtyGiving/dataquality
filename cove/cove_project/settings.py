@@ -8,6 +8,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(  # set default values and casting
     DB_NAME=(str, os.path.join(BASE_DIR, 'db.sqlite3')),
     SENTRY_DSN=(str, ''),
+    MEDIA_ROOT=(str, os.path.join(BASE_DIR, "media")),
+    MEDIA_URL=(str, "/media/"),
 )
 
 # We use the setting to choose whether to show the section about Sentry in the
@@ -25,19 +27,13 @@ if SENTRY_DSN:
         integrations=[DjangoIntegration()]
     )
 
-DEALER_TYPE = 'git'
-
 PIWIK = settings.PIWIK
-
-# We can't take MEDIA_ROOT and MEDIA_URL from cove settings,
-# ... otherwise the files appear under the BASE_DIR that is the Cove library install.
-# That could get messy. We want them to appear in our directory.
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
+MEDIA_ROOT = env("MEDIA_ROOT")
+MEDIA_URL = env("MEDIA_URL")
 SECRET_KEY = settings.SECRET_KEY
 DEBUG = settings.DEBUG
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
+
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -58,24 +54,19 @@ TEMPLATES[0]["OPTIONS"]["context_processors"].append('cove_360.context_processor
 
 WSGI_APPLICATION = settings.WSGI_APPLICATION
 
-# We can't take DATABASES from cove settings,
-# ... otherwise the files appear under the BASE_DIR that is the Cove library install.
-# That could get messy. We want them to appear in our directory.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': env('DB_NAME'),
     }
 }
+
 LANGUAGE_CODE = settings.LANGUAGE_CODE
 TIME_ZONE = settings.TIME_ZONE
 USE_I18N = settings.USE_I18N
 USE_L10N = settings.USE_L10N
 USE_TZ = settings.USE_TZ
 
-# We can't take STATIC_URL and STATIC_ROOT from cove settings,
-# ... otherwise the files appear under the BASE_DIR that is the Cove library install.
-# and that doesn't work with our standard Apache setup.
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
