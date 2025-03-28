@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/ThreeSixtyGiving/dataquality/badge.svg?branch=main)](https://coveralls.io/github/ThreeSixtyGiving/dataquality?branch=main)
+
 # ThreeSixtyGiving Data Quality
 
 This repository contains tools and libraries for checking and assessing the quality of data published to the ThreeSixtyGiving data standard.
