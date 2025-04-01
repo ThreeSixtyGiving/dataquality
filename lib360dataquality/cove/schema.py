@@ -28,7 +28,7 @@ class Schema360(SchemaJsonMixin):
     _pkg_schema_obj = {}
     _schema_obj = {}
 
-    def __init__(self, data_dir) -> None:
+    def __init__(self, data_dir, local_pkg_schema_path=None, local_grant_schema_path=None) -> None:
         # Create dedicated location for schema work
         self.working_dir = os.path.join(data_dir, "schema")
         try:
@@ -40,11 +40,19 @@ class Schema360(SchemaJsonMixin):
         # urljoin does not discard the final part of the location.
         self.schema_host = f"{self.working_dir}/"
 
-        schema_url = urljoin(config["schema_host"], self.schema_name)
-        pkg_schema_url = urljoin(config["schema_host"], self.pkg_schema_name)
+        if local_pkg_schema_path:
+            with open(local_pkg_schema_path) as f:
+                self._pkg_schema_obj = json.load(f)
+        else:
+            pkg_schema_url = urljoin(config["schema_host"], self.pkg_schema_name)
+            self._pkg_schema_obj = get_request(pkg_schema_url).json()
 
-        self._pkg_schema_obj = get_request(pkg_schema_url).json()
-        self._schema_obj = get_request(schema_url).json()
+        if local_grant_schema_path:
+            with open(local_grant_schema_path) as f:
+                self._schema_obj = json.load(f)
+        else:
+            schema_url = urljoin(config["schema_host"], self.schema_name)
+            self._schema_obj = get_request(schema_url).json()
 
         # Update the pkg schema to no longer point to an external reference for the
         # grants schema.
