@@ -1,0 +1,42 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ["/bin/bash", "-c", "pip install -r requirements_cove_dev.txt; cd /code/cove; python manage.py migrate; python manage.py runserver 0.0.0.0:8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: "/data/db.sqlite3"
+      MEDIA_ROOT: "/data/media/"
+      RQ_REDIS_HOST: redis
+    volumes:
+      - "dqt_data:/data"
+      - "./:/cove/:ro"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ["/bin/bash", "-c", "pip install -r requirements_cove_dev.txt; cd /code/cove; python manage.py rqworker default --with-scheduler"]
+    environment:
+      DB_NAME: "/data/db.sqlite3"
+      MEDIA_ROOT: "/data/media/"
+      RQ_REDIS_HOST: redis
+    volumes:
+      - "dqt_data:/data"
+      - "./:/cove/:ro"
+
+  redis:
+    # ValKey is an open source redis drop-in replacement
+    # See: https://hub.docker.com/r/valkey/valkey/
+    #      https://valkey.io/topics/valkey.conf/
+    image: "valkey/valkey:8"
+    ports:
+      - "6379:6379"
+    environment:
+      # disable persistence in dev
+      VALKEY_EXTRA_FLAGS: "--save ''"
+
+volumes:
+  dqt_data: {}

@@ -1,5 +1,6 @@
 -e file:./
 Django<5
+django-rq
 flattentool>=0.17.0
 libcove>=0.30.0
 libcoveweb==0.31.1

@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+# Using python base image: https://hub.docker.com/_/python/
+FROM python:3.12
+WORKDIR /code
+
+# Copy in dependencies & requirements definition
+COPY setup.py setup.py
+COPY tools/ tools/
+COPY lib360dataquality/ lib360dataquality/
+COPY requirements_cove_dev.txt requirements_cove_dev.txt
+
+# Install requirements
+RUN pip install -r requirements_cove_dev.txt
+
+# Copy in rest of the project
+COPY . .

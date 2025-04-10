@@ -8,6 +8,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(  # set default values and casting
     DB_NAME=(str, os.path.join(BASE_DIR, 'db.sqlite3')),
     SENTRY_DSN=(str, ''),
+    MEDIA_ROOT=(str, os.path.join(BASE_DIR, 'media')),
+
+    RQ_REDIS_HOST=(str, 'localhost'),
+    RQ_REDIS_PORT=(str, '6379'),
+    RQ_REDIS_DB=(str, '0'),
+    RQ_REDIS_USERNAME=(str, ''),
+    RQ_REDIS_PASSWORD=(str, ''),
 )
 
 # We use the setting to choose whether to show the section about Sentry in the
@@ -32,7 +39,7 @@ PIWIK = settings.PIWIK
 # We can't take MEDIA_ROOT and MEDIA_URL from cove settings,
 # ... otherwise the files appear under the BASE_DIR that is the Cove library install.
 # That could get messy. We want them to appear in our directory.
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = env("MEDIA_ROOT")
 MEDIA_URL = '/media/'
 
 SECRET_KEY = settings.SECRET_KEY
@@ -99,6 +106,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rq',
 )
 
 WSGI_APPLICATION = 'cove_project.wsgi.application'
@@ -136,3 +144,16 @@ if "true" in os.environ.get("DISABLE_COOKIE_POPUP", "").lower():
 # If enabled the grants data can be used in a template to create a browsable
 # table of grants.
 GRANTS_TABLE = False
+
+# Django RQ Queues
+RQ_QUEUES = {
+    'default': {
+        'HOST': env("RQ_REDIS_HOST"),
+        'PORT': env("RQ_REDIS_PORT"),
+        'DB': env("RQ_REDIS_DB"),
+        'USERNAME': env("RQ_REDIS_USERNAME"),
+        'PASSWORD': env("RQ_REDIS_PASSWORD"),
+        'DEFAULT_TIMEOUT': 360,
+        'DEFAULT_RESULT_TTL': 800,
+    },
+}

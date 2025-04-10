@@ -1,6 +1,6 @@
 from django.conf.urls.static import static
 from django.conf import settings
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
 
 from cove.urls import urlpatterns, handler500  # noqa: F401
@@ -18,6 +18,11 @@ urlpatterns += [
     path("additional_checks", cove_360.views.additional_checks, name='additional_checks'),
     path("submit", TemplateView.as_view(template_name="cove_360/publishing.html", extra_context={"submission_tool": True}), name="publishing"),
     path("terms-conditions", TemplateView.as_view(template_name="cove_360/terms.html"), name="terms-conditions"),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [
+    path('django-rq/', include('django_rq.urls'))
+]
