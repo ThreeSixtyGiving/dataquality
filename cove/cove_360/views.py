@@ -5,6 +5,7 @@ import json
 import logging
 import re
 import os
+import django_rq
 from decimal import Decimal
 
 from cove.views import explore_data_context, cove_web_input_error
@@ -43,7 +44,9 @@ def results_ready(request, pk):
 def data_loading(request, pk, template='cove_360/data_loading.html'):
     # Backward compatibility if we receive a post request to the loading page
     if request.method == 'POST':
-        return explore_360(request, pk)
+        explore_result = explore_360(request, pk)
+        if explore_result:
+            return explore_result
 
     # Data already loaded so redirect to results page
     try:
@@ -54,9 +57,8 @@ def data_loading(request, pk, template='cove_360/data_loading.html'):
 
     return render(request, template, {"pk": pk})
 
-
 @cove_web_input_error
-def explore_360(request, pk, template='cove_360/explore.html'):
+def explore_360(request, pk, template='cove_360/explore.html') -> HttpResponse | None:
 
     cached_context = cache.get(pk)
 
@@ -91,7 +93,6 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     data_status, dsc = SuppliedDataStatus.objects.get_or_create(
         supplied_data=db_data,
     )
-    context["data_status"] = data_status
     if db_data.source_url:
         context["source_url_domain"] = extract_domain(db_data.source_url)
 
@@ -104,6 +105,19 @@ def explore_360(request, pk, template='cove_360/explore.html'):
         data_status._publisher = json.dumps(publisher)
         context["submission_tool"] = True
         context["publisher"] = publisher
+
+    explore_360_process.delay(pk, context, db_data, flatten=request.POST.get("flatten"))
+
+    return data_loading(request, pk)
+
+
+@django_rq.job("default", timeout=1800)
+def explore_360_process(pk, context, db_data, flatten):
+
+    data_status, dsc = SuppliedDataStatus.objects.get_or_create(
+        supplied_data=db_data,
+    )
+    context["data_status"] = data_status
 
     lib_cove_config = LibCoveConfig()
     lib_cove_config.config.update(settings.COVE_CONFIG)
@@ -140,7 +154,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             extension_metadatas = schema_360.resolve_extension(json_data)
 
             context.update(convert_json(upload_dir, upload_url, file_name, schema_url=schema_360.schema_file,
-                                    request=request, flatten=request.POST.get('flatten'),
+                                    flatten=flatten,
                                     lib_cove_config=lib_cove_config))
 
     else:
@@ -242,7 +256,7 @@ def explore_360(request, pk, template='cove_360/explore.html'):
     # Helpful when debugging DQT
     # import pprint
     # pprint.pprint(context, stream=open("/tmp/dqt.py", "w"), indent=2)
-    return render(request, template, context)
+    #return render(request, template, context)
 
 
 def create_passed_tests_context_data(failed_tests, available_tests):
