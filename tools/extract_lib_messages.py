@@ -1,8 +1,8 @@
 from lib360dataquality.cove.threesixtygiving import (
     TEST_CLASSES,
-    QUALITY_TEST_CLASS,
-    USEFULNESS_TEST_CLASS,
 )
+
+from lib360dataquality.additional_test import TestType
 
 
 def run_check(check):
@@ -23,11 +23,11 @@ def run_check(check):
 def main():
     """Extract and print out the error messages from the different classes of additional checks"""
     print("----------- Quality Tests ----------")
-    for check in TEST_CLASSES[QUALITY_TEST_CLASS]:
+    for check in TEST_CLASSES[TestType.QUALITY_TEST_CLASS]:
         run_check(check)
 
     print("----------- Usefulness Tests -------")
-    for check in TEST_CLASSES[USEFULNESS_TEST_CLASS]:
+    for check in TEST_CLASSES[TestType.USEFULNESS_TEST_CLASS]:
         run_check(check)
 
 
