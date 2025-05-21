@@ -22,7 +22,8 @@ from libcove.lib.converters import convert_spreadsheet, convert_json
 from libcove.lib.exceptions import CoveInputDataError
 
 from lib360dataquality.cove.schema import Schema360, ExtensionsError
-from lib360dataquality.cove.threesixtygiving import TEST_CLASSES, TestType
+from lib360dataquality.cove.threesixtygiving import TEST_CLASSES
+from lib360dataquality.additional_test import TestType
 from lib360dataquality.cove.threesixtygiving import common_checks_360
 
 from cove_360.models import SuppliedDataStatus
