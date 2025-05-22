@@ -9,7 +9,7 @@ from libcove.lib.common import get_fields_present
 data_all = json.load(open('data/status.json'))
 stats = []
 
-schema_obj = Schema360()
+schema_obj = Schema360("data")
 schema_fields = schema_obj.get_pkg_schema_fields()
 
 
