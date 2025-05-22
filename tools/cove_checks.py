@@ -6,9 +6,8 @@ import pprint
 
 from lib360dataquality.cove.threesixtygiving import (
     common_checks_360,
-    USEFULNESS_TEST_CLASS,
-    QUALITY_TEST_CLASS,
 )
+from lib360dataquality.additional_test import TestType
 from lib360dataquality.cove.settings import COVE_CONFIG
 from lib360dataquality.cove.schema import Schema360
 
@@ -49,7 +48,7 @@ def main():
     file_type = args.file_type
     # TODO Just dealing with one at a time
     file_path = args.file_path[0]
-    schema = Schema360()
+    schema = Schema360(working_dir)
 
     if not file_type:
         file_type = os.path.splitext(file_path)[1][1:].lower()
@@ -78,11 +77,11 @@ def main():
 
     if args.usefulness_only and not args.quality_only:
         common_checks_360(
-            context, working_dir, data, schema, test_classes=[USEFULNESS_TEST_CLASS]
+            context, working_dir, data, schema, test_classes=[TestType.USEFULNESS_TEST_CLASS]
         )
     elif args.quality_only and not args.usefulness_only:
         common_checks_360(
-            context, working_dir, data, schema, test_classes=[QUALITY_TEST_CLASS]
+            context, working_dir, data, schema, test_classes=[TestType.QUALITY_TEST_CLASS]
         )
     else:
         common_checks_360(context, working_dir, data, schema)
