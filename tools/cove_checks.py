@@ -48,7 +48,7 @@ def main():
     file_type = args.file_type
     # TODO Just dealing with one at a time
     file_path = args.file_path[0]
-    schema = Schema360()
+    schema = Schema360(working_dir)
 
     if not file_type:
         file_type = os.path.splitext(file_path)[1][1:].lower()
