@@ -368,7 +368,7 @@ def common_checks_360(
     upload_dir: directory file exists in if non-json file_type, also used to store validation errors json
     json_data: { grants: [,,] }
     schema_obj: See lib360dataQuality/cove/schema.py for Schema360
-    tests: array of test functions to run. Defaults to all available.
+    test_classes: array of test functions to run. Defaults to all available if None.
     """
 
     schema_name = schema_obj.pkg_schema_name
@@ -378,7 +378,7 @@ def common_checks_360(
     cell_source_map = common_checks["cell_source_map"]
 
     # If no particular test classes are supplied then run all defined here
-    if not test_classes:
+    if test_classes is None:
         test_classes = [TestType.QUALITY_TEST_CLASS, TestType.USEFULNESS_TEST_CLASS]
 
     if context["file_type"] == "xlsx":
