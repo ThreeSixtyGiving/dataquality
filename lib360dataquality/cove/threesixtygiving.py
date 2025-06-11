@@ -1876,6 +1876,9 @@ class BeneficiaryButNotRecipientGeoData(AdditionalTest):
         self.relevant_grant_type = TestRelevance.RECIPIENT_ORGANISATION
 
     def process(self, grant, path_prefix):
+        if grant.get("recipientIndividual"):
+            return
+
         beneficiary_locations = grant.get("beneficiaryLocation", [])
         if (
             len(beneficiary_locations) > 0
