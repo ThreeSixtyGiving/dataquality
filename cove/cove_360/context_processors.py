@@ -1,3 +1,4 @@
+import datetime
 from django.conf import settings
 
 
@@ -6,4 +7,5 @@ def additional_context(request):
         "DATA_SUBMISSION_ENABLED": settings.DATA_SUBMISSION_ENABLED,
         "DEBUG": settings.DEBUG,
         "DISABLE_COOKIE_POPUP": settings.DISABLE_COOKIE_POPUP,
+        "current_year": datetime.datetime.now().year,
     }
