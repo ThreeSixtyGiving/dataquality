@@ -1966,6 +1966,67 @@ class BeneficiaryLocationNameButNoCode(AdditionalTest):
         self.message = self.check_text["message"][self.grants_percentage]
 
 
+class NoCountryCode(AdditionalTest):
+    """ Checks if there is are beneficiary location fields or other country code fields"""
+
+    check_text = {
+        "heading": mark_safe('Beneficiary countryCode and Recipient organisation location countryCode not found'),
+        "message": RangeDict(),
+    }
+    check_text["message"][(0, 100)] = mark_safe(
+        "Including countryCodes in beneficiary location or countryCodes in recipient organisation locations increases the "
+        "usability of the data by providing a consistent way to identify countries. "
+        "See our "
+        '<a target="_blank" href="https://standard.threesixtygiving.org/en/latest/guidance/location-guide/">guidance on location data</a> '
+        "for further help."
+    )
+
+    category = TestCategories.LOCATION
+
+    def process(self, grant, path_prefix):
+
+        beneficiary_failed = False
+        recipient_org_failed = False
+
+        beneficiary_locations = grant.get("beneficiaryLocation", [])
+
+        for num, location in enumerate(beneficiary_locations):
+            if not location.get("countryCode"):
+                self.failed = True
+                beneficiary_failed = True
+                self.count += 1
+                self.json_locations.append(
+                    path_prefix + "/beneficiaryLocation/{}/countryCode".format(num)
+                )
+
+        # We couldn't find the countryCode in the beneficiaryLocation so now try the
+        # recipientOrganization locations
+
+        if self.failed:
+
+            recipient_organizations = grant.get("recipientOrganization", [])
+
+            for recipient_org_num, recipient_org in enumerate(recipient_organizations):
+                locations = recipient_org.get("location", [])
+
+                for location_num, location in enumerate(locations):
+                    if not location.get("countryCode"):
+                        self.failed = True
+                        self.count += 1
+                        recipient_org_failed = True
+                        self.json_locations.append(
+                            path_prefix + "/recipientOrganization/{}/location/{}/countryCode".format(recipient_org_num, location_num)
+                        )
+
+        if not beneficiary_failed and not recipient_org_failed:
+            self.failed = False
+            self.count = 0
+            self.json_locations = []
+
+        self.heading = mark_safe(self.format_heading_count(self.check_text["heading"]))
+        self.message = self.check_text["message"][self.grants_percentage]
+
+
 # Default tests run in CoVE, these are also the base list
 # for the Quality Dashboard checks.
 TEST_CLASSES = {
