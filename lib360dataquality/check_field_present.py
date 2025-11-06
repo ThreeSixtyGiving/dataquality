@@ -108,7 +108,7 @@ class PlannedDurationNotPresent(FieldNotPresentBase):
 
     @exception_to_false
     def check_field(self, grant):
-        return (grant["plannedDates"][0].get("duration") or (grant["plannedDates"][0].get("startDate") and grant["plannedDates"][0].get("endDate")))
+        return (grant["plannedDates"][0].get("duration") is not None or (grant["plannedDates"][0].get("startDate") and grant["plannedDates"][0].get("endDate")))
 
     def process(self, grant, path_prefix):
         super().process(grant, path_prefix)
