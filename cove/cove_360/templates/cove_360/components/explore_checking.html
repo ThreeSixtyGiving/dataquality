@@ -184,4 +184,60 @@
 <div class="spacer-4"></div>
 
 <script>
+  window.addEventListener('load', function () {
+
+    let validationErrors = [];
+    let accuracyChecks = [];
+    let usefulnessChecks = [];
+
+    {# Transfer the results data from the template to JS #}
+
+    /* Validation errors */
+    {% with validation_errors=validation_errors_grouped.required error_prefix='required-' %}
+    {% if validation_errors %}
+      validationErrors.append("missing-required-fields");
+    {% endif %}
+    {% endwith %}
+
+    {% with validation_errors=validation_errors_grouped.format error_prefix='format-' %}
+    {% if validation_errors %}
+      validationErrors.append("incorrect-formats");
+    {% endif %}
+    {% endwith %}
+
+    {% if additional_closed_codelist_values %}
+      validationErrors.append("codelist-errors");
+    {% endif %}
+
+    {% with validation_errors=validation_errors_grouped.other error_prefix='other-' %}
+    {% if validation_errors %}
+      validationErrors.append("other-errors");
+    {% endif %}
+    {% endwith %}
+
+    /* Accuracy checks */
+    {% for message, json_location, spreadsheet_location in quality_accuracy_checks %}
+      accuracyChecks.append('{{message.type}}');
+    {% endfor %}
+
+    /* Usefulness checks */
+    {% for message, json_location, spreadsheet_location in usefulness_checks %}
+      usefulnessChecks.append('{{message.type}}');
+    {% endfor %}
+
+    /* Send the data to matamo */
+    for (const validationError of validationErrors){
+      _paq.push(['trackEvent', 'Validation', validationError]); // eslint-disable-line no-undef
+    }
+
+    for (const accuracyCheck of accuracyChecks){
+      _paq.push(['trackEvent', 'Accuracy', accuracyCheck]); // eslint-disable-line no-undef
+    }
+
+    for (const usefulnessCheck of usefulnessChecks){
+      _paq.push(['trackEvent', 'Usefulness', usefulnessCheck]); // eslint-disable-line no-undef
+    }
+
+    _paq.push(['trackPageView']); // eslint-disable-line no-undef
+  });
 </script>
