@@ -65,32 +65,6 @@
 
 <div class="spacer-3"></div>
 
-{% comment %} TODO no longer needed?
-
-<style scoped>
-    table {
-      width: 100%;
-    }
-
-    a[disabled] {
-      pointer-events: none;
-      opacity: 0.5! important;
-    }
-</style>
-
-
-
-<h1 id="report">Report</h1>
-{% include "cove_360/components/explore/summary.html" %}
-<hr />
-{% include "cove_360/components/explore/validity.html" %}
-<hr />
-{% include "cove_360/components/explore/accuracy.html" %}
-<hr />
-{% include "cove_360/components/explore/usefulness.html" %}
-#}
-{% endcomment %}
-
 <script>
   window.addEventListener('load', function () {
     const selfPublishEnabled = '{{ data_status.publisher.self_publish.enabled }}';
