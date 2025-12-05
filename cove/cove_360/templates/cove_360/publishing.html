@@ -8,7 +8,7 @@
 
 {% if DATA_SUBMISSION_ENABLED %}
       <h2>Submit your data</h2>
-      <p>Please ensure that your file has been checked using the <a href="{% url 'index' %}">Data Quality Tool</a> before submitting as only valid 360Giving data can be included on the 360Giving Data Registry.</p>
+      <p>Please ensure that your file has been checked using the <a href="{% url 'index' %}">Data Quality Checker</a> before submitting, as only valid 360Giving data can be included on the 360Giving Data Quality Dashboard and in tools like GrantNav.</p>
     <form method="POST" class="generic-form" action="{% url 'index' %}" id="self-publishing-form">
       {% csrf_token %}
       <input type="hidden" name="self_publishing" value="true">

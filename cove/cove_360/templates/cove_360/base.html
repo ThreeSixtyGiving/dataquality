@@ -75,8 +75,8 @@
                 <a href="/"><img src="{% static 'dataexplore/images/360-giving-logo.svg' %}" alt="360Giving"></a>
               </div>
               <div class="hero__column hero__lead">
-                <h2 class="hero__title">Data {% if submission_tool %}Submission{% else %}Quality{% endif %} Tool</h2>
-                <p class="hero__blurb">{% if submission_tool %}Submit your 360Giving data file to be included in the 360Giving Data Registry and tools{% else %}Convert, Validate, Explore 360Giving Data{% endif %}</p>
+                <h2 class="hero__title">{% if submission_tool %}Data Submission Form{% else %}Data Quality Checker{% endif %}</h2>
+                <p class="hero__blurb">{% if submission_tool %}Submit your 360Giving data file to be included in the 360Giving Data Quality Dashboard and tools{% else %}Check data using the 360Giving Data Standard{% endif %}</p>
               </div>
             </div>
           </div>
