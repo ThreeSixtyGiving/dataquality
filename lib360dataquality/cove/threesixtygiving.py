@@ -893,7 +893,7 @@ class IncompleteRecipientOrg(AdditionalTest):
         "Recipient location data in the form of postcodes or geocodes provides a "
         "consistent way to describe a location. This data can be used to produce maps, "
         "such as the maps in "
-        '<a target="_blank" href="https://insights.threesixtygiving.org/">360Insights</a>, '
+        '<a target="_blank" href="https://grantvis.threesixtygiving.org/">GrantVis</a>, '
         "showing the geographical distribution of "
         "funding and allows grants data to be looked at alongside official statistics, "
         "such as the Indices of multiple deprivation. See our "
