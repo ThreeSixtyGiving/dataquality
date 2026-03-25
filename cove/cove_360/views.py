@@ -5,6 +5,7 @@ import json
 import logging
 import re
 import os
+import zipfile
 from decimal import Decimal
 
 from cove.views import explore_data_context, cove_web_input_error
@@ -16,6 +17,8 @@ from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
+
+import openpyxl
 
 from libcove.config import LibCoveConfig
 from libcove.lib.converters import convert_spreadsheet, convert_json
@@ -145,6 +148,40 @@ def explore_360(request, pk, template='cove_360/explore.html'):
                                     lib_cove_config=lib_cove_config))
 
     else:
+        if file_type == "xlsx":
+
+            # Check for an excessive number of rows before passing to flattentool.
+            excessive_sheets = {}
+            try:
+                workbook = openpyxl.reader.excel.load_workbook(file_name, read_only=True)
+                excessive_sheets = {
+                    sheetname: workbook[sheetname].max_row
+                    for sheetname in workbook.sheetnames
+                    if workbook[sheetname].max_row > settings.MAX_XLSX_ROWS
+                }
+
+            except (zipfile.BadZipFile, openpyxl.utils.exceptions.InvalidFileException):
+                # Exceptions associated with invalid spreadsheets are passed through for cove to handle.
+                pass
+
+            if len(excessive_sheets) == 1:
+                sheetname = next(iter(excessive_sheets))
+                wrapped_err = f"This XLSX workbook has a worksheet ({sheetname}) with " \
+                              f"{excessive_sheets[sheetname]} rows " \
+                              f"but the maximum number of rows supported by this tool is {settings.MAX_XLSX_ROWS}"
+                raise CoveInputDataError(wrapped_err=wrapped_err)
+            elif len(excessive_sheets) > 1:
+                wrapped_err = "This XLSX workbook has worksheets with a larger number of rows " \
+                              f"than is supported by this tool ({settings.MAX_XLSX_ROWS}). " \
+                              "Worksheets with too many rows: "
+                wrapped_err += ", ".join(
+                    [
+                        f"'{sheetname}' ({num_rows} rows)"
+                        for sheetname, num_rows in excessive_sheets.items()
+                    ]
+                )
+                raise CoveInputDataError(wrapped_err=wrapped_err)
+
         # Convert spreadsheet to json
         context.update(convert_spreadsheet(upload_dir, upload_url, file_name, file_type, lib_cove_config, schema_360.schema_file,
                                            schema_360.pkg_schema_file))
