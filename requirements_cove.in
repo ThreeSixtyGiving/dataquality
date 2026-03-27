@@ -2,7 +2,7 @@
 Django<5
 flattentool>=0.17.0
 libcove>=0.30.0
-libcoveweb==0.31.1
+libcoveweb==0.31.2
 django-bootstrap3
 django-debug-toolbar
 requests
