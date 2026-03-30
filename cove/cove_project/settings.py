@@ -12,6 +12,7 @@ env = environ.Env(  # set default values and casting
     MEDIA_URL=(str, "/media/"),
     STATIC_ROOT=(str, os.path.join(BASE_DIR, "static")),
     STATIC_URL=(str, "/static/"),
+    MAX_XLSX_ROWS=(int, 50000),
 )
 
 # We use the setting to choose whether to show the section about Sentry in the
@@ -35,6 +36,7 @@ MEDIA_URL = env("MEDIA_URL")
 SECRET_KEY = settings.SECRET_KEY
 DEBUG = settings.DEBUG
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
+MAX_XLSX_ROWS = env("MAX_XLSX_ROWS")
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',

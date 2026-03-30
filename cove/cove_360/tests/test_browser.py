@@ -150,31 +150,17 @@ def server_url(request, live_server):
         'bad currency',
     ], True),
     ('badfile_all_validation_errors_4_times.xlsx', [
-        'Description is missing but required (more info about this error)',
-        'id is missing but required within recipientOrganization (more info about this error)',
-        'Date is not in the correct format (more info about this error)',
-        'Amount Awarded is not a number. Check that the value is not null, and doesn’t contain any characters other than 0-9 and dot (.). Number values should not be in quotes.',
-        'Invalid \'uri\' found (more info about this error)',
-        'Invalid code found in Currency (more info about this error)',
-        '[] is too short. You must supply at least one value, or remove the item entirely (unless it’s required).',
-        # Context dates should be ISO formatted
-        '2019-06-01T00:00:00+00:00',
-        'bad date 1',
-        'bad date 2',
-        'bad date 3',
-        'bad date 4',
-        'This should be a number',
-        'This should be a uri 1',
-        'This should be a uri 2',
-        # 'This should be a uri 3',
-        'This should be a uri 5',
-        'This should be a uri 6',
-        # 'This should be a uri 7',
-        'bad currency 1',
-        'bad currency 2',
-        'bad currency 3',
-        'bad currency 4',
+        '',
     ], True),
+    ('badfile_too_many_rows.xlsx', [
+        'This XLSX workbook has a worksheet (grants) with 50001 rows '
+        'but the maximum number of rows supported by this tool is 50000'
+    ], False),
+    ('badfile_too_many_rows_multiple_sheets.xlsx', [
+        'This XLSX workbook has worksheets with a larger number of rows '
+        'than is supported by this tool (50000). Worksheets with too many rows: '
+        '\'grants\' (50001 rows), \'grants_2\' (50002 rows)'
+    ], False),
     ("dei_extension.xlsx", [
         "do not use the 360Giving Data Standard codelists correctly.",
     ], True),
