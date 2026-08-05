@@ -154,11 +154,12 @@ def explore_360(request, pk, template='cove_360/explore.html'):
             excessive_sheets = {}
             try:
                 workbook = openpyxl.reader.excel.load_workbook(file_name, read_only=True)
-                excessive_sheets = {
-                    sheetname: workbook[sheetname].max_row
-                    for sheetname in workbook.sheetnames
-                    if workbook[sheetname].max_row > settings.MAX_XLSX_ROWS
-                }
+                for sheetname in workbook.sheetnames:
+                    ws = workbook[sheetname]
+                    if not ws.max_row:
+                        ws.calculate_dimension(force=True)
+                    if ws.max_row > settings.MAX_XLSX_ROWS:
+                        excessive_sheets[sheetname] = ws.max_row
 
             except (zipfile.BadZipFile, openpyxl.utils.exceptions.InvalidFileException):
                 # Exceptions associated with invalid spreadsheets are passed through for cove to handle.
