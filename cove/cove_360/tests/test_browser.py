@@ -161,6 +161,9 @@ def server_url(request, live_server):
         'than is supported by this tool (50000). Worksheets with too many rows: '
         '\'grants\' (50001 rows), \'grants_2\' (50002 rows)'
     ], False),
+    ('badfile_missing_max_row.xlsx', [
+        '',
+    ], True),
     ("dei_extension.xlsx", [
         "do not use the 360Giving Data Standard codelists correctly.",
     ], True),

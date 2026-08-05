@@ -4,6 +4,7 @@
 *~
 .ve
 .ve2
+.DS_Store
 *.pyc
 __pycache__
 .pytest_cache/
@@ -18,6 +19,7 @@ geckodriver.log
 ghostdriver.log
 cove/lib/org-ids.json
 cove/lib/org-ids.json.lock
+lib360dataquality.egg-info/
 chromedriver/
 src/
 node_modules/
