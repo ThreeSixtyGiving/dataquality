@@ -1,0 +1,7 @@
+WAIT=10     # Wait 10 seconds between checks
+TIMEOUT=60  # Timeout after a minute
+ATTEMPTS=10 # Attempt checks 10 times
+
+# Check root URL
+/
+
