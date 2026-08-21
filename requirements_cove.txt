@@ -127,7 +127,7 @@ six==1.17.0
     #   jsonschema
     #   python-dateutil
     #   rfc3339-validator
-sqlparse==0.5.3
+sqlparse==0.6.0
     # via
     #   django
     #   django-debug-toolbar
