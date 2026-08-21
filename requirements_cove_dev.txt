@@ -20,7 +20,7 @@ babel==2.17.0
     # via sphinx
 backports-datetime-fromisoformat==2.0.3
     # via flattentool
-black==25.1.0
+black==26.3.1
     # via -r requirements_cove_dev.in
 bleach==6.2.0
     # via -r requirements_cove.in
@@ -163,7 +163,7 @@ packaging==24.2
     #   chromedriver-autoinstaller
     #   pytest
     #   sphinx
-pathspec==0.12.1
+pathspec==1.1.1
     # via black
 persistent==6.1.1
     # via
@@ -205,6 +205,8 @@ python-dateutil==2.9.0.post0
     # via
     #   -r requirements_cove.in
     #   lib360dataquality
+pytokens==0.4.1
+    # via black
 pytz==2025.2
     # via flattentool
 rangedict==0.1.7
