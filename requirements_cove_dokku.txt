@@ -18,7 +18,7 @@ backports-datetime-fromisoformat==2.0.3
     # via
     #   -r requirements_cove.txt
     #   flattentool
-bleach==6.2.0
+bleach==6.4.0
     # via -r requirements_cove.txt
 btrees==6.1
     # via

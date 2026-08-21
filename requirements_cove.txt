@@ -12,7 +12,7 @@ attrs==25.3.0
     # via jsonschema
 backports-datetime-fromisoformat==2.0.3
     # via flattentool
-bleach==6.2.0
+bleach==6.4.0
     # via -r requirements_cove.in
 btrees==6.1
     # via zodb
