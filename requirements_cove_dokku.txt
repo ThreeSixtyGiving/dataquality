@@ -102,7 +102,7 @@ libcove==0.31.0
     #   libcoveweb
 libcoveweb==0.31.2
     # via -r requirements_cove.txt
-lxml==5.3.1
+lxml==6.1.0
     # via
     #   -r requirements_cove.txt
     #   flattentool

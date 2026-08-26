@@ -137,7 +137,7 @@ libcoveweb==0.31.2
     # via -r requirements_cove.in
 libsass==0.23.0
     # via -r requirements_cove_dev.in
-lxml==5.3.1
+lxml==6.1.0
     # via flattentool
 markupsafe==3.0.2
     # via
