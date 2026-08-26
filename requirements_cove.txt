@@ -53,7 +53,7 @@ flattentool==0.27.0
     #   -r requirements_cove.in
     #   libcove
     #   libcoveweb
-idna==3.10
+idna==3.15
     # via requests
 ijson==3.3.0
     # via
