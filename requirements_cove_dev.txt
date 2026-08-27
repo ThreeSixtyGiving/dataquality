@@ -96,7 +96,7 @@ flattentool==0.27.0
     #   -r requirements_cove.in
     #   libcove
     #   libcoveweb
-h11==0.14.0
+h11==0.16.0
     # via wsproto
 hypothesis==6.13.0
     # via -r requirements_cove_dev.in
