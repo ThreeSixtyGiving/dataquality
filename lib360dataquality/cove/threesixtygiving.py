@@ -74,7 +74,8 @@ def oneOf_draft4(validator, oneOf, instance, schema):
             required_field_1 = list(required_fields_1)[0]
             required_field_2 = list(required_fields_2)[0]
             if type(instance) is dict and required_field_1 in instance and required_field_2 in instance:
-                err = ValidationError(f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
+                err = ValidationError(
+                    f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
                 err.error_id = "oneOf_each_required"
                 err.extras = [required_field_1, required_field_2]
                 yield err
@@ -246,7 +247,7 @@ def group_validation_errors(validation_errors, file_type, openpyxl_workbook):
             "spreadsheet_style_errors_table": spreadsheet_style_errors_table(
                 values, openpyxl_workbook
             )
-            if (file_type in ["xlsx", "csv"] and "grants/" in error["path_no_number"])
+            if (file_type in ["xlsx", "csv"] and "grants" in error["path_no_number"])
             else None,
         }
         if error["validator"] == "required":
@@ -2108,7 +2109,8 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                     for location in test_instance.json_locations
                 ]
             except KeyError:
-                logger.warning(f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
+                logger.warning(
+                    f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
                 pass
         results.append(
             (
