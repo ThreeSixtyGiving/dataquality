@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 from django.urls import reverse_lazy
 
@@ -8,7 +9,7 @@ from cove.input.models import SuppliedData
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 
-from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
+from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES, group_validation_errors
 from lib360dataquality.additional_test import TestCategories, TestImportance
 
 # Source is cove_360/fixtures/fundingproviders-grants_fixed_2_grants.json
@@ -174,8 +175,8 @@ SOURCE_MAP = {
     'grants/0/plannedDates/0': [['grants', 2]],
     'grants/0/plannedDates/0/startDate': [['grants',
                                           '',
-                                          2,
-                                          'Planned Dates:Start Date']],
+                                           2,
+                                           'Planned Dates:Start Date']],
     'grants/0/plannedDates/0/endDate': [['grants',
                                          '',
                                          2,
@@ -322,8 +323,8 @@ SOURCE_MAP = {
     'grants/2/plannedDates/0': [['grants', 4]],
     'grants/2/plannedDates/0/startDate': [['grants',
                                           '',
-                                          4,
-                                          'Planned Dates:Start Date']],
+                                           4,
+                                           'Planned Dates:Start Date']],
     'grants/2/plannedDates/0/endDate': [['grants',
                                          '',
                                          4,
@@ -668,13 +669,13 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-             "category": TestCategories.ORGANISATIONS,
-             "count": 1,
-             "heading": "1 grant has introduced an additional Funding Org:Name for an existing Funding Org:Identifier",
-             "importance": 0,
-             "message": "Your data contains an organisation identifier with more than one funder name. Funding organisations are expected to have one name with a corresponding identifier, so please check your data to see why multiple funder names have occurred.",
-             "percentage": 1 / TOTAL_GRANTS,
-             "type": "MultiFundingNamesForOrgId",
+            "category": TestCategories.ORGANISATIONS,
+            "count": 1,
+            "heading": "1 grant has introduced an additional Funding Org:Name for an existing Funding Org:Identifier",
+            "importance": 0,
+            "message": "Your data contains an organisation identifier with more than one funder name. Funding organisations are expected to have one name with a corresponding identifier, so please check your data to see why multiple funder names have occurred.",
+            "percentage": 1 / TOTAL_GRANTS,
+            "type": "MultiFundingNamesForOrgId",
         },
         ["grants/1/fundingOrganization/2/name"],
         [],
@@ -1309,3 +1310,61 @@ class TestSpreadsheetErrorsTable():
                 ['', '???']
             ]
         }
+
+
+class TestGroupValidationErrors():
+    def _required_error(self, path_no_number, header):
+        return json.dumps({
+            "message": f"'{header}' is missing but required",
+            "validator": "required",
+            "assumption": "recipientOrganization",
+            "validator_value": None,
+            "message_type": "required",
+            "path_no_number": path_no_number,
+            "header": header,
+            "header_extra": "grants/[number]",
+            "null_clause": "",
+            "error_id": None,
+            "exclusiveMinimum": None,
+            "exclusiveMaximum": None,
+            "extras": None,
+            "each": None,
+            "property": None,
+            "reprs": None,
+        })
+
+    def test_row_ref_shown_for_top_level_grant_field(self):
+        values = [{'sheet': 'grants', 'row_number': 5, 'col_alpha': 'C', 'value': ''}]
+        validation_errors = [(self._required_error('grants', 'Amount Awarded'), values)]
+
+        grouped = group_validation_errors(validation_errors, 'xlsx', None)
+
+        error_table = grouped['required'][0][1]['spreadsheet_style_errors_table']
+        assert error_table == spreadsheet_style_errors_table(values, None)
+
+    def test_row_ref_shown_for_nested_grant_field(self):
+        values = [{'sheet': 'grants', 'row_number': 5, 'col_alpha': 'F', 'value': ''}]
+        validation_errors = [
+            (self._required_error('grants/fundingOrganization', 'Funding Org:Identifier'), values)
+        ]
+
+        grouped = group_validation_errors(validation_errors, 'xlsx', None)
+
+        error_table = grouped['required'][0][1]['spreadsheet_style_errors_table']
+        assert error_table == spreadsheet_style_errors_table(values, None)
+
+    def test_row_ref_not_shown_for_non_grant_field(self):
+        values = [{'sheet': 'other', 'row_number': 2, 'col_alpha': 'B', 'value': ''}]
+        validation_errors = [(self._required_error('other', 'Some Field'), values)]
+
+        grouped = group_validation_errors(validation_errors, 'xlsx', None)
+
+        assert grouped['required'][0][1]['spreadsheet_style_errors_table'] is None
+
+    def test_row_ref_not_shown_for_json_file_type(self):
+        values = [{'sheet': 'grants', 'row_number': 5, 'col_alpha': 'C', 'value': ''}]
+        validation_errors = [(self._required_error('grants', 'Amount Awarded'), values)]
+
+        grouped = group_validation_errors(validation_errors, 'json', None)
+
+        assert grouped['required'][0][1]['spreadsheet_style_errors_table'] is None
