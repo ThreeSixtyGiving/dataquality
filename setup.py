@@ -15,7 +15,7 @@ setup(
         'python-dateutil',
         'rangedict',
         'ijson',
-        'jsonschema<4',
+        'jsonschema>=4.18',
         'json-merge-patch',
     ],
     extras_require={

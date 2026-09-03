@@ -123,12 +123,12 @@ jsonref==1.1.0
     # via
     #   flattentool
     #   libcove
-jsonschema==3.2.0
+jsonschema==4.18
     # via
     #   -r requirements_cove.in
     #   lib360dataquality
     #   libcove
-libcove==0.31.0
+libcove==0.32.1
     # via
     #   -r requirements_cove.in
     #   lib360dataquality

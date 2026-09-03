@@ -7,6 +7,7 @@ from collections import OrderedDict, defaultdict
 from decimal import Decimal
 import logging
 
+import jsonschema
 import libcove.lib.tools as tools
 import openpyxl
 import pytz
@@ -74,7 +75,8 @@ def oneOf_draft4(validator, oneOf, instance, schema):
             required_field_1 = list(required_fields_1)[0]
             required_field_2 = list(required_fields_2)[0]
             if type(instance) is dict and required_field_1 in instance and required_field_2 in instance:
-                err = ValidationError(f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
+                err = ValidationError(
+                    f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
                 err.error_id = "oneOf_each_required"
                 err.extras = [required_field_1, required_field_2]
                 yield err
@@ -127,6 +129,10 @@ def oneOf_draft4(validator, oneOf, instance, schema):
 
 
 validator.VALIDATORS["oneOf"] = oneOf_draft4
+
+# Force jsonschema to use our validator
+# https://github.com/python-jsonschema/jsonschema/issues/994
+jsonschema.validators._META_SCHEMAS["https://json-schema.org/draft/2020-12/schema"] = validator
 
 
 @tools.ignore_errors
@@ -2108,7 +2114,8 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                     for location in test_instance.json_locations
                 ]
             except KeyError:
-                logger.warning(f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
+                logger.warning(
+                    f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
                 pass
         results.append(
             (
