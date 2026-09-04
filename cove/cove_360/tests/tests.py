@@ -8,7 +8,7 @@ from cove.input.models import SuppliedData
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 
-from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, TEST_CLASSES
+from lib360dataquality.cove.threesixtygiving import get_grants_aggregates, run_extra_checks, extend_numbers, spreadsheet_style_errors_table, validator, TEST_CLASSES
 from lib360dataquality.additional_test import TestCategories, TestImportance
 
 # Source is cove_360/fixtures/fundingproviders-grants_fixed_2_grants.json
@@ -174,8 +174,8 @@ SOURCE_MAP = {
     'grants/0/plannedDates/0': [['grants', 2]],
     'grants/0/plannedDates/0/startDate': [['grants',
                                           '',
-                                          2,
-                                          'Planned Dates:Start Date']],
+                                           2,
+                                           'Planned Dates:Start Date']],
     'grants/0/plannedDates/0/endDate': [['grants',
                                          '',
                                          2,
@@ -322,8 +322,8 @@ SOURCE_MAP = {
     'grants/2/plannedDates/0': [['grants', 4]],
     'grants/2/plannedDates/0/startDate': [['grants',
                                           '',
-                                          4,
-                                          'Planned Dates:Start Date']],
+                                           4,
+                                           'Planned Dates:Start Date']],
     'grants/2/plannedDates/0/endDate': [['grants',
                                          '',
                                          4,
@@ -668,13 +668,13 @@ QUALITY_ACCURACY_CHECKS_RESULTS = [
     ),
     (
         {
-             "category": TestCategories.ORGANISATIONS,
-             "count": 1,
-             "heading": "1 grant has introduced an additional Funding Org:Name for an existing Funding Org:Identifier",
-             "importance": 0,
-             "message": "Your data contains an organisation identifier with more than one funder name. Funding organisations are expected to have one name with a corresponding identifier, so please check your data to see why multiple funder names have occurred.",
-             "percentage": 1 / TOTAL_GRANTS,
-             "type": "MultiFundingNamesForOrgId",
+            "category": TestCategories.ORGANISATIONS,
+            "count": 1,
+            "heading": "1 grant has introduced an additional Funding Org:Name for an existing Funding Org:Identifier",
+            "importance": 0,
+            "message": "Your data contains an organisation identifier with more than one funder name. Funding organisations are expected to have one name with a corresponding identifier, so please check your data to see why multiple funder names have occurred.",
+            "percentage": 1 / TOTAL_GRANTS,
+            "type": "MultiFundingNamesForOrgId",
         },
         ["grants/1/fundingOrganization/2/name"],
         [],
@@ -987,6 +987,32 @@ def test_extend_numbers():
     assert list(extend_numbers([1])) == [1, 2]
     assert list(extend_numbers([4, 5, 6])) == [3, 4, 5, 6, 7]
     assert list(extend_numbers([4, 5, 7, 2001])) == [3, 4, 5, 6, 7, 8, 2000, 2001, 2002]
+
+
+def test_unique_ids():
+    schema = {
+        "type": "object",
+        "properties": {
+            "grants": {
+                "type": "array",
+                "items": {"type": "object"},
+                "uniqueItems": True,
+            }
+        },
+    }
+    v = validator(schema)
+
+    errors = list(v.iter_errors({"grants": [{"id": "1"}, {"id": "2"}, {"id": "1"}]}))
+    assert [(e.message, e.error_id) for e in errors] == [("Non-unique id values", "uniqueItems_with_id")]
+
+    errors = list(v.iter_errors({"grants": [{"title": "a"}, {"title": "b"}]}))
+    assert errors == []
+
+    errors = list(v.iter_errors({"grants": [{"title": "a"}, {"title": "a"}]}))
+    assert [(e.message, e.error_id) for e in errors] == [("Array has non-unique elements", "uniqueItems_no_ids")]
+
+    errors = list(v.iter_errors({"grants": [{"id": "1"}, {"id": "2"}]}))
+    assert errors == []
 
 
 def ex(value):

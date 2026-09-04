@@ -14,7 +14,7 @@ htmlcov
 docs/_build
 .cache/*
 .pytest_cache/
-.hypothesis/*
+.hypothesis
 geckodriver.log
 ghostdriver.log
 cove/lib/org-ids.json
