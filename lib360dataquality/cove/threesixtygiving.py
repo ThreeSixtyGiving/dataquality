@@ -2,14 +2,18 @@ import datetime
 import functools
 import itertools
 import json
+import os
 import re
+import time
 from collections import OrderedDict, defaultdict
 from decimal import Decimal
 import logging
 
+import libcove.lib.common as libcove_common
 import libcove.lib.tools as tools
 import openpyxl
 import pytz
+import requests
 from dateutil.relativedelta import relativedelta
 from jsonschema.exceptions import ValidationError
 from libcove.lib.common import common_checks_context, get_additional_codelist_values, get_orgids_prefixes, validator
@@ -35,8 +39,47 @@ DATES_JSON_LOCATION = {
     "actual_end_date": "/actualDates/0/endDate",
 }
 
-orgids_prefixes = get_orgids_prefixes()
-orgids_prefixes.append("360G")
+_orgids_prefixes = None
+
+
+def get_cached_orgids_prefixes():
+    """
+    Lazy fetch org id's as we ocassionaly run into errors that cause the
+    pipeline to crash
+    """
+    global _orgids_prefixes
+    if _orgids_prefixes is None:
+        _orgids_prefixes = _fetch_orgids_prefixes_with_fallback()
+        _orgids_prefixes.append("360G")
+    return _orgids_prefixes
+
+
+def _fetch_orgids_prefixes_with_fallback():
+    """
+    Re-try's get_orgids_prefixes five times if it fails in case of temporary
+    network blip. Failing that fall's back to a stale ord id list. Raises if
+    we are unable to fetch and have no fallback file.
+    """
+    for attempt in range(5):
+        try:
+            return get_orgids_prefixes()
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"org-id.guide fetch failed (attempt {attempt + 1}/5): {e}")
+            time.sleep(1)
+
+    orgids_file = os.path.join(os.path.dirname(libcove_common.__file__), "org-ids.json")
+    if os.path.exists(orgids_file):
+        logger.warning("Using stale org-id list, could not refresh from org-id.guide")
+        with open(orgids_file) as fp:
+            contents = json.load(fp)
+        contents["downloaded"] = str(datetime.date.today())
+        with open(orgids_file, "w") as fp:
+            json.dump(contents, fp, indent=2)
+        return [org_list["code"] for org_list in contents["lists"]]
+    else:
+        logger.error("No org-id list available locally and org-id.guide is unreachable")
+        raise
+
 
 currency_html = {"GBP": "&pound;", "USD": "$", "EUR": "&euro;"}
 
@@ -74,7 +117,8 @@ def oneOf_draft4(validator, oneOf, instance, schema):
             required_field_1 = list(required_fields_1)[0]
             required_field_2 = list(required_fields_2)[0]
             if type(instance) is dict and required_field_1 in instance and required_field_2 in instance:
-                err = ValidationError(f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
+                err = ValidationError(
+                    f"Only 1 of {required_field_1} or {required_field_2} is permitted, but both are present")
                 err.error_id = "oneOf_each_required"
                 err.extras = [required_field_1, required_field_2]
                 yield err
@@ -454,7 +498,7 @@ def get_prefixes(distinct_identifiers):
     org_identifiers_unrecognised_prefixes = defaultdict(int)
 
     for org_identifier in distinct_identifiers:
-        for prefix in orgids_prefixes:
+        for prefix in get_cached_orgids_prefixes():
             if org_identifier.startswith(prefix):
                 org_identifier_prefixes[prefix] += 1
                 break
@@ -648,7 +692,7 @@ class RecipientOrgUnrecognisedPrefix(AdditionalTest):
         try:
             count_failure = False
             for num, organization in enumerate(grant["recipientOrganization"]):
-                for prefix in orgids_prefixes:
+                for prefix in get_cached_orgids_prefixes():
                     if organization["id"].lower().startswith(prefix.lower()):
                         break
                 else:
@@ -693,7 +737,7 @@ class FundingOrgUnrecognisedPrefix(AdditionalTest):
         try:
             count_failure = False
             for num, organization in enumerate(grant["fundingOrganization"]):
-                for prefix in orgids_prefixes:
+                for prefix in get_cached_orgids_prefixes():
                     if organization["id"].lower().startswith(prefix.lower()):
                         break
                 else:
@@ -2108,7 +2152,8 @@ def run_extra_checks(json_data, cell_source_map, test_classes, aggregates):
                     for location in test_instance.json_locations
                 ]
             except KeyError:
-                logger.warning(f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
+                logger.warning(
+                    f"{test_instance} - Spreadsheet location couldn't be defined {test_instance.json_locations}")
                 pass
         results.append(
             (
