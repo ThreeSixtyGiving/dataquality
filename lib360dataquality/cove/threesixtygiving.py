@@ -290,7 +290,7 @@ def group_validation_errors(validation_errors, file_type, openpyxl_workbook):
             "spreadsheet_style_errors_table": spreadsheet_style_errors_table(
                 values, openpyxl_workbook
             )
-            if (file_type in ["xlsx", "csv"] and "grants/" in error["path_no_number"])
+            if (file_type in ["xlsx", "csv"] and "grants" in error["path_no_number"])
             else None,
         }
         if error["validator"] == "required":
