@@ -45,14 +45,24 @@ class Schema360(SchemaJsonMixin):
                 self._pkg_schema_obj = json.load(f)
         else:
             pkg_schema_url = urljoin(config["schema_host"], self.pkg_schema_name)
-            self._pkg_schema_obj = get_request(pkg_schema_url).json()
+            try:
+                self._pkg_schema_obj = get_request(pkg_schema_url, force_cache=True).json()
+            except json.JSONDecodeError as exc:
+                raise Exception("Could not parse JSON from package schema") from exc
+            except Exception as exc:
+                raise Exception("Could not fetch package schema") from exc
 
         if local_grant_schema_path:
             with open(local_grant_schema_path) as f:
                 self._schema_obj = json.load(f)
         else:
             schema_url = urljoin(config["schema_host"], self.schema_name)
-            self._schema_obj = get_request(schema_url).json()
+            try:
+                self._schema_obj = get_request(schema_url, force_cache=True).json()
+            except json.JSONDecodeError as exc:
+                raise Exception("Could not parse JSON from grant schema") from exc
+            except Exception as exc:
+                raise Exception("Could not fetch grant schema") from exc
 
         # Update the pkg schema to no longer point to an external reference for the
         # grants schema.
