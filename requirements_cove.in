@@ -21,3 +21,4 @@ xmltodict
 rangedict
 openpyxl
 whitenoise
+certifi>=2026.10.19         # Response to eMudhra/emSign CA certificate security incident.
