@@ -26,7 +26,7 @@ btrees==6.1
     #   zodb
 cached-property==2.0.1
     # via -r requirements_cove.txt
-certifi==2025.1.31
+certifi==2026.10.19
     # via
     #   -r requirements_cove.txt
     #   requests

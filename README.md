@@ -74,6 +74,7 @@ Install just the python library
 ```
 $ virtualenv .ve --python python3
 $ source .ve/bin/activate
+$ pip install --upgrade pip
 $ pip install -e .
 ```
 
