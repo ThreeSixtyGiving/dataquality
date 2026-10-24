@@ -18,7 +18,7 @@ btrees==6.1
     # via zodb
 cached-property==2.0.1
     # via -r requirements_cove.in
-certifi==2025.1.31
+certifi==2026.10.19
     # via
     #   requests
     #   sentry-sdk
