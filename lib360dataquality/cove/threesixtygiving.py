@@ -9,6 +9,7 @@ from collections import OrderedDict, defaultdict
 from decimal import Decimal
 import logging
 
+import jsonschema
 import libcove.lib.common as libcove_common
 import libcove.lib.tools as tools
 import openpyxl
@@ -171,6 +172,10 @@ def oneOf_draft4(validator, oneOf, instance, schema):
 
 
 validator.VALIDATORS["oneOf"] = oneOf_draft4
+
+# Force jsonschema to use our validator
+# https://github.com/python-jsonschema/jsonschema/issues/994
+jsonschema.validators._META_SCHEMAS["https://json-schema.org/draft/2020-12/schema"] = validator
 
 
 @tools.ignore_errors
