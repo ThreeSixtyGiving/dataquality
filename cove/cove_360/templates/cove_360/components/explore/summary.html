@@ -12,7 +12,7 @@
         {% trans "This data does not use the 360Giving Data Standard correctly" %} (<a href="#validity" title="View validation errors">{% blocktrans count n_errors=validation_and_closed_codelist_errors_count %} {{n_errors}} Error.{% plural %}{{n_errors}} Errors {% endblocktrans %}</a>)
         </h3>
         <p>{% trans "Sorry your data is not yet using the 360Giving Data Standard. We used the " %}
-          <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a> {% trans "to check this." %}
+          <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#giving-json-schemas"> 360Giving JSON Package Schema</a> {% trans "to check this." %}
            See <a href="#validity" >Validity</a> for further details.
         </p>
       </div>
@@ -21,7 +21,7 @@
         <h3 class="box__heading">{% trans "This data uses the 360Giving Data Standard correctly" %}</h3>
         <p>
         {% trans "Congratulations! Your data is using the 360Giving Data Standard. We used the " %}
-        <a href="https://www.threesixtygiving.org/standard/reference/#toc-360giving-json-schemas"> 360Giving JSON Package Schema</a>
+        <a href="https://standard.threesixtygiving.org/en/latest/technical/reference/#giving-json-schemas"> 360Giving JSON Package Schema</a>
           {% trans "to check this." %}
         </p>
       </div>
